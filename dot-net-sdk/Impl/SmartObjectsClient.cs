@@ -1,0 +1,27 @@
+﻿using System;
+using Mnubo.SmartObjects.Client.Config;
+
+namespace Mnubo.SmartObjects.Client.Impl
+{
+    internal class SmartObjectsClient : ISmartObjectsClient
+    {
+        private HttpClient client;
+        public IObjectClient Objects { get; }
+        public IOwnerClient Owners { get; }
+        public IEventClient Events { get; }
+
+        internal SmartObjectsClient(ClientConfig config)
+        {
+            client = new HttpClient(config);
+
+            Objects = new ObjectClient(client);
+            Owners = new OwnerClient(client);
+            Events = new EventClient(client);
+        }
+
+        public void Dispose()
+        {
+            client.Dispose();
+        }
+    }
+}
