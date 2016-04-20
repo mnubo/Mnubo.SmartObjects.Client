@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>Mnubo.SmartObjects.Client</id>
+        <version>1.0.3</version>
+        <authors>Mauro Arias</authors>
+        <owners>Mnubo Inc.</owners>
+        <licenseUrl>https://opensource.org/licenses/apache-2.0</licenseUrl>
+        <projectUrl>https://github.com/mnubo/Mnubo.SmartObjects.Client</projectUrl>
+        <iconUrl>https://raw.githubusercontent.com/mnubo/smartobjects-net-client/master/mnubo.png</iconUrl>
+        <requireLicenseAcceptance>true</requireLicenseAcceptance>
+        <description>Mnubo SmartObjects .Net SDK client</description>
+        <releaseNotes>Allows:
+            Create Object - Owner (Sync - Async).
+            Update Object - Owner (Sync - Async) No batchs.
+            Update Objects - Owners List (Sync - Async) Baths. But answers are not deseriasable.
+            Delete Object - Owner (Sync - Async).
+            Owner claim an Object (Sync - Async).
+            Owner update password (Sync - Async).
+            Post events (Sync - Async).</releaseNotes>
+        <copyright>Copyright 2016</copyright>
+        <dependencies>
+            <dependency id="Microsoft.Bcl" version="1.1.10" />
+            <dependency id="Microsoft.Bcl.Build" version="1.0.14" />
+            <dependency id="Microsoft.Net.Http" version="2.2.29" />
+            <dependency id="Newtonsoft.Json" version="8.0.3" />
+            <dependency id="System.Collections" version="4.0.0" />
+            <dependency id="System.Collections.Immutable" version="1.1.37" />
+            <dependency id="System.Diagnostics.Debug" version="4.0.0" />
+            <dependency id="System.Globalization" version="4.0.0" />
+            <dependency id="System.Linq" version="4.0.0" />
+            <dependency id="System.Resources.ResourceManager" version="4.0.0" />
+            <dependency id="System.Runtime" version="4.0.0" />
+            <dependency id="System.Runtime.Extensions" version="4.0.0" />
+            <dependency id="System.Threading" version="4.0.0" />
+        </dependencies>
+    </metadata>
+</package>
