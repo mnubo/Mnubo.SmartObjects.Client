@@ -1,5 +1,3 @@
-# Mnubo.SmartObjects.Client
-=======
 # Mnubo's SmartObjects platform .NET client
 
 Introduction

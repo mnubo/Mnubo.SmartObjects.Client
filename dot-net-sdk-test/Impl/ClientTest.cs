@@ -40,9 +40,13 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                 ConsumerSecret = consumerSecret
             };
 
-            Assert.That(() => ClientFactory.Create(config),
-               Throws.TypeOf<InvalidOperationException>()
-               .With.Message.EqualTo("Error fetching token..."));
+            Assert.That(() =>
+            {
+                var client = ClientFactory.Create(config);
+                client.Owners.Delete("unknown");
+            },
+            Throws.TypeOf<InvalidOperationException>()
+            .With.Message.EqualTo("Error fetching token..."));
         }
     }
 }

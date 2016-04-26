@@ -149,13 +149,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
 
             Assert.AreEqual(eventBuilt.EventId.ToString(), "46aabccd-4442-6665-a1f0-49889330eaf3");
             Assert.AreEqual(eventBuilt.EventType, "type");
-            Assert.AreEqual(eventBuilt.SmartObject.DeviceId, "deviceID");
-            Assert.IsNull(eventBuilt.SmartObject.ObjectType);
-            Assert.IsNull(eventBuilt.SmartObject.RegistrationDate);
-            Assert.IsNull(eventBuilt.SmartObject.EventId);
-            Assert.IsNull(eventBuilt.SmartObject.Owner);
-            Assert.IsNotNull(eventBuilt.SmartObject.Attributes);
-            Assert.AreEqual(eventBuilt.SmartObject.Attributes.Count, 0);
+            Assert.AreEqual(eventBuilt.DeviceId, "deviceID");
             Assert.AreEqual(eventBuilt.Timestamp.Value.ToString(DatetimeFormat),
                 now.ToString(DatetimeFormat));
             CollectionAssert.AreEqual(eventBuilt.Timeseries, attributes.ToImmutable());
@@ -174,7 +168,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
 
             Assert.IsNull(eventBuilt.EventId);
             Assert.AreEqual(eventBuilt.EventType, "type");
-            Assert.IsNull(eventBuilt.SmartObject);
+            Assert.IsNull(eventBuilt.DeviceId);
             Assert.IsNull(eventBuilt.Timestamp);
             Assert.AreEqual(eventBuilt.Timeseries.Count, 0);
         }
@@ -192,7 +186,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
 
             Assert.IsNull(eventBuilt.EventId);
             Assert.AreEqual(eventBuilt.EventType, "type");
-            Assert.IsNull(eventBuilt.SmartObject);
+            Assert.IsNull(eventBuilt.DeviceId);
             Assert.IsNull(eventBuilt.Timestamp);
             Assert.AreEqual(eventBuilt.Timeseries.Count, 0);
         }
@@ -217,7 +211,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             Assert.AreEqual(eventBuilt.EventType, "type");
             Assert.IsNull(eventBuilt.Timestamp);
             Assert.IsNull(eventBuilt.EventId);
-            Assert.IsNull(eventBuilt.SmartObject);
+            Assert.IsNull(eventBuilt.DeviceId);
             Assert.IsNotNull(eventBuilt.Timeseries);
             Assert.AreEqual(eventBuilt.Timeseries.Count, 0);
         }

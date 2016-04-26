@@ -4,91 +4,104 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Text;
+using static Mnubo.SmartObjects.Client.Config.ClientConfig;
+using System.Net;
+using Newtonsoft.Json;
 
 namespace Mnubo.SmartObjects.Client.Impl
 {
     internal class HttpClient : IDisposable
     {
+        internal static readonly Dictionary<Environments, string> addressMapping = new Dictionary<Environments, string>()
+        {
+            { Environments.Sandbox, "rest.sandbox.mnubo.com" },
+            { Environments.Production, "rest.api.mnubo.com" }
+        };
         internal const string DefaultClientSchema = "https";
-        internal const string DefaultBasePath = "/api/v3/";
         internal const string DefaultScope = "ALL";
         internal const int DefaultHostPort = 443;
 
-        private CredentialHandler credentialHandler;
-        private ClientConfig config;
-        private System.Net.Http.HttpClient client;
+        private const string DefaultBasePath = "/api/v3/";
+
+        private readonly CredentialHandler credentialHandler;
+        private readonly ClientConfig config;
+        private readonly System.Net.Http.HttpClient client;
 
         internal HttpClient(ClientConfig config)
         {
-            credentialHandler = new CredentialHandler(config);
-
             client = new System.Net.Http.HttpClient();
             client.Timeout = TimeSpan.FromMilliseconds(config.ClientTimeout);
             client.MaxResponseContentBufferSize = config.MaxResponseContentBufferSize;
 
+            credentialHandler = new CredentialHandler(config, client);
+
             this.config = config;
         }
 
-        internal Task<string> sendAsyncRequestWithBody(HttpMethod method, string path, string body)
+        internal async Task<string> sendAsyncRequestWithResult(HttpMethod method, string path)
         {
-            return sendAsyncRequest(method, path, new Dictionary<string, string>(), body);
+            return await sendAsyncRequestWithResult(method, path, null);
         }
 
-        internal Task sendAsyncRequest(HttpMethod method, string path, string body)
+        internal async Task sendAsyncRequest(HttpMethod method, string path, string body)
         {
-            return sendAsyncRequest(method, path, new Dictionary<string, string>(), body);
+            await sendAsyncRequestWithResult(method, path, body);
         }
 
-        internal Task sendAsyncRequest(HttpMethod method, string path)
+        internal async Task sendAsyncRequest(HttpMethod method, string path)
         {
-            return sendAsyncRequest(method, path, new Dictionary<string, string>(), null);
+            await sendAsyncRequest(method, path, null);
         }
 
-        internal Task<string> sendAsyncRequest(HttpMethod method, string path, Dictionary<string, string> pathQueries, string body)
+        internal async Task<string> sendAsyncRequestWithResult(HttpMethod method, string path, string body)
         {
-            UriBuilder uriBuilder = new UriBuilder(DefaultClientSchema, config.addressMapping[config.Environment], DefaultHostPort, DefaultBasePath + path);
-            List<string> queries = new List<string>();
-            foreach (KeyValuePair<string, string> query in pathQueries)
+            HttpRequestMessage request = null;
+            HttpResponseMessage response = null;
+            try
             {
-                queries.Add(query.Key + "=" + query.Value);
-            }
-            uriBuilder.Query = string.Join("&", queries.ToArray());
+                UriBuilder uriBuilder = new UriBuilder(DefaultClientSchema, HttpClient.addressMapping[config.Environment], DefaultHostPort, DefaultBasePath + path);
 
-            HttpRequestMessage request = new HttpRequestMessage(method, uriBuilder.Uri);
-            request.Headers.Add("Authorization", credentialHandler.GetAuthenticationToken());
+                request = new HttpRequestMessage(method, uriBuilder.Uri);
+                request.Headers.Add("Authorization", credentialHandler.GetAuthenticationToken());
 
-            if (!string.IsNullOrEmpty(body))
-            {
-                request.Content = new StringContent(body, Encoding.UTF8, "application/json");
-            }
-
-            Task<string> taskResult = Task<string>.Factory.StartNew(() =>
-            {
-                try
+                if (!string.IsNullOrEmpty(body))
                 {
-                    var taskRequest = client.SendAsync(request);
-                    taskRequest.Wait();
-
-                    var messageAsstringTask = taskRequest.Result.Content.ReadAsStringAsync();
-                    messageAsstringTask.Wait();
-
-                    if (taskRequest.Result.StatusCode != System.Net.HttpStatusCode.OK &&
-                        taskRequest.Result.StatusCode != System.Net.HttpStatusCode.Created)
-                    {
-                        throw new InvalidOperationException(
-                            string.Format("status code: {0}, message {1}", taskRequest.Result.StatusCode, messageAsstringTask.Result));
-                    }
-                    return messageAsstringTask.Result;
+                    request.Content = new StringContent(body, Encoding.UTF8, "application/json");
                 }
-                catch (Exception ex)
+
+                response = await client.SendAsync(request);
+
+                string message = await response.Content.ReadAsStringAsync();
+
+                if (response.StatusCode == HttpStatusCode.OK ||
+                    response.StatusCode == HttpStatusCode.Created)
                 {
-                    throw new InvalidOperationException(ex.Message);
+                    return message;
                 }
-            });
+                else if (response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    throw new ArgumentException(GetMessageFromReponse(message));
+                }
 
-            string x = "l";
+                throw new InvalidOperationException(
+                    string.Format("status code: {0}, message {1}", response.StatusCode, GetMessageFromReponse(message)));
+            }
+            finally
+            {
+                if (request != null)
+                {
+                    request.Dispose();
+                }
+                if (response != null)
+                {
+                    response.Dispose();
+                }
+            }
+        }
 
-            return taskResult;
+        private string GetMessageFromReponse(string responseMessage)
+        {
+            return JsonConvert.DeserializeObject<Dictionary<string, string>>(responseMessage)["message"];
         }
 
         public void Dispose()

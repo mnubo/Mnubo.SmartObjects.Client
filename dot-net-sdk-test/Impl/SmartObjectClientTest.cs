@@ -17,19 +17,21 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         private const string ObjectType = "wind_direction";
         private const string Password = "pppp";
         private const string AttributeName = "color";
-        private ClientConfig config =
+
+        private readonly ClientConfig config;
+        private readonly ISmartObjectsClient client;
+        private readonly IObjectClient objectClient;
+        private readonly Random RandomGenerator = new Random();
+
+        public SmartObjectClientTest()
+        {
+            config =
                 new ClientConfig.Builder()
                 {
                     Environment = ClientConfig.Environments.Sandbox,
                     ConsumerKey = Config.ConsumerKey,
                     ConsumerSecret = Config.ConsumerSecret
                 };
-        private ISmartObjectsClient client;
-        private IObjectClient objectClient;
-        private Random RandomGenerator = new Random();
-
-        public SmartObjectClientTest()
-        {
             client = ClientFactory.Create(config);
             objectClient = client.Objects;
         }
@@ -104,9 +106,9 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                 });
             }
 
-            List<Result> objectResult = objectClient.CreateUpdate(objs);
+            IEnumerable<Result> objectResult = objectClient.CreateUpdate(objs);
 
-            Assert.AreEqual(objectResult.Count, 200);
+            Assert.AreEqual(objectResult.Count(), 200);
 
             foreach (SmartObject obj in objs)
             {
@@ -130,27 +132,24 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             };
 
             Assert.That(() => objectClient.Create(smartObject),
-                Throws.TypeOf<InvalidOperationException>()
-                .With.Message.Contains("status code: BadRequest, message {\"path\":\"/objects\",\"errorCode\":400,\"requestId\":")
-                .With.Message.Contains("\"message\":\"Unknown field 'unknow'\"}"));
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo("Unknown field 'unknow'"));
         }
 
         [Test()]
         public void ClientSmartObjectSyncUpdateBadRequest()
         {
             Assert.That(() => objectClient.Update(new SmartObject.Builder().Build(), "Unknown"),
-                Throws.TypeOf<InvalidOperationException>()
-                .With.Message.Contains("status code: BadRequest, message {\"path\":\"/objects/Unknown\",\"errorCode\":400,\"requestId\":")
-                .With.Message.Contains("\"message\":\"Object with x_device_id 'Unknown' not found.\"}"));
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo("Object with x_device_id 'Unknown' not found."));
         }
 
         [Test()]
         public void ClientSmartObjectSyncDeleteBadRequest()
         {
             Assert.That(() => objectClient.Delete("Unknown"),
-                Throws.TypeOf<InvalidOperationException>()
-                .With.Message.Contains("status code: BadRequest, message {\"path\":\"/objects/Unknown\",\"errorCode\":400,\"requestId\":")
-                .With.Message.Contains("\"message\":\"Object with x_device_id 'Unknown' not found.\"}"));
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo("Object with x_device_id 'Unknown' not found."));
         }
 
         [Test()]
@@ -334,7 +333,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                 });
             }
 
-            Task<List<Result>> resultListTask = objectClient.CreateUpdateAsync(objs);
+            Task<IEnumerable<Result>> resultListTask = objectClient.CreateUpdateAsync(objs);
             resultListTask.Wait();
 
             List<Task> deleteTask = new List<Task>();

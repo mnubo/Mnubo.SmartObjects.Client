@@ -7,66 +7,75 @@ using Newtonsoft.Json.Linq;
 namespace Mnubo.SmartObjects.Client.Impl
 {
     /// <summary>
-    /// Json Serilize or deserialize owner instances
+    /// Json Serilize or deserialize object instances
     /// </summary>
-    public class OwnerSerializer
+    public class ObjectSerializer
     {
+        internal const string DeviceIdProperty = "x_device_id";
+        private const string ObjectTypeProperty = "x_object_type";
         private const string RegistrationDateProperty = "x_registration_date";
-        private const string PasswordProperty = "x_password";
-        internal const string UsernameProperty = "username";
+        private const string OwnerProperty = "x_owner";
         private const string EventIdProperty = "event_id";
 
         /// <summary>
-        /// Serialize a list of owner to a Json string
+        /// Serialize a list of smartobject to a Json string
         /// </summary>
-        /// <param name="owners">List of owner</param>
+        /// <param name="smartObjects">List of smartObjects</param>
         /// <returns>json string</returns>
-        public static string SerializeOwners(IEnumerable<Owner> owners)
+        public static string SerializeObjects(IEnumerable<SmartObject> smartObjects)
         {
             List<string> stringBuilder = new List<string>();
-            foreach (Owner owner in owners)
+            foreach (SmartObject smartObject in smartObjects)
             {
-                stringBuilder.Add(SerializeOwner(owner));
+                stringBuilder.Add(SerializeObject(smartObject));
             }
             return "[" + string.Join(" , ", stringBuilder.ToArray()) + "]";
         }
 
         /// <summary>
-        /// serialize an owner instance to a JSON string
+        /// serialize a smartobject instance to a JSON string
         /// </summary>
-        /// <param name="owner">owner instance</param>
+        /// <param name="smartObject">smartObject instance</param>
         /// <returns>json string</returns>
-        public static string SerializeOwner(Owner owner)
+        public static string SerializeObject(SmartObject smartObject)
         {
-            Dictionary<string, object> ownerModelFlat = new Dictionary<string, object>();
+            Dictionary<string, object> objectModelFlat = new Dictionary<string, object>();
 
-            if (!string.IsNullOrEmpty(owner.Username))
+            if (!string.IsNullOrEmpty(smartObject.DeviceId))
             {
-                ownerModelFlat.Add(UsernameProperty, owner.Username);
+                objectModelFlat.Add(DeviceIdProperty, smartObject.DeviceId);
             }
 
-            if (owner.RegistrationDate.HasValue)
+            if (smartObject.RegistrationDate.HasValue)
             {
-                ownerModelFlat.Add(RegistrationDateProperty, owner.RegistrationDate);
+                objectModelFlat.Add(RegistrationDateProperty, smartObject.RegistrationDate);
             }
 
-            if (!string.IsNullOrEmpty(owner.Password))
+            if (!string.IsNullOrEmpty(smartObject.ObjectType))
             {
-                ownerModelFlat.Add(PasswordProperty, owner.Password);
+                objectModelFlat.Add(ObjectTypeProperty, smartObject.ObjectType);
             }
 
-            if (owner.EventId.HasValue)
+            if (smartObject.EventId.HasValue)
             {
-                ownerModelFlat.Add(EventIdProperty, owner.EventId);
+                objectModelFlat.Add(EventIdProperty, smartObject.EventId);
             }
 
-            foreach (KeyValuePair<string, object> attribute in owner.Attributes)
+            if (!string.IsNullOrEmpty(smartObject.Username))
             {
-                ownerModelFlat.Add(attribute.Key, attribute.Value);
+                objectModelFlat.Add(OwnerProperty, new Dictionary<string, string>()
+                {
+                    { OwnerSerializer.UsernameProperty, smartObject.Username }
+                });
+            }
+
+            foreach (KeyValuePair<string, object> attribute in smartObject.Attributes)
+            {
+                objectModelFlat.Add(attribute.Key, attribute.Value);
             }
 
             return JsonConvert.SerializeObject(
-                ownerModelFlat,
+                objectModelFlat,
                 new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Ignore,
@@ -76,26 +85,26 @@ namespace Mnubo.SmartObjects.Client.Impl
         }
 
         /// <summary>
-        /// deserialize a json string to an owner instance
+        /// deserialize a json string to a smartObject instance
         /// </summary>
         /// <param name="obj">json string</param>
-        /// <returns>owner instance</returns>
-        public static Owner DeserializeOwner(string obj)
+        /// <returns>Smart Object instance</returns>
+        public static SmartObject DeserializeObject(string obj)
         {
-            Owner.Builder builder = new Owner.Builder();
+            SmartObject.Builder builder = new SmartObject.Builder();
             Dictionary<string, object> attributes = new Dictionary<string, object>();
 
             foreach (KeyValuePair<string, object> token in JsonConvert.DeserializeObject<Dictionary<string, object>>(obj))
             {
                 switch (token.Key)
                 {
-                    case UsernameProperty:
+                    case DeviceIdProperty:
                         {
                             if (!(token.Value is string))
                             {
-                                throw new InvalidOperationException("Field 'username' does not match TYPE 'TEXT'");
+                                throw new InvalidOperationException("Field 'x_device_id' does not match TYPE 'TEXT'");
                             }
-                            builder.Username = token.Value as string;
+                            builder.DeviceId = token.Value as string;
                             break;
                         }
                     case RegistrationDateProperty:
@@ -107,13 +116,13 @@ namespace Mnubo.SmartObjects.Client.Impl
                             builder.RegistrationDate = ((DateTime)token.Value).ToUniversalTime();
                             break;
                         }
-                    case PasswordProperty:
+                    case ObjectTypeProperty:
                         {
                             if (!(token.Value is string))
                             {
-                                throw new InvalidOperationException("Field 'x_password' does not match TYPE 'TEXT'");
+                                throw new InvalidOperationException("Field 'x_object_type' does not match TYPE 'TEXT'");
                             }
-                            builder.Password = token.Value as string;
+                            builder.ObjectType = token.Value as string;
                             break;
                         }
                     case EventIdProperty:
@@ -126,6 +135,24 @@ namespace Mnubo.SmartObjects.Client.Impl
                                 throw new InvalidOperationException("Field 'x_event_id' does not match TYPE 'GUID'");
                             }
                             builder.EventId = guid;
+                            break;
+                        }
+                    case OwnerProperty:
+                        {
+                            if (token.Value == null || !(token.Value is JObject))
+                            {
+                                throw new InvalidOperationException("Field 'x_owner' does not match TYPE 'OWNER'");
+                            }
+
+                            var username = (token.Value as JObject)[OwnerSerializer.UsernameProperty];
+                            if (username != null)
+                            {
+                                if (username.Type != JTokenType.String)
+                                {
+                                    throw new InvalidOperationException("Field 'x_owner' does not match TYPE 'OWNER'");
+                                }
+                                builder.Username = username.Value<string>();
+                            }
                             break;
                         }
                     default:
@@ -143,7 +170,6 @@ namespace Mnubo.SmartObjects.Client.Impl
                 }
             }
             builder.Attributes = attributes;
-
             return builder.Build();
         }
     }

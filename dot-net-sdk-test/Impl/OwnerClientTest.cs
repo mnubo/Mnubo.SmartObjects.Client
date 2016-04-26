@@ -17,25 +17,27 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         private const string Password = "pppp";
         private const string AttributeName = "attribute1";
         private const string ObjectTypeName = "wind_direction";
-        private Random randomGenerator = new Random();
 
-        private ClientConfig config =
+        private readonly Random randomGenerator = new Random();
+
+        private readonly ClientConfig config;
+        private readonly ISmartObjectsClient client;
+        private readonly IOwnerClient ownerClient;
+
+        public OwnerClientTest()
+        {
+            config =
                 new ClientConfig.Builder()
                 {
                     Environment = ClientConfig.Environments.Sandbox,
                     ConsumerKey = Config.ConsumerKey,
                     ConsumerSecret = Config.ConsumerSecret
                 };
-        private ISmartObjectsClient client;
-        private IOwnerClient ownerClient;
-
-        public OwnerClientTest()
-        {
             client = ClientFactory.Create(config);
             ownerClient = client.Owners;
         }
 
-        #region Async Calls
+        #region Sync Calls
         [Test()]
         public void ClientOwnerSyncCreateFullOwnerUpdateDelete()
         {
@@ -142,9 +144,9 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                 });
             }
 
-            List<Result> ownerResult = ownerClient.CreateUpdate(owners);
+            IEnumerable<Result> ownerResult = ownerClient.CreateUpdate(owners);
 
-            Assert.AreEqual(ownerResult.Count, 200);
+            Assert.AreEqual(ownerResult.Count(), 200);
 
             foreach (Owner owner in owners)
             {
@@ -168,45 +170,40 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             };
 
             Assert.That(() => ownerClient.Create(owner),
-                Throws.TypeOf<InvalidOperationException>()
-                .With.Message.Contains("status code: BadRequest, message {\"path\":\"/owners\",\"errorCode\":400,\"requestId\":")
-                .With.Message.Contains("\"message\":\"Unknown field 'unknow'\"}"));
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo("Unknown field 'unknow'"));
         }
 
         [Test()]
         public void ClientOwnerSyncUpdateBadRequest()
         {
             Assert.That(() => ownerClient.Update(new Owner.Builder().Build(), "Unknown"),
-                Throws.TypeOf<InvalidOperationException>()
-                .With.Message.Contains("status code: BadRequest, message {\"path\":\"/owners/Unknown\",\"errorCode\":400,\"requestId\":")
-                .With.Message.Contains("\"message\":\"Owner's attributes cannot be null or empty.\"}"));
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo("Owner's attributes cannot be null or empty."));
         }
 
         [Test()]
         public void ClientOwnerSyncDeleteBadRequest()
         {
             Assert.That(() => ownerClient.Delete("Unknown"),
-                Throws.TypeOf<InvalidOperationException>()
-                .With.Message.Contains("status code: BadRequest, message {\"path\":\"/owners/Unknown\",\"errorCode\":400,\"requestId\":")
-                .With.Message.Contains("\"message\":\"Owner 'Unknown' not found.\"}"));
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo("Owner 'Unknown' not found."));
         }
 
         [Test()]
         public void ClientOwnerSyncClaimBadRequest()
         {
             Assert.That(() => ownerClient.Claim("Unknown", "Unknown"),
-                Throws.TypeOf<InvalidOperationException>()
-                .With.Message.Contains("status code: BadRequest, message {\"path\":\"/owners/Unknown/objects/Unknown/claim\",\"errorCode\":400,\"requestId\":")
-                .With.Message.Contains("\"message\":\"Owner Unknown does not exist.\"}"));
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo("Owner Unknown does not exist."));
         }
 
         [Test()]
         public void ClientOwnerSyncUpdatePasswordBadRequest()
         {
             Assert.That(() => ownerClient.UpdatePassword("Unknown", "Unknown"),
-                Throws.TypeOf<InvalidOperationException>()
-                .With.Message.Contains("status code: BadRequest, message {\"path\":\"/owners/Unknown/password\",\"errorCode\":400,\"requestId\":")
-                .With.Message.Contains("\"message\":\"The username : 'Unknown' not found.\"}"));
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo("The username : 'Unknown' not found."));
         }
 
         [Test()]
@@ -475,7 +472,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                 });
             }
 
-            Task<List<Result>> resultListTask = ownerClient.CreateUpdateAsync(owners);
+            Task<IEnumerable<Result>> resultListTask = ownerClient.CreateUpdateAsync(owners);
             resultListTask.Wait();
 
             List<Task> deleteTask = new List<Task>();

@@ -17,20 +17,23 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         private const string DeviceIdBase = "dot.net.sdk.test";
         private const string EventType = "wind_direction";
         private const string AttributeName = "wind_direction";
-        private SmartObject smartObject;
-        private string deviceId;
-        private ClientConfig config =
+
+        private readonly SmartObject smartObject;
+        private readonly string deviceId;
+        private readonly ClientConfig config;
+        private readonly ISmartObjectsClient client;
+        private readonly IEventClient eventClient;
+
+        public EventClientTest()
+        {
+            config =
                 new ClientConfig.Builder()
                 {
                     Environment = ClientConfig.Environments.Sandbox,
                     ConsumerKey = Config.ConsumerKey,
                     ConsumerSecret = Config.ConsumerSecret
                 };
-        private ISmartObjectsClient client;
-        private IEventClient eventClient;
 
-        public EventClientTest()
-        {
             client = ClientFactory.Create(config);
             eventClient = client.Events;
 
@@ -48,7 +51,10 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
 
         ~EventClientTest()
         {
-            client.Objects.Delete(smartObject.DeviceId);
+            if (client != null)
+            {
+                client.Objects.Delete(smartObject.DeviceId);
+            }
         }
 
         #region Sync Calls
@@ -132,9 +138,8 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             };
 
             Assert.That(() => eventClient.Post(new List<Event>() { eve1, eve2 }),
-               Throws.TypeOf<InvalidOperationException>()
-               .With.Message.Contains("status code: BadRequest, message {\"path\":\"/events\",\"errorCode\":400,\"requestId\":")
-               .With.Message.Contains("\"message\":\"Unknown field 'unknown'\"}"));
+               Throws.TypeOf<ArgumentException>()
+               .With.Message.EqualTo("Unknown field 'unknown'"));
         }
 
         [Test()]
@@ -182,8 +187,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                 EventId = Guid.NewGuid()
             };
 
-            Task task = eventClient.PostAsync(new List<Event>() { eve1, eve2 });
-            task.Wait();
+            eventClient.PostAsync(new List<Event>() { eve1, eve2 }).Wait();
         }
 
         [Test()]
@@ -202,6 +206,35 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                 Throws.TypeOf<AggregateException>()
                 .With.InnerException.TypeOf<ArgumentException>()
                 .With.InnerException.Message.EqualTo("Event list cannot be empty or null."));
+        }
+
+        [Test()]
+        public void ClientEventAsyncPostBadRequest()
+        {
+            Event eve1 = new Event.Builder()
+            {
+                EventType = EventType,
+                DeviceId = deviceId,
+                Timeseries = new Dictionary<string, object>()
+                {
+                    { AttributeName, "testA" }
+                }
+            };
+
+            Event eve2 = new Event.Builder()
+            {
+                EventType = EventType,
+                DeviceId = deviceId,
+                Timeseries = new Dictionary<string, object>()
+                {
+                    { "Unknown", "testB" }
+                }
+            };
+
+            Assert.That(() => eventClient.PostAsync(new List<Event>() { eve1, eve2 }).Wait(),
+                Throws.TypeOf<AggregateException>()
+                .With.InnerException.TypeOf<ArgumentException>()
+                .With.InnerException.Message.EqualTo("Unknown field 'unknown'"));
         }
         #endregion
     }

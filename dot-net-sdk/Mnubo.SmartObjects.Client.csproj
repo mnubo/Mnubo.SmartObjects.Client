@@ -35,7 +35,8 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>mnubo.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -60,11 +61,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config\ClientConfig.cs" />
+    <Compile Include="Impl\ClientUtils.cs" />
+    <Compile Include="Impl\ResultDeserializer.cs" />
     <Compile Include="Models\Event.cs" />
     <Compile Include="Models\Result.cs" />
     <Compile Include="Impl\EventSerializer.cs" />
     <Compile Include="Impl\OwnerSerializer.cs" />
-    <Compile Include="Impl\SmartObjectSerializer.cs" />
+    <Compile Include="Impl\ObjectSerializer.cs" />
     <Compile Include="ClientFactory.cs" />
     <Compile Include="Impl\CredentialHandler.cs" />
     <Compile Include="Impl\EventClient.cs" />
@@ -84,9 +87,6 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="mnubo.ico" />
   </ItemGroup>
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">

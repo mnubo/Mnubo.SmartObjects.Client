@@ -6,14 +6,22 @@ using Newtonsoft.Json.Linq;
 
 namespace Mnubo.SmartObjects.Client.Impl
 {
+    /// <summary>
+    /// Json Serilize or deserialize object instances
+    /// </summary>
     public class SmartObjectSerializer
     {
-        internal const string deviceIdProperty = "x_device_id";
-        internal const string ObjectTypeProperty = "x_object_type";
-        internal const string RegistrationDateProperty = "x_registration_date";
-        internal const string OwnerProperty = "x_owner";
-        internal const string EventIdProperty = "event_id";
+        internal const string DeviceIdProperty = "x_device_id";
+        private const string ObjectTypeProperty = "x_object_type";
+        private const string RegistrationDateProperty = "x_registration_date";
+        private const string OwnerProperty = "x_owner";
+        private const string EventIdProperty = "event_id";
 
+        /// <summary>
+        /// Serialize a list of smartobject to a Json string
+        /// </summary>
+        /// <param name="smartObjects">List of smartObjects</param>
+        /// <returns>json string</returns>
         public static string SerializeSmartObjects(List<SmartObject> smartObjects)
         {
             List<string> stringBuilder = new List<string>();
@@ -24,13 +32,18 @@ namespace Mnubo.SmartObjects.Client.Impl
             return "[" + string.Join(" , ", stringBuilder.ToArray()) + "]";
         }
 
+        /// <summary>
+        /// serialize a smartobject instance to a JSON string
+        /// </summary>
+        /// <param name="smartObject">smartObject instance</param>
+        /// <returns>json string</returns>
         public static string SerializeSmartObject(SmartObject smartObject)
         {
             Dictionary<string, object> objectModelFlat = new Dictionary<string, object>();
 
             if (!string.IsNullOrEmpty(smartObject.DeviceId))
             {
-                objectModelFlat.Add(deviceIdProperty, smartObject.DeviceId);
+                objectModelFlat.Add(DeviceIdProperty, smartObject.DeviceId);
             }
 
             if (smartObject.RegistrationDate.HasValue)
@@ -72,6 +85,11 @@ namespace Mnubo.SmartObjects.Client.Impl
                 });
         }
 
+        /// <summary>
+        /// deserialize a json string to a smartObject instance
+        /// </summary>
+        /// <param name="obj">json string</param>
+        /// <returns>Smart Object instance</returns>
         public static SmartObject DeserializeSmartObject(string obj)
         {
             SmartObject.Builder builder = new SmartObject.Builder();
@@ -81,7 +99,7 @@ namespace Mnubo.SmartObjects.Client.Impl
             {
                 switch (token.Key)
                 {
-                    case deviceIdProperty:
+                    case DeviceIdProperty:
                         {
                             if (!(token.Value is string))
                             {

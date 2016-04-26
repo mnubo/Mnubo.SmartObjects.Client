@@ -37,7 +37,7 @@ namespace Mnubo.SmartObjects.Client.Test.Model
             Assert.AreEqual(myObject.RegistrationDate, now);
             CollectionAssert.AreEqual(myObject.Attributes, attributes);
             Assert.AreEqual(myObject.DeviceId, "deviceId");
-            Assert.AreEqual(myObject.Owner.Username, "username");
+            Assert.AreEqual(myObject.Username, "username");
         }
 
         [Test()]
@@ -74,7 +74,7 @@ namespace Mnubo.SmartObjects.Client.Test.Model
             Assert.AreEqual(myObject.RegistrationDate, now);
             CollectionAssert.AreEqual(myObject.Attributes, attributes);
             Assert.AreEqual(myObject.DeviceId, "deviceId");
-            Assert.AreEqual(myObject.Owner.Username, "username");
+            Assert.AreEqual(myObject.Username, "username");
         }
 
         [Test()]
@@ -100,7 +100,7 @@ namespace Mnubo.SmartObjects.Client.Test.Model
             Assert.IsNull(myObject.EventId);
             Assert.IsNull(myObject.DeviceId);
             Assert.IsNull(myObject.ObjectId);
-            Assert.IsNull(myObject.Owner);
+            Assert.IsNull(myObject.Username);
             Assert.IsNull(myObject.RegistrationDate);
             Assert.IsNull(myObject.ObjectType);
             CollectionAssert.AreEqual(myObject.Attributes, attributes);
@@ -114,7 +114,7 @@ namespace Mnubo.SmartObjects.Client.Test.Model
             Assert.IsNull(myObject.EventId);
             Assert.IsNull(myObject.DeviceId);
             Assert.IsNull(myObject.ObjectId);
-            Assert.IsNull(myObject.Owner);
+            Assert.IsNull(myObject.Username);
             Assert.IsNull(myObject.RegistrationDate);
             Assert.IsNull(myObject.ObjectType);
             Assert.True(myObject.Attributes.Count == 0);

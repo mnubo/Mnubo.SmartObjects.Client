@@ -33,7 +33,7 @@ namespace Mnubo.SmartObjects.Client
         /// </summary>
         /// <param name="objs"></param>
         /// <returns></returns>
-        List<Result> CreateUpdate(List<SmartObject> objs);
+        IEnumerable<Result> CreateUpdate(IEnumerable<SmartObject> objs);
 
         /// <summary>
         /// Allows create a new object in async mode.
@@ -62,6 +62,6 @@ namespace Mnubo.SmartObjects.Client
         /// </summary>
         /// <param name="objs">List of the objects</param>
         /// <returns>A async task.</returns>
-        Task<List<Result>> CreateUpdateAsync(List<SmartObject> objs);
+        Task<IEnumerable<Result>> CreateUpdateAsync(IEnumerable<SmartObject> objs);
     }
 }

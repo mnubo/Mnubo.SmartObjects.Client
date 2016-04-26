@@ -3,36 +3,38 @@ using Mnubo.SmartObjects.Client.Config;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Mnubo.SmartObjects.Client.Impl
 {
     internal class CredentialHandler
     {
-        internal const string TokenPath = "oauth/token";
-        internal const string TokenConsumerSeparation = ":";
-        internal const string TokenGrandType = "grant_type";
-        internal const string TokenGrandTypeValue = "client_credentials";
-        internal const string TokenScope = "scope";
-        internal const string TokenAuthentication = "Authorization";
-        internal const string TokenAuthenticationType = "Basic";
-        internal const long FletchingTokenInMiliseconds = 1000;
+        private const string TokenPath = "oauth/token";
+        private const string TokenConsumerSeparation = ":";
+        private const string TokenGrandType = "grant_type";
+        private const string TokenGrandTypeValue = "client_credentials";
+        private const string TokenScope = "scope";
+        private const string TokenAuthentication = "Authorization";
+        private const string TokenAuthenticationType = "Basic";
+        private const long FletchingTokenInMiliseconds = 1000;
 
-        private ClientConfig config;
+        private readonly System.Net.Http.HttpClient client;
+        private readonly HttpRequestMessage tokenRequest;
+        private readonly string autorizationBasicToken;
         private Token token;
-        private HttpRequestMessage tokenRequest;
-        private DateTime expireTime;
-        private System.Net.Http.HttpClient client;
 
-        internal CredentialHandler(ClientConfig config)
+        internal CredentialHandler(ClientConfig config, System.Net.Http.HttpClient client)
         {
-            this.config = config;
-            client = new System.Net.Http.HttpClient();
-            client.Timeout = TimeSpan.FromMilliseconds(config.ClientTimeout);
-            client.MaxResponseContentBufferSize = config.MaxResponseContentBufferSize;
+            this.client = client;
+            this.autorizationBasicToken = Convert.ToBase64String(
+                System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(
+                    config.ConsumerKey +
+                    TokenConsumerSeparation +
+                    config.ConsumerSecret));
 
             UriBuilder uriBuilder = new UriBuilder(
                 HttpClient.DefaultClientSchema,
-                config.addressMapping[config.Environment], 
+                HttpClient.addressMapping[config.Environment], 
                 HttpClient.DefaultHostPort, 
                 TokenPath);
             uriBuilder.Query = 
@@ -42,31 +44,20 @@ namespace Mnubo.SmartObjects.Client.Impl
                 HttpClient.DefaultScope;
 
             tokenRequest = new HttpRequestMessage(HttpMethod.Post, uriBuilder.Uri);
-            tokenRequest.Headers.Authorization = new AuthenticationHeaderValue(TokenAuthenticationType, GetAutherizationToken());
+            tokenRequest.Headers.Authorization = new AuthenticationHeaderValue(TokenAuthenticationType, autorizationBasicToken);
 
             System.Net.ServicePointManager.ServerCertificateValidationCallback +=
             (sender, certificate, chain, errors) => true;
-
-            RequestToken();
-
-            ThrowIfTokenNullOrInvalid(token, "Error invalid token...");
         }
 
         internal string GetAuthenticationToken()
         {
-            if (DateTime.Compare(DateTime.Now.AddSeconds(FletchingTokenInMiliseconds), expireTime) >= 0)
+            if (token == null || token.IsExpired())
             {
                 RequestToken();
             }
-            ThrowIfTokenNullOrInvalid(token, "Error invalid token...");
-            return token.TokenType + " " + token.AccessToken;
-        }
 
-        private void SetExpireTime(Token token)
-        {
-            ThrowIfTokenNullOrInvalid(token, "Error validing token...");
-            this.expireTime = DateTime.Now.AddSeconds(token.ExpiresIn);
-            this.token = token;
+            return token.AccessToken;
         }
 
         private void RequestToken()
@@ -84,7 +75,7 @@ namespace Mnubo.SmartObjects.Client.Impl
                 var tokenAsStringTask = tokenRequestToken.Result.Content.ReadAsStringAsync();
                 tokenAsStringTask.Wait();
 
-                SetExpireTime(JsonConvert.DeserializeObject<Token>(tokenAsStringTask.Result));
+                token = new Token(JsonConvert.DeserializeObject<Dictionary<string,object>>(tokenAsStringTask.Result));
             }
             catch (Exception)
             {
@@ -92,39 +83,44 @@ namespace Mnubo.SmartObjects.Client.Impl
             }
         }
 
-        private string GetAutherizationToken()
-        {
-            return Convert.ToBase64String(
-                System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(
-                    config.ConsumerKey +
-                    TokenConsumerSeparation +
-                    config.ConsumerSecret));
-        }
-
-        private void ThrowIfTokenNullOrInvalid(Token token, string msg)
-        {
-            if(token == null || string.IsNullOrEmpty(token.AccessToken) || string.IsNullOrEmpty(token.TokenType))
-            {
-                throw new InvalidOperationException(msg);
-            }
-        }
-
         public class Token
         {
-            [JsonProperty("access_token")]
-            public string AccessToken { get; set; }
+            private const string AccessTokenProperty = "access_token";
+            private const string TokenTypeProperty = "token_type";
+            private const string ExpiresInProperty = "expires_in";
+            private const string ScopeProperty = "scope";
 
-            [JsonProperty("token_type")]
-            public string TokenType { get; set; }
+            private readonly DateTime expireTime;
 
-            [JsonProperty("expires_in")]
-            public int ExpiresIn { get; set; }
+            internal string AccessToken { get; }
 
-            [JsonProperty("jti")]
-            public string Jti { get; set; }
+            internal Token(Dictionary<string, object> attributes)
+            {
+                if (!attributes.ContainsKey(AccessTokenProperty) ||
+                   !attributes.ContainsKey(TokenTypeProperty) ||
+                   !attributes.ContainsKey(ExpiresInProperty))
+                {
+                    throw new InvalidOperationException("Error fetching token...");
+                }
 
-            [JsonProperty("scope")]
-            public string Scope { get; set; }
+                this.AccessToken = 
+                    string.Format(
+                        "{0} {1}", 
+                        attributes[TokenTypeProperty], 
+                        attributes[AccessTokenProperty]);
+
+                this.expireTime = DateTime.Now.AddSeconds(Convert.ToDouble(attributes[ExpiresInProperty]));
+            }
+
+            internal bool IsExpired()
+            {
+                bool status = true;
+                if (DateTime.Compare(DateTime.Now.AddSeconds(FletchingTokenInMiliseconds), expireTime) < 0)
+                {
+                    status = false;
+                }
+                return status;
+            }
         }
     }
 }

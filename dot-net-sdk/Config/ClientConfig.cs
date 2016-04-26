@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Mnubo.SmartObjects.Client.Config
 {
     public sealed class ClientConfig
     {
-        internal Dictionary<Environments, string> addressMapping = new Dictionary<Environments, string>()
-        {
-            { Environments.Sandbox, "rest.sandbox.mnubo.com" },
-            { Environments.Production, "rest.api.mnubo.com" }
-        };
-
+        /// <summary>
+        /// Available enviroments
+        /// </summary>
         public enum Environments
         {
             Sandbox,

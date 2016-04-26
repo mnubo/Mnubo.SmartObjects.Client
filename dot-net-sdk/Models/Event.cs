@@ -13,9 +13,9 @@ namespace Mnubo.SmartObjects.Client.Models
         public Guid? EventId { get; }
 
         /// <summary>
-        /// Get the smart object instance.
+        /// Get the device Id
         /// </summary>
-        public SmartObject SmartObject { get; }
+        public string DeviceId { get; }
 
         /// <summary>
         /// Get the event type.
@@ -45,13 +45,7 @@ namespace Mnubo.SmartObjects.Client.Models
             }
 
             this.EventId = eventId;
-            if (!string.IsNullOrEmpty(deviceId))
-            {
-                this.SmartObject = new SmartObject.Builder()
-                {
-                    DeviceId = deviceId
-                };
-            }
+            this.DeviceId = deviceId;
             this.EventType = eventType;
 
             if (timestamp.HasValue)

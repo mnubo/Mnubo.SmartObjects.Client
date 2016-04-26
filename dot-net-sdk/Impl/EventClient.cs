@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using Mnubo.SmartObjects.Client.Models;
 using System.Threading.Tasks;
 using System.Net.Http;
+using System.Linq;
 
 namespace Mnubo.SmartObjects.Client.Impl
 {
     internal class EventClient : IEventClient
     {
-        private HttpClient client;
+        private readonly HttpClient client;
 
         internal EventClient(HttpClient client)
         {
@@ -16,44 +17,24 @@ namespace Mnubo.SmartObjects.Client.Impl
         }
 
         #region Sync calls
-        public void Post(List<Event> events)
+        public void Post(IEnumerable<Event> events)
         {
-            SyncTaskExecutor(PostAsync(events));
+            ClientUtils.WaitTask(PostAsync(events));
         }
         #endregion
 
         #region Async Calls
-        public Task PostAsync(List<Event> events)
+        public async Task PostAsync(IEnumerable<Event> events)
         {
-            return Task.Factory.StartNew(() =>
+            if (events == null || events.Count() == 0)
             {
-                if(events == null || events.Count == 0)
-                {
-                    throw new ArgumentException("Event list cannot be empty or null.");
-                }
-                try
-                {
-                    client.sendAsyncRequest(HttpMethod.Post,
-                        string.Format("events"), EventSerializer.SerializeEvents(events)).Wait();
-                }
-                catch (AggregateException aggreEx)
-                {
-                    throw aggreEx.InnerException;
-                }
-            });
+                throw new ArgumentException("Event list cannot be empty or null.");
+            }
+            await client.sendAsyncRequest(
+                    HttpMethod.Post,
+                    string.Format("events"),
+                    EventSerializer.SerializeEvents(events));
         }
         #endregion
-
-        private void SyncTaskExecutor(Task task)
-        {
-            try
-            {
-                task.Wait();
-            }
-            catch (AggregateException aggreEx)
-            {
-                throw aggreEx.InnerException;
-            }
-        }
     }
 }

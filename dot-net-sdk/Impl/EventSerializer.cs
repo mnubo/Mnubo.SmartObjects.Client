@@ -6,15 +6,23 @@ using Mnubo.SmartObjects.Client.Models;
 
 namespace Mnubo.SmartObjects.Client.Impl
 {
+    /// <summary>
+    /// Json Serilize or deserialize event instances
+    /// </summary>
     public class EventSerializer
     {
-        internal const string EventIdProperty = "event_id";
-        internal const string ObjectProperty = "x_object";
-        internal const string EventTypeProperty = "x_event_type";
-        internal const string TimestampProperty = "x_timestamp";
+        private const string EventIdProperty = "event_id";
+        private const string ObjectProperty = "x_object";
+        private const string EventTypeProperty = "x_event_type";
+        private const string TimestampProperty = "x_timestamp";
         internal const string DatetimeFormat = "yyyy-MM-dd'T'HH:mm:ssZ";
 
-        public static string SerializeEvents(List<Event> mnuboEvents)
+        /// <summary>
+        /// Serialize a list of events to a Json string
+        /// </summary>
+        /// <param name="mnuboEvents">List of events</param>
+        /// <returns>json string</returns>
+        public static string SerializeEvents(IEnumerable<Event> mnuboEvents)
         {
             List<string> stringBuilder = new List<string>();
             foreach (Event eve in mnuboEvents)
@@ -24,6 +32,11 @@ namespace Mnubo.SmartObjects.Client.Impl
             return "[" + string.Join(" , ", stringBuilder.ToArray()) + "]";
         }
 
+        /// <summary>
+        /// serialize an event instance to a JSON string
+        /// </summary>
+        /// <param name="mnuboEvent">event instance</param>
+        /// <returns>json string</returns>
         public static string SerializeEvent(Event mnuboEvent)
         {
             Dictionary<string, object> eventModelFlat = new Dictionary<string, object>();
@@ -43,12 +56,11 @@ namespace Mnubo.SmartObjects.Client.Impl
                 eventModelFlat.Add(EventIdProperty, mnuboEvent.EventId);
             }
 
-            if(mnuboEvent.SmartObject != null &&
-                !string.IsNullOrEmpty(mnuboEvent.SmartObject.DeviceId))
+            if(!string.IsNullOrEmpty(mnuboEvent.DeviceId))
             {
                 eventModelFlat.Add(ObjectProperty, new Dictionary<string, string>()
                 {
-                    { SmartObjectSerializer.deviceIdProperty, mnuboEvent.SmartObject.DeviceId }
+                    { ObjectSerializer.DeviceIdProperty, mnuboEvent.DeviceId }
                 });
             }
 
@@ -67,6 +79,11 @@ namespace Mnubo.SmartObjects.Client.Impl
                 });
         }
 
+        /// <summary>
+        /// deserialize a json string to an event instance
+        /// </summary>
+        /// <param name="obj">json string</param>
+        /// <returns>event instance</returns>
         public static Event DeserializeEvent(string obj)
         {
             Event.Builder builder = new Event.Builder();
@@ -113,7 +130,7 @@ namespace Mnubo.SmartObjects.Client.Impl
                                 throw new InvalidOperationException("Field 'x_object' does not match TYPE 'SMARTOBJECT'");
                             }
 
-                            var deviceId = (token.Value as JObject)[SmartObjectSerializer.deviceIdProperty];
+                            var deviceId = (token.Value as JObject)[ObjectSerializer.DeviceIdProperty];
                             if(deviceId != null)
                             {
                                 if (deviceId.Type != JTokenType.String)

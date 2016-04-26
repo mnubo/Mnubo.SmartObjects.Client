@@ -48,7 +48,7 @@ namespace Mnubo.SmartObjects.Client
         /// </summary>
         /// <param name="owners">list of onwers to add or update.</param>
         /// <returns>the list of result.</returns>
-        List<Result> CreateUpdate(List<Owner> owners);
+        IEnumerable<Result> CreateUpdate(IEnumerable<Owner> owners);
 
         /// <summary>
         /// Allows create a new owner in async mode.
@@ -94,6 +94,6 @@ namespace Mnubo.SmartObjects.Client
         /// <param name="owners">list of onwers to add or update.</param>
         /// <returns>the list of result.</returns>
         /// <returns>A async task.</returns>
-        Task<List<Result>> CreateUpdateAsync(List<Owner> owners);
+        Task<IEnumerable<Result>> CreateUpdateAsync(IEnumerable<Owner> owners);
     }
 }

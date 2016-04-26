@@ -4,13 +4,13 @@ using System.Runtime.CompilerServices;
 // Information about this assembly is defined by the following attributes.
 // Change them to the values specific to your project.
 
-[assembly: AssemblyTitle ("dot-net-sdk")]
-[assembly: AssemblyDescription ("This is a mnubo's .Net SDK client")]
+[assembly: AssemblyTitle ("Mnubo.SmartObjects.Client")]
+[assembly: AssemblyDescription ("This is a mnubo's .Net Smartobjects SDK client")]
 [assembly: AssemblyConfiguration ("")]
-[assembly: AssemblyCompany ("mnubo")]
-[assembly: AssemblyProduct ("")]
-[assembly: AssemblyCopyright ("Mauro")]
-[assembly: AssemblyTrademark ("")]
+[assembly: AssemblyCompany ("Mnubo Inc.")]
+[assembly: AssemblyProduct (".Net SmartObjects SDK")]
+[assembly: AssemblyCopyright ("Mnubo Inc.")]
+[assembly: AssemblyTrademark ("Mnubo Inc.")]
 [assembly: AssemblyCulture ("")]
 
 // The assembly version has the format "{Major}.{Minor}.{Build}.{Revision}".

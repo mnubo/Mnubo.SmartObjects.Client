@@ -30,9 +30,9 @@ namespace Mnubo.SmartObjects.Client.Models
         public DateTime? RegistrationDate { get; }
 
         /// <summary>
-        /// Get the owner.
+        /// Get the username.
         /// </summary>
-        public Owner Owner { get; }
+        public string Username { get; }
 
         /// <summary>
         /// Get the attributes.
@@ -57,14 +57,7 @@ namespace Mnubo.SmartObjects.Client.Models
             this.EventId = eventId;
             this.ObjectId = objectId;
             this.ObjectType = objectType;
-
-            if (!string.IsNullOrEmpty(username))
-            {
-                this.Owner = new Owner.Builder()
-                {
-                    Username = username
-                };
-            }
+            this.Username = username;
 
             if (registrationDate.HasValue)
             {

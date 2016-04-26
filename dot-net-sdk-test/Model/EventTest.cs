@@ -30,7 +30,7 @@ namespace Mnubo.SmartObjects.Client.Test.Model
 
             Assert.AreEqual(eventBuilt.EventId, eventId);
             Assert.True(eventBuilt.EventType.Equals("event type"));
-            Assert.True(eventBuilt.SmartObject.DeviceId.Equals("Device Id"));
+            Assert.True(eventBuilt.DeviceId.Equals("Device Id"));
             Assert.AreEqual(eventBuilt.Timestamp, now);
             CollectionAssert.AreEqual(eventBuilt.Timeseries, timeseries);
         }
@@ -62,7 +62,7 @@ namespace Mnubo.SmartObjects.Client.Test.Model
 
             Assert.AreEqual(eventBuilt.EventId, eventId);
             Assert.True(eventBuilt.EventType.Equals("event type"));
-            Assert.True(eventBuilt.SmartObject.DeviceId.Equals("Device Id"));
+            Assert.True(eventBuilt.DeviceId.Equals("Device Id"));
             Assert.AreEqual(eventBuilt.Timestamp, now);
             CollectionAssert.AreEqual(eventBuilt.Timeseries, timeseries);
         }
@@ -90,7 +90,7 @@ namespace Mnubo.SmartObjects.Client.Test.Model
 
             Assert.IsNull(eventBuilt.EventId);
             Assert.True(eventBuilt.EventType.Equals("event type"));
-            Assert.IsNull(eventBuilt.SmartObject);
+            Assert.IsNull(eventBuilt.DeviceId);
             Assert.IsNull(eventBuilt.Timestamp);
             CollectionAssert.AreEqual(eventBuilt.Timeseries, attributes);
         }
@@ -104,7 +104,7 @@ namespace Mnubo.SmartObjects.Client.Test.Model
             };
 
             Assert.IsNull(eventBuilt.EventId);
-            Assert.IsNull(eventBuilt.SmartObject);
+            Assert.IsNull(eventBuilt.DeviceId);
             Assert.IsNull(eventBuilt.Timestamp);
             Assert.True(eventBuilt.Timeseries.Count == 0);
             Assert.True(eventBuilt.EventType.Equals("event type"));

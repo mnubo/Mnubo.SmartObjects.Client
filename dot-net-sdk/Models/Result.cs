@@ -1,15 +1,27 @@
 ﻿namespace Mnubo.SmartObjects.Client.Models
 {
+    /// <summary>
+    /// Give information about the request sent, this is a particular answer for batch processing.
+    /// </summary>
     public class Result
     {
+        /// <summary>
+        /// Result of the request.
+        /// </summary>
         public enum ResultStates
         {
+            /// <summary>
+            /// every was well with the request.
+            /// </summary>
             Success,
+            /// <summary>
+            /// Something was wrong with the request.
+            /// </summary>
             Error
         };
 
         /// <summary>
-        /// return the id of the result request.
+        /// return the id of the resource, device id in object's cases and "username" in owner's cases.
         /// </summary>
         public string ResourceId { get; }
 
@@ -29,9 +41,9 @@
         /// <param name="id">Id of the request.</param>
         /// <param name="result">result of the request, take values of 'success' or 'error'.</param>
         /// <param name="message">message of the request.</param>
-        public Result(string id, ResultStates result, string message)
+        public Result(string resourceId, ResultStates result, string message)
         {
-            this.ResourceId = id;
+            this.ResourceId = resourceId;
             this.ResultState = result;
             this.Message = message;
         }
