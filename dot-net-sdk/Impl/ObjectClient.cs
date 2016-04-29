@@ -40,7 +40,7 @@ namespace Mnubo.SmartObjects.Client.Impl
 
         public IEnumerable<Result> CreateUpdate(IEnumerable<SmartObject> objects)
         {
-            return ClientUtils.WaitTask(CreateUpdateAsync(objects));
+            return ClientUtils.WaitTask<IEnumerable<Result>>(CreateUpdateAsync(objects));
         }
         #endregion
 

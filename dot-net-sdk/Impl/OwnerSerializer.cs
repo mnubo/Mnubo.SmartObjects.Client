@@ -70,8 +70,7 @@ namespace Mnubo.SmartObjects.Client.Impl
                 new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Ignore,
-                    DateFormatString = EventSerializer.DatetimeFormat,
-
+                    DateFormatString = EventSerializer.DatetimeFormat
                 });
         }
 
@@ -85,7 +84,15 @@ namespace Mnubo.SmartObjects.Client.Impl
             Owner.Builder builder = new Owner.Builder();
             Dictionary<string, object> attributes = new Dictionary<string, object>();
 
-            foreach (KeyValuePair<string, object> token in JsonConvert.DeserializeObject<Dictionary<string, object>>(obj))
+            var rawOwner = JsonConvert.DeserializeObject<Dictionary<string, object>>(obj,
+                new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    DateFormatString = EventSerializer.DatetimeFormat,
+                    DateTimeZoneHandling = DateTimeZoneHandling.Utc
+                });
+
+            foreach (KeyValuePair<string, object> token in rawOwner)
             {
                 switch (token.Key)
                 {
@@ -104,7 +111,7 @@ namespace Mnubo.SmartObjects.Client.Impl
                             {
                                 throw new InvalidOperationException("Field 'x_registration_date' does not match TYPE 'DATETIME'");
                             }
-                            builder.RegistrationDate = ((DateTime)token.Value).ToUniversalTime();
+                            builder.RegistrationDate = ((DateTime)token.Value);
                             break;
                         }
                     case PasswordProperty:

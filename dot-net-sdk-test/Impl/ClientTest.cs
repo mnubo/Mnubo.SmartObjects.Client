@@ -7,7 +7,6 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
 {
 
     [TestFixture()]
-//    [Ignore("Ignore a fixture")]
     public class ClientTest
     {
         private const ClientConfig.Environments Environment = ClientConfig.Environments.Sandbox;

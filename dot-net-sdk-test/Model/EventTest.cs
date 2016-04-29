@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Mnubo.SmartObjects.Client.Models;
 using NUnit.Framework;
+using Mnubo.SmartObjects.Client.Test.Impl;
 
 namespace Mnubo.SmartObjects.Client.Test.Model
 {
@@ -11,7 +12,7 @@ namespace Mnubo.SmartObjects.Client.Test.Model
         [Test()]
         public void EventBuilderTest()
         {
-            DateTime now = DateTime.UtcNow;
+            DateTime now = TestUtils.GetNowIgnoringMilis();
             Guid eventId = Guid.NewGuid();
             Dictionary<string, object> timeseries = new Dictionary<string, object>();
             timeseries.Add("String", "text");
@@ -38,7 +39,7 @@ namespace Mnubo.SmartObjects.Client.Test.Model
         [Test()]
         public void EventBuilderTestWithObject()
         {
-            DateTime now = DateTime.UtcNow;
+            DateTime now = TestUtils.GetNowIgnoringMilis();
             Guid eventId = Guid.NewGuid();
             Dictionary<string, object> timeseries = new Dictionary<string, object>();
             timeseries.Add("String", "text");

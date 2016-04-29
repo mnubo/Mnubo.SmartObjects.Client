@@ -10,18 +10,11 @@ using System.Linq;
 namespace Mnubo.SmartObjects.Client.Test.Impl
 {
     [TestFixture()]
-//    [Ignore("Ignore a fixture")]
     public class SmartObjectClientTest
     {
-        private const string DeviceIdBase = "dot.net.sdk.test";
-        private const string ObjectType = "wind_direction";
-        private const string Password = "pppp";
-        private const string AttributeName = "color";
-
         private readonly ClientConfig config;
         private readonly ISmartObjectsClient client;
         private readonly IObjectClient objectClient;
-        private readonly Random RandomGenerator = new Random();
 
         public SmartObjectClientTest()
         {
@@ -40,71 +33,32 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         [Test()]
         public void ClientSmartObjectSyncCreateFullObjectUpdateDelete()
         {
-            string deviceId = GetRandomDeviceId();
-            string username = deviceId;
-
-            Owner owner = new Owner.Builder()
-            {
-                Username = username,
-                Password = Password
-            };
-            SmartObject smartObject = new SmartObject.Builder()
-            {
-                DeviceId = deviceId,
-                ObjectType = ObjectType,
-                Attributes = new Dictionary<string, object>()
-                {
-                    { AttributeName, "test" }
-                },
-                RegistrationDate = DateTime.UtcNow,
-                EventId = Guid.NewGuid(),
-                Username = username
-            };
-
+            Owner owner = TestUtils.CreateBasicOwner();
+            SmartObject obj = TestUtils.CreateFullObject(owner.Username);
+            
             client.Owners.Create(owner);
-            objectClient.Create(smartObject);
+            objectClient.Create(obj);
 
-            objectClient.Update(new SmartObject.Builder()
-            {
-                Attributes = new Dictionary<string, object>()
-                {
-                    { AttributeName, "modified" }
-                }
-            }, deviceId);
+            objectClient.Update(TestUtils.CreateObjectUpdateAttribute(), obj.DeviceId);
 
-            client.Owners.Delete(username);
-            objectClient.Delete(deviceId);
+            client.Owners.Delete(owner.Username);
+            objectClient.Delete(obj.DeviceId);
         }
 
         [Test()]
         public void ClientSmartObjectSyncCreateBasicDelete()
         {
-            string deviceId = GetRandomDeviceId();
+            SmartObject obj = TestUtils.CreateBasicObject();
 
-            SmartObject smartObject = new SmartObject.Builder()
-            {
-                DeviceId = deviceId,
-                ObjectType = ObjectType
-            };
+            objectClient.Create(obj);
 
-            objectClient.Create(smartObject);
-
-            objectClient.Delete(deviceId);
+            objectClient.Delete(obj.DeviceId);
         }
 
         [Test()]
         public void ClientSmartObjectSyncBatchCreateDelete()
         {
-            List<SmartObject> objs = new List<SmartObject>();
-
-            for (int i = 1; i <= 200; i++)
-            {
-                objs.Add(new SmartObject.Builder()
-                {
-                    DeviceId = GetRandomDeviceId(),
-                    ObjectType = ObjectType
-                });
-            }
+            List<SmartObject> objs = TestUtils.CreateObjects(200);
 
             IEnumerable<Result> objectResult = objectClient.CreateUpdate(objs);
 
@@ -119,17 +73,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         [Test()]
         public void ClientSmartObjectSyncCreateBadRequest()
         {
-            string deviceId = GetRandomDeviceId();
-
-            SmartObject smartObject = new SmartObject.Builder()
-            {
-                DeviceId = deviceId,
-                ObjectType = ObjectType,
-                Attributes = new Dictionary<string, object>()
-                {
-                    { "Unknow", "5" }
-                }
-            };
+            SmartObject smartObject = TestUtils.CreateObjectWrongAttribute();
 
             Assert.That(() => objectClient.Create(smartObject),
                 Throws.TypeOf<ArgumentException>()
@@ -277,35 +221,27 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         [Test()]
         public void ClientSmartObjectAsyncCreateUpdateDelete()
         {
-            List<SmartObject> objs = new List<SmartObject>();
+            SmartObject obj = TestUtils.CreateObject();
+
+            objectClient.CreateAsync(obj).Wait();
+
+            objectClient.UpdateAsync(TestUtils.CreateObjectUpdateAttribute(), obj.DeviceId).Wait();
+
+            objectClient.DeleteAsync(obj.DeviceId).Wait();
+        }
+
+        [Test()]
+        public void ClientSmartObjectAsyncCreateUpdateDeleteList()
+        {
+            List<SmartObject> objs = TestUtils.CreateObjects(5);
             List<Task> createTasks = new List<Task>();
-            for (int i = 1; i <= 5; i++)
-            {
-                objs.Add(new SmartObject.Builder()
-                {
-                    DeviceId = GetRandomDeviceId(),
-                    ObjectType = ObjectType,
-                    Attributes = new Dictionary<string, object>()
-                    {
-                        { AttributeName, "test" }
-                    },
-                    RegistrationDate = DateTime.UtcNow
-                });
-            }
 
             objs.ForEach((obj) => createTasks.Add(objectClient.CreateAsync(obj)));
             Task.WaitAll(createTasks.ToArray());
 
             List<Task> updateTask = new List<Task>();
             objs.ForEach((obj) => updateTask.Add(
-                objectClient.UpdateAsync(
-                    new SmartObject.Builder()
-                    {
-                        Attributes = new Dictionary<string, object>()
-                        {
-                            { AttributeName, "modified" }
-                        }
-                    }, obj.DeviceId)));
+                objectClient.UpdateAsync(TestUtils.CreateObjectUpdateAttribute(), obj.DeviceId)));
             Task.WaitAll(updateTask.ToArray());
 
             List<Task> deleteTask = new List<Task>();
@@ -317,21 +253,8 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         [Test()]
         public void ClientSmartObjectAsyncBatchDelete()
         {
-            List<SmartObject> objs = new List<SmartObject>();
+            List<SmartObject> objs = TestUtils.CreateObjects(5);
             Dictionary<Task<SmartObject>, SmartObject> createTasks = new Dictionary<Task<SmartObject>, SmartObject>();
-            for (int i = 1; i <= 5; i++)
-            {
-                objs.Add(new SmartObject.Builder()
-                {
-                    DeviceId = GetRandomDeviceId(),
-                    ObjectType = ObjectType,
-                    Attributes = new Dictionary<string, object>()
-                    {
-                        { AttributeName, "test" }
-                    },
-                    RegistrationDate = DateTime.UtcNow
-                });
-            }
 
             Task<IEnumerable<Result>> resultListTask = objectClient.CreateUpdateAsync(objs);
             resultListTask.Wait();
@@ -475,11 +398,6 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                 .With.InnerException.Message.EqualTo("x_device_id cannot be blank."));
         }
         #endregion
-
-        private String GetRandomDeviceId()
-        {
-            return DeviceIdBase + RandomGenerator.Next(1000000).ToString() + RandomGenerator.Next(1000000).ToString();
-        }
 
         private void AssertIfAreDifferent(SmartObject smartObjectA, SmartObject smartObjectB)
         {

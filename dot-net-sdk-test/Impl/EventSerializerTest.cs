@@ -15,7 +15,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         [Test()]
         public void EventSerializeTest()
         {
-            DateTime now = DateTime.UtcNow;
+            DateTime now = TestUtils.GetNowIgnoringMilis();
 
             Dictionary<string, object> timeseries = new Dictionary<string, object>();
             timeseries.Add("string", "stringValue");
@@ -125,7 +125,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         [Test()]
         public void EventDeserializeTest()
         {
-            DateTime now = DateTime.UtcNow;
+            DateTime now = TestUtils.GetNowIgnoringMilis();
 
             string json =
                 "{\"x_event_type\":\"type\"," +
@@ -158,7 +158,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         [Test()]
         public void EventDeserializeTestWithSmartObjectNull()
         {
-            DateTime now = DateTime.UtcNow;
+            DateTime now = TestUtils.GetNowIgnoringMilis();
 
             string json =
                 "{\"x_event_type\":\"type\"," +
@@ -176,7 +176,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         [Test()]
         public void EventDeserializeTestWithSmartDeviceIdNull()
         {
-            DateTime now = DateTime.UtcNow;
+            DateTime now = TestUtils.GetNowIgnoringMilis();
 
             string json =
                 "{\"x_event_type\":\"type\"," +

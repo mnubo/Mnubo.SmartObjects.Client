@@ -1,9 +1,4 @@
-﻿using Mnubo.SmartObjects.Client.Models;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace Mnubo.SmartObjects.Client.Impl
@@ -22,7 +17,7 @@ namespace Mnubo.SmartObjects.Client.Impl
             }
         }
 
-        internal static IEnumerable<Result> WaitTask(Task<IEnumerable<Result>> task)
+        internal static T WaitTask<T>(Task<T> task)
         {
             try
             {

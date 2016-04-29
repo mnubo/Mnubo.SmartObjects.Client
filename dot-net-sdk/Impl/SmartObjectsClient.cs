@@ -1,5 +1,4 @@
-﻿using System;
-using Mnubo.SmartObjects.Client.Config;
+﻿using Mnubo.SmartObjects.Client.Config;
 
 namespace Mnubo.SmartObjects.Client.Impl
 {
@@ -9,6 +8,7 @@ namespace Mnubo.SmartObjects.Client.Impl
         public IObjectClient Objects { get; }
         public IOwnerClient Owners { get; }
         public IEventClient Events { get; }
+        public IRestitutionClient Restitution { get; }
 
         internal SmartObjectsClient(ClientConfig config)
         {
@@ -17,6 +17,7 @@ namespace Mnubo.SmartObjects.Client.Impl
             Objects = new ObjectClient(client);
             Owners = new OwnerClient(client);
             Events = new EventClient(client);
+            Restitution = new RestitutionClient(client);
         }
 
         public void Dispose()
