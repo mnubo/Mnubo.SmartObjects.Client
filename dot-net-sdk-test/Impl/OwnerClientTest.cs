@@ -10,16 +10,8 @@ using System.Linq;
 namespace Mnubo.SmartObjects.Client.Test.Impl
 {
     [TestFixture()]
-//    [Ignore("Ignore a fixture")]
     public class OwnerClientTest
     {
-        private const string UsernameBase = "dot.net.sdk.test";
-        private const string Password = "pppp";
-        private const string AttributeName = "attribute1";
-        private const string ObjectTypeName = "wind_direction";
-
-        private readonly Random randomGenerator = new Random();
-
         private readonly ClientConfig config;
         private readonly ISmartObjectsClient client;
         private readonly IOwnerClient ownerClient;
@@ -41,108 +33,57 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         [Test()]
         public void ClientOwnerSyncCreateFullOwnerUpdateDelete()
         {
-            string username = GetRandomUsername();
-
-            Owner owner = new Owner.Builder()
-            {
-                Username = username,
-                Password = Password,
-                Attributes = new Dictionary<string, object>()
-                {
-                    { AttributeName, "test" }
-                },
-                RegistrationDate = DateTime.UtcNow,
-                EventId = Guid.NewGuid()
-            };
+            Owner owner = TestUtils.CreateFullOwner();
 
             ownerClient.Create(owner);
 
-            ownerClient.Update(
-                new Owner.Builder()
-                {
-                    Attributes = new Dictionary<string, object>()
-                    {
-                        { AttributeName, "modified" }
-                    }
-                }, username);
+            ownerClient.Update(TestUtils.CreateOwnerUpdateAttribute(), owner.Username);
 
-            ownerClient.Delete(username);
+            ownerClient.Delete(owner.Username);
         }
 
         [Test()]
         public void ClientOwnerSyncCreateBasicDelete()
         {
-            string username = GetRandomUsername();
-
-            Owner owner = new Owner.Builder()
-            {
-                Username = username,
-                Password = Password
-            };
+            Owner owner = TestUtils.CreateBasicOwner();
 
             ownerClient.Create(owner);
 
-            ownerClient.Delete(username);
+            ownerClient.Delete(owner.Username);
         }
 
         [Test()]
         public void ClientOwnerSyncCreateClaimDelete()
         {
-            string username = GetRandomUsername();
-            string deviceId = username;
+            SmartObject obj = TestUtils.CreateBasicObject();
 
-            SmartObject obj = new SmartObject.Builder()
-            {
-                DeviceId = deviceId,
-                ObjectType = ObjectTypeName
-            };
-
-            Owner owner = new Owner.Builder()
-            {
-                Username = username,
-                Password = Password
-            };
+            Owner owner = TestUtils.CreateBasicOwner();
 
             ownerClient.Create(owner);
             client.Objects.Create(obj);
 
-            ownerClient.Claim(username, deviceId);
+            ownerClient.Claim(owner.Username, obj.DeviceId);
 
-            ownerClient.Delete(username);
-            client.Objects.Delete(deviceId);
+            ownerClient.Delete(owner.Username);
+            client.Objects.Delete(obj.DeviceId);
         }
 
         [Test()]
         public void ClientOwnerSyncUpdatePasswordDelete()
         {
-            string username = GetRandomUsername();
-
-            Owner owner = new Owner.Builder()
-            {
-                Username = username,
-                Password = Password
-            };
+            Owner owner = TestUtils.CreateBasicOwner();
 
             ownerClient.Create(owner);
 
-            ownerClient.UpdatePassword(username, "newPassword");
+            ownerClient.UpdatePassword(owner.Username, "newPassword");
 
-            ownerClient.Delete(username);
+            ownerClient.Delete(owner.Username);
         }
 
         [Test()]
         public void ClientOwnerSyncBatchCreateDelete()
         {
-            List<Owner> owners = new List<Owner>();
-
-            for (int i = 1; i <= 200; i++)
-            {
-                owners.Add(new Owner.Builder()
-                {
-                    Username = GetRandomUsername(),
-                    Password = Password
-                });
-            }
+            List<Owner> owners = TestUtils.CreateOwners(200);
 
             IEnumerable<Result> ownerResult = ownerClient.CreateUpdate(owners);
 
@@ -157,17 +98,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         [Test()]
         public void ClientOwnerSyncCreateBadRequest()
         {
-            string username = GetRandomUsername();
-
-            Owner owner = new Owner.Builder()
-            {
-                Username = username,
-                Password = Password,
-                Attributes = new Dictionary<string, object>()
-                {
-                    { "Unknow", "5" }
-                }
-            };
+            Owner owner = TestUtils.CreateOwnerWrongAttribute();
 
             Assert.That(() => ownerClient.Create(owner),
                 Throws.TypeOf<ArgumentException>()
@@ -396,81 +327,46 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         [Test()]
         public void ClientOwnerAsyncCreateOwnerUpdateClaimUpdatePasswordDelete()
         {
-            List<Owner> owners = new List<Owner>();
+            Owner owner = TestUtils.CreateOwner();
+            SmartObject obj = TestUtils.CreateBasicObject();
+
+            client.Objects.CreateAsync(obj).Wait();
+            ownerClient.CreateAsync(owner).Wait();
+
+            ownerClient.UpdateAsync(TestUtils.CreateOwnerUpdateAttribute(),owner.Username).Wait();
+
+            ownerClient.ClaimAsync(owner.Username, obj.DeviceId).Wait();
+
+            ownerClient.UpdatePasswordAsync(owner.Username, "newPasswd").Wait();
+
+            ownerClient.DeleteAsync(owner.Username).Wait();
+            client.Objects.Delete(obj.DeviceId);
+        }
+
+        [Test()]
+        public void ClientOwnerAsyncCreateOwnerUpdateDeleteList()
+        {
+            List<Owner> owners = TestUtils.CreateOwners(5);
+
             List<Task> createTasks = new List<Task>();
-            for (int i = 1; i <= 5; i++)
-            {
-                owners.Add(new Owner.Builder()
-                {
-                    Username = GetRandomUsername(),
-                    Password = Password,
-                    RegistrationDate = DateTime.UtcNow,
-                    Attributes = new Dictionary<string, object>()
-                    {
-                        { AttributeName, "test" }
-                    }
-                });
-            }
-
-            string deviceId = GetRandomUsername();
-            SmartObject obj = new SmartObject.Builder()
-            {
-                DeviceId = deviceId,
-                ObjectType = ObjectTypeName
-            };
-            client.Objects.Create(obj);
-
             owners.ForEach((owner) => createTasks.Add(ownerClient.CreateAsync(owner)));
             Task.WaitAll(createTasks.ToArray());
 
             List<Task> updateTask = new List<Task>();
             owners.ForEach((owner) => updateTask.Add(
-                ownerClient.UpdateAsync(
-                    new Owner.Builder()
-                    {
-                        Attributes = new Dictionary<string, object>()
-                        {
-                            { AttributeName, "modified" }
-                        }
-                    }, owner.Username)));
+                ownerClient.UpdateAsync(TestUtils.CreateOwnerUpdateAttribute(), owner.Username)));
             Task.WaitAll(updateTask.ToArray());
-
-            List<Task> claimTask = new List<Task>();
-            owners.ForEach((owner) => claimTask.Add(
-                ownerClient.ClaimAsync(owner.Username, deviceId)));
-            Task.WaitAll(claimTask.ToArray());
-
-            List<Task> updatePasswdTask = new List<Task>();
-            owners.ForEach((owner) => updatePasswdTask.Add(
-                ownerClient.UpdatePasswordAsync(owner.Username, "newPasswd")));
-            Task.WaitAll(updatePasswdTask.ToArray());
 
             List<Task> deleteTask = new List<Task>();
             owners.ForEach((owner) => deleteTask.Add(
                 ownerClient.DeleteAsync(owner.Username)));
             Task.WaitAll(deleteTask.ToArray());
-
-            client.Objects.Delete(deviceId);
         }
 
         [Test()]
         public void ClientOwnerAsyncBatchDelete()
         {
-            List<Owner> owners = new List<Owner>();
-            Dictionary<Task<Owner>, Owner> createTasks = new Dictionary<Task<Owner>, Owner>();
-            for (int i = 1; i <= 5; i++)
-            {
-                owners.Add(new Owner.Builder()
-                {
-                    Username = GetRandomUsername(),
-                    Password = Password,
-                    RegistrationDate = DateTime.UtcNow,
-                    Attributes = new Dictionary<string, object>()
-                    {
-                        { AttributeName, "test" }
-                    }
-                });
-            }
+            List<Owner> owners = TestUtils.CreateOwners(5);
 
             Task<IEnumerable<Result>> resultListTask = ownerClient.CreateUpdateAsync(owners);
             resultListTask.Wait();
@@ -686,11 +582,6 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                 .With.InnerException.Message.EqualTo("username cannot be blank."));
         }
         #endregion
-
-        private string GetRandomUsername()
-        {
-            return UsernameBase + randomGenerator.Next(1000000).ToString() + randomGenerator.Next(1000000).ToString();
-        }
 
         private void AssertIfAreDifferent(Owner ownerA, Owner ownerB)
         {

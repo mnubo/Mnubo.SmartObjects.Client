@@ -44,13 +44,13 @@ namespace Mnubo.SmartObjects.Client.Models
                 throw new ArgumentException("x_event_type cannot be null or empty");
             }
 
-            this.EventId = eventId;
-            this.DeviceId = deviceId;
-            this.EventType = eventType;
+            EventId = eventId;
+            DeviceId = deviceId;
+            EventType = eventType;
 
             if (timestamp.HasValue)
             {
-                this.Timestamp = timestamp;
+                Timestamp = timestamp;
             }
 
             var timeseriesBuilder = ImmutableDictionary.CreateBuilder<string, object>();
@@ -59,7 +59,7 @@ namespace Mnubo.SmartObjects.Client.Models
             {
                 timeseriesBuilder.Add(attribute.Key, attribute.Value);
             }
-            this.Timeseries = timeseriesBuilder.ToImmutable();
+            Timeseries = timeseriesBuilder.ToImmutable();
         }
 
         /// <summary>

@@ -5,21 +5,13 @@ using static Mnubo.SmartObjects.Client.Models.Result;
 
 namespace Mnubo.SmartObjects.Client.Impl
 {
-    /// <summary>
-    /// Json deserialize Result instances
-    /// </summary>
-    public class ResultDeserializer
+    internal class ResultDeserializer
     {
         private const string IdResourceProperty = "id";
         private const string ResultStateProperty = "result";
         private const string MessageProperty = "message";
 
-        /// <summary>
-        ///  deserialize a json string to a smartObject instance
-        /// </summary>
-        /// <param name="obj">json string</param>
-        /// <returns>List of result instance</returns>
-        public static List<Result> DeserializeSmartObject(string obj)
+        internal static List<Result> DeserializeSmartObject(string obj)
         {
             List<Result> results = new List<Result>();
 

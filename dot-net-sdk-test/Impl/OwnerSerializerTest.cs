@@ -13,7 +13,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         [Test()]
         public void OwnerSerializeTest()
         {
-            DateTime now = DateTime.UtcNow;
+            DateTime now = TestUtils.GetNowIgnoringMilis();
 
             Dictionary<string, object> attributes = new Dictionary<string, object>();
             attributes.Add("string", "stringValue");
@@ -70,7 +70,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         [Test()]
         public void OwnerDeserializeTest()
         {
-            DateTime now = DateTime.UtcNow;
+            DateTime now = TestUtils.GetNowIgnoringMilis();
 
             string json =
                 "{\"username\":\"test\"," +

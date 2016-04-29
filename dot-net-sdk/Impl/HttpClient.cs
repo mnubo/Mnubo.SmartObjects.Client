@@ -24,7 +24,7 @@ namespace Mnubo.SmartObjects.Client.Impl
         private const string DefaultBasePath = "/api/v3/";
 
         private readonly CredentialHandler credentialHandler;
-        private readonly ClientConfig config;
+        private readonly Environments enviroment;
         private readonly System.Net.Http.HttpClient client;
 
         internal HttpClient(ClientConfig config)
@@ -35,7 +35,7 @@ namespace Mnubo.SmartObjects.Client.Impl
 
             credentialHandler = new CredentialHandler(config, client);
 
-            this.config = config;
+            enviroment = config.Environment;
         }
 
         internal async Task<string> sendAsyncRequestWithResult(HttpMethod method, string path)
@@ -59,7 +59,7 @@ namespace Mnubo.SmartObjects.Client.Impl
             HttpResponseMessage response = null;
             try
             {
-                UriBuilder uriBuilder = new UriBuilder(DefaultClientSchema, HttpClient.addressMapping[config.Environment], DefaultHostPort, DefaultBasePath + path);
+                UriBuilder uriBuilder = new UriBuilder(DefaultClientSchema, HttpClient.addressMapping[enviroment], DefaultHostPort, DefaultBasePath + path);
 
                 request = new HttpRequestMessage(method, uriBuilder.Uri);
                 request.Headers.Add("Authorization", credentialHandler.GetAuthenticationToken());

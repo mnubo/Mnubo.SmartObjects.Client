@@ -26,7 +26,7 @@ namespace Mnubo.SmartObjects.Client.Impl
         internal CredentialHandler(ClientConfig config, System.Net.Http.HttpClient client)
         {
             this.client = client;
-            this.autorizationBasicToken = Convert.ToBase64String(
+            autorizationBasicToken = Convert.ToBase64String(
                 System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(
                     config.ConsumerKey +
                     TokenConsumerSeparation +
@@ -103,13 +103,13 @@ namespace Mnubo.SmartObjects.Client.Impl
                     throw new InvalidOperationException("Error fetching token...");
                 }
 
-                this.AccessToken = 
+                AccessToken = 
                     string.Format(
                         "{0} {1}", 
                         attributes[TokenTypeProperty], 
                         attributes[AccessTokenProperty]);
 
-                this.expireTime = DateTime.Now.AddSeconds(Convert.ToDouble(attributes[ExpiresInProperty]));
+                expireTime = DateTime.Now.AddSeconds(Convert.ToDouble(attributes[ExpiresInProperty]));
             }
 
             internal bool IsExpired()

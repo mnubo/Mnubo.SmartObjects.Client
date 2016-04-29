@@ -67,11 +67,11 @@ namespace Mnubo.SmartObjects.Client.Config
                 throw new ArgumentException("maxResponseContentBufferSize must be a positive number.");
             }
 
-            this.Environment = environment;
-            this.ConsumerKey = consumerKey;
-            this.ConsumerSecret = consumerSecret;
-            this.ClientTimeout = clientTimeout;
-            this.MaxResponseContentBufferSize = maxResponseContentBufferSize;
+            Environment = environment;
+            ConsumerKey = consumerKey;
+            ConsumerSecret = consumerSecret;
+            ClientTimeout = clientTimeout;
+            MaxResponseContentBufferSize = maxResponseContentBufferSize;
         }
 
         /// <summary>
@@ -118,8 +118,8 @@ namespace Mnubo.SmartObjects.Client.Config
 
             public Builder()
             {
-                this.ClientTimeout = DefaultTimeout;
-                this.MaxResponseContentBufferSize = DefaultMaxResponseCcontentBufferSize;
+                ClientTimeout = DefaultTimeout;
+                MaxResponseContentBufferSize = DefaultMaxResponseCcontentBufferSize;
             }
 
             public ClientConfig Build()

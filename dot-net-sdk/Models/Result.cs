@@ -43,9 +43,9 @@
         /// <param name="message">message of the request.</param>
         public Result(string resourceId, ResultStates result, string message)
         {
-            this.ResourceId = resourceId;
-            this.ResultState = result;
-            this.Message = message;
+            ResourceId = resourceId;
+            ResultState = result;
+            Message = message;
         }
     }
 }

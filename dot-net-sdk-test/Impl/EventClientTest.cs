@@ -9,17 +9,9 @@ using System.Threading.Tasks;
 namespace Mnubo.SmartObjects.Client.Test.Impl
 {
     [TestFixture()]
-//    [Ignore("Ignore a fixture")]
     public class EventClientTest
     {
-        private const string Password = "pppp";
-        private const string ObjectType = "wind_direction";
-        private const string DeviceIdBase = "dot.net.sdk.test";
-        private const string EventType = "wind_direction";
-        private const string AttributeName = "wind_direction";
-
         private readonly SmartObject smartObject;
-        private readonly string deviceId;
         private readonly ClientConfig config;
         private readonly ISmartObjectsClient client;
         private readonly IEventClient eventClient;
@@ -37,14 +29,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             client = ClientFactory.Create(config);
             eventClient = client.Events;
 
-            Random rnd = new Random();
-            deviceId = DeviceIdBase + rnd.Next(1000).ToString();
-
-            smartObject = new SmartObject.Builder()
-            {
-                DeviceId = deviceId,
-                ObjectType = ObjectType
-            };
+            smartObject = TestUtils.CreateBasicObject();
 
             client.Objects.Create(smartObject);
         }
@@ -61,83 +46,30 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         [Test()]
         public void ClientEventSyncPostFullEvent()
         {
-            Event eve1 = new Event.Builder()
-            {
-                EventType = EventType,
-                DeviceId = deviceId,
-                Timeseries = new Dictionary<string, object>()
-                {
-                    { AttributeName, "testA" }
-                },
-                Timestamp = DateTime.UtcNow,
-                EventId = Guid.NewGuid()
-            };
-
-            Event eve2 = new Event.Builder()
-            {
-                EventType = EventType,
-                DeviceId = deviceId,
-                Timeseries = new Dictionary<string, object>()
-                {
-                    { AttributeName, "testB" }
-                },
-                Timestamp = DateTime.UtcNow,
-                EventId = Guid.NewGuid()
-            };
-
-            eventClient.Post(new List<Event>() { eve1, eve2 });
+            eventClient.Post(TestUtils.CreateEvents(smartObject.DeviceId, 2));
         }
 
         [Test()]
         public void ClientEventSyncPostBasicEvent()
         {
-            Event eve1 = new Event.Builder()
-            {
-                EventType = EventType,
-                DeviceId = deviceId,
-                Timeseries = new Dictionary<string, object>()
+            eventClient.Post( 
+                new List<Event>()
                 {
-                    { AttributeName, "testA" }
-                }
-            };
-
-            Event eve2 = new Event.Builder()
-            {
-                EventType = EventType,
-                DeviceId = deviceId,
-                Timeseries = new Dictionary<string, object>()
-                {
-                    { AttributeName, "testB" }
-                }
-            };
-
-            eventClient.Post(new List<Event>() { eve1, eve2 });
+                    TestUtils.CreateBasicEvent(smartObject.DeviceId),
+                    TestUtils.CreateBasicEvent(smartObject.DeviceId)
+                });
         }
 
         [Test()]
         public void ClientEventSyncPostBadRequest()
         {
-            Event eve1 = new Event.Builder()
-            {
-                EventType = EventType,
-                DeviceId = deviceId,
-                Timeseries = new Dictionary<string, object>()
+            
+            Assert.That(() => eventClient.Post(
+                new List<Event>()
                 {
-                    { AttributeName, "testA" }
-                }
-            };
-
-            Event eve2 = new Event.Builder()
-            {
-                EventType = EventType,
-                DeviceId = deviceId,
-                Timeseries = new Dictionary<string, object>()
-                {
-                    { "Unknown", "testB" }
-                }
-            };
-
-            Assert.That(() => eventClient.Post(new List<Event>() { eve1, eve2 }),
+                    TestUtils.CreateBasicEvent(smartObject.DeviceId),
+                    TestUtils.CreateEventWrongTimeserie(smartObject.DeviceId)
+                }),
                Throws.TypeOf<ArgumentException>()
                .With.Message.EqualTo("Unknown field 'unknown'"));
         }
@@ -163,31 +95,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         [Test()]
         public void ClientEventAsyncPostFullEvent()
         {
-            Event eve1 = new Event.Builder()
-            {
-                EventType = EventType,
-                DeviceId = deviceId,
-                Timeseries = new Dictionary<string, object>()
-                {
-                    { AttributeName, "testA" }
-                },
-                Timestamp = DateTime.UtcNow,
-                EventId = Guid.NewGuid()
-            };
-
-            Event eve2 = new Event.Builder()
-            {
-                EventType = EventType,
-                DeviceId = deviceId,
-                Timeseries = new Dictionary<string, object>()
-                {
-                    { AttributeName, "testB" }
-                },
-                Timestamp = DateTime.UtcNow,
-                EventId = Guid.NewGuid()
-            };
-
-            eventClient.PostAsync(new List<Event>() { eve1, eve2 }).Wait();
+            eventClient.PostAsync(TestUtils.CreateEvents(smartObject.DeviceId, 2)).Wait();
         }
 
         [Test()]
@@ -211,27 +119,12 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         [Test()]
         public void ClientEventAsyncPostBadRequest()
         {
-            Event eve1 = new Event.Builder()
-            {
-                EventType = EventType,
-                DeviceId = deviceId,
-                Timeseries = new Dictionary<string, object>()
+            Assert.That(() => eventClient.PostAsync(
+                new List<Event>()
                 {
-                    { AttributeName, "testA" }
-                }
-            };
-
-            Event eve2 = new Event.Builder()
-            {
-                EventType = EventType,
-                DeviceId = deviceId,
-                Timeseries = new Dictionary<string, object>()
-                {
-                    { "Unknown", "testB" }
-                }
-            };
-
-            Assert.That(() => eventClient.PostAsync(new List<Event>() { eve1, eve2 }).Wait(),
+                    TestUtils.CreateBasicEvent(smartObject.DeviceId),
+                    TestUtils.CreateEventWrongTimeserie(smartObject.DeviceId)
+                }).Wait(),
                 Throws.TypeOf<AggregateException>()
                 .With.InnerException.TypeOf<ArgumentException>()
                 .With.InnerException.Message.EqualTo("Unknown field 'unknown'"));

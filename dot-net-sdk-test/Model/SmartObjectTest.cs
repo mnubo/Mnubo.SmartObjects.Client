@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Mnubo.SmartObjects.Client.Models;
 using NUnit.Framework;
+using Mnubo.SmartObjects.Client.Test.Impl;
 
 namespace Mnubo.SmartObjects.Client.Test.Model
 {
@@ -11,7 +12,7 @@ namespace Mnubo.SmartObjects.Client.Test.Model
         [Test()]
         public void SmartObjectBuilderTest()
         {
-            DateTime now = DateTime.UtcNow;
+            DateTime now = TestUtils.GetNowIgnoringMilis();
             Guid eventId = Guid.NewGuid();
             Guid objectId = Guid.NewGuid();
             Dictionary<string, object> attributes = new Dictionary<string, object>();
@@ -43,7 +44,7 @@ namespace Mnubo.SmartObjects.Client.Test.Model
         [Test()]
         public void SmartObjectBuilderTestWithOwner()
         {
-            DateTime now = DateTime.UtcNow;
+            DateTime now = TestUtils.GetNowIgnoringMilis();
             Guid eventId = Guid.NewGuid();
             Guid objectId = Guid.NewGuid();
             Dictionary<string, object> attributes = new Dictionary<string, object>();
