@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>Mnubo.SmartObjects.Client</id>
-        <version>1.0.4</version>
+        <version>1.0.5</version>
         <authors>Mauro Arias</authors>
         <owners>Mnubo Inc.</owners>
         <licenseUrl>https://opensource.org/licenses/apache-2.0</licenseUrl>
@@ -11,7 +11,7 @@
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
         <description>Mnubo SmartObjects .Net SDK client</description>
         <releaseNotes>
-	Full support to batch requests, task handle exception using Aggregation exception and some improments.
+	Adding restitution support.
 	Allows:
             Create Object - Owner (Sync - Async).
             Update Object - Owner (Sync - Async) No batchs.
@@ -20,6 +20,8 @@
             Owner claim an Object (Sync - Async).
             Owner update password (Sync - Async).
             Post events (Sync - Async).
+            GetDataSets (Sync - Async).
+            Search (Sync - Async).
 	</releaseNotes>
         <copyright>Copyright 2016</copyright>
         <dependencies>
