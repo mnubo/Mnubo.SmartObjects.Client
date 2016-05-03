@@ -8,7 +8,7 @@ This is a .NET implemenation of the [API documentation](https://sop.mtl.mnubo.co
 Architecture
 ============
 
-Use class `ClientFactory` to get a client instance for SmartObjects.  Then, use the appropriate method to instantiate an owner, object, or event API instance for ingestion.
+Use class `ClientFactory` to get a client instance for SmartObjects.  Then, use the appropriate method to instantiate an owner, object, or event API instance for ingestion and Restitution for searching.
 
 Use classes `Owner`, `SmartObject`, and `Event` to build the entities. There are two ways to build these entities as seen below.
 
@@ -103,6 +103,27 @@ You can use the `client.Events` methods:
 
     client.Events.Post(new List<Event>() { event1, event2 });
 ```
+
+Working with Restitution (Searchs)
+-------------------
+
+You can use the `client.Restitution` methods:
+
+To get all Datasets associated to the Namespace:
+```
+    client.Restitution.GetDataSets();
+
+```
+
+Or search to use the search API:
+
+```
+    string query = "{\"from\":\"owner\",\"select\":[{\"value\":\"username\"},{\"value\":\"x_registration_date\"}],\"where\":{\"username\":{\"EQ\":\"USERNAME TO SEARCH\"}}}";
+
+    ResultSet result = client.Restitution.Search(query);
+```
+
+Please take a look in the documentation of Mnubo to get more detail about how to use the Search API.
 
 References
 ==========
