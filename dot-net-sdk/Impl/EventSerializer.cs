@@ -74,8 +74,7 @@ namespace Mnubo.SmartObjects.Client.Impl
                 new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Ignore,
-                    DateFormatString = DatetimeFormat,
-                    
+                    DateFormatString = DatetimeFormat
                 });
         }
 
@@ -89,7 +88,15 @@ namespace Mnubo.SmartObjects.Client.Impl
             Event.Builder builder = new Event.Builder();
             Dictionary<string, object> timeseries = new Dictionary<string, object>();
 
-            foreach (KeyValuePair<string, object> token in JsonConvert.DeserializeObject<Dictionary<string, object>>(obj))
+            var rawEvent = JsonConvert.DeserializeObject<Dictionary<string, object>>(obj,
+                new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    DateFormatString = DatetimeFormat,
+                    DateTimeZoneHandling = DateTimeZoneHandling.Utc
+                });
+
+            foreach (KeyValuePair<string, object> token in rawEvent)
             {
                 switch (token.Key)
                 {
@@ -99,7 +106,7 @@ namespace Mnubo.SmartObjects.Client.Impl
                             {
                                 throw new InvalidOperationException("Field 'x_timestamp' does not match TYPE 'DATETIME'");
                             }
-                            builder.Timestamp = ((DateTime)token.Value).ToUniversalTime();
+                            builder.Timestamp = (DateTime)token.Value;
                             break;
                         }
                     case EventTypeProperty:

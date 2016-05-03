@@ -14,7 +14,7 @@ namespace Con.Mnubo.Dotnetsdktest.Test.Impl
         [Test()]
         public void SmartObjectSerializeTest()
         {
-            DateTime now = DateTime.UtcNow;
+            DateTime now = TestUtils.GetNowIgnoringMilis();
 
             Dictionary<string, object> attributes = new Dictionary<string, object>();
             attributes.Add("string", "stringValue");
@@ -94,7 +94,7 @@ namespace Con.Mnubo.Dotnetsdktest.Test.Impl
         [Test()]
         public void SmartObjectDeserializeTest()
         {
-            DateTime now = DateTime.UtcNow;
+            DateTime now = TestUtils.GetNowIgnoringMilis();
 
             string json =
                 "{\"x_device_id\":\"test\"," +

@@ -18,5 +18,10 @@ namespace Mnubo.SmartObjects.Client
         /// Returns Event Client, giving access to post events.
         /// </summary>
         IEventClient Events { get; }
+
+        /// <summary>
+        /// Returns Search API Client, giving access to post search requests.
+        /// </summary>
+        IRestitutionClient Restitution { get;  }
     }
 }

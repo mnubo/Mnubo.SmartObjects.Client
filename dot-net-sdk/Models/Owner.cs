@@ -41,13 +41,13 @@ namespace Mnubo.SmartObjects.Client.Models
             IDictionary<string, object> attributes,
             Guid? eventId)
         {
-            this.Username = username;
-            this.Password = password;
-            this.EventId = eventId;
+            Username = username;
+            Password = password;
+            EventId = eventId;
 
             if (registrationDate.HasValue)
             {
-                this.RegistrationDate = registrationDate;
+                RegistrationDate = registrationDate;
             }
 
             var attributesBuilder = ImmutableDictionary.CreateBuilder<string, object>();
@@ -56,7 +56,7 @@ namespace Mnubo.SmartObjects.Client.Models
             {
                 attributesBuilder.Add(attribute.Key, attribute.Value);
             }
-            this.Attributes = attributesBuilder.ToImmutable();
+            Attributes = attributesBuilder.ToImmutable();
         }
 
         /// <summary>
