@@ -52,6 +52,16 @@ namespace Mnubo.SmartObjects.Client.Impl
         {
             return ClientUtils.WaitTask<IEnumerable<Result>>(CreateUpdateAsync(owners));
         }
+
+        public bool IsOwnerExists(string username)
+        {
+            return ClientUtils.WaitTask<bool>(IsOwnerExistsAsync(username));
+        }
+
+        public IEnumerable<IDictionary<string, bool>> OwnersExist(IList<string> usernames)
+        {
+            return ClientUtils.WaitTask<IEnumerable<IDictionary<string, bool>>>(OwnersExistAsync(usernames));
+        }
         #endregion
 
         #region Async calls
@@ -172,6 +182,38 @@ namespace Mnubo.SmartObjects.Client.Impl
                 OwnerSerializer.SerializeOwners(owners));
 
             return JsonConvert.DeserializeObject<IEnumerable<Result>>(asynResult);
+        }
+
+        public async Task<bool> IsOwnerExistsAsync(string username)
+        {
+            if (string.IsNullOrEmpty(username))
+            {
+                throw new ArgumentException("username cannot be blank.");
+            }
+
+            var asynResultAsStr = await client.sendAsyncRequestWithResult(
+                HttpMethod.Get,
+                string.Format("owners/exists/{0}", username),
+                null);
+
+            var asynResult = JsonConvert.DeserializeObject<IDictionary<string, bool>>(asynResultAsStr);
+
+            return asynResult != null && asynResult.Count == 1 && asynResult.ContainsKey(username) && asynResult["exists"];
+        }
+
+        public async Task<IEnumerable<IDictionary<string, bool>>> OwnersExistAsync(IList<string> usernames)
+        {
+            if (usernames == null)
+            {
+                throw new ArgumentException("List of usernames cannot be null.");
+            }
+
+            var asynResultAsStr = await client.sendAsyncRequestWithResult(
+                HttpMethod.Post,
+                "owners/exists",
+                JsonConvert.SerializeObject(usernames));
+
+            return JsonConvert.DeserializeObject<IEnumerable<IDictionary<string, bool>>>(asynResultAsStr);
         }
         #endregion
     }

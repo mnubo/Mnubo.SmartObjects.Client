@@ -61,6 +61,10 @@ You can use the `client.Owners` methods:
     client.Owners.Create(owner);
 
     client.Owners.Delete("theUsername");
+
+	client.Owners.IsOwnerExist("theUsername");
+
+	client.Owners.OwnersExist(new List<string>() { "theUsernameA", "theUsernameB" });
 ```
 
 Working with objects
@@ -77,6 +81,10 @@ You can use the `client.Objects` methods:
     client.Objects.Create(smartObject);
 
     client.Owners.Claim("theUserName", "theDeviceId");
+
+	client.Objects.IsObjectExist("theDeviceId");
+
+	client.Objects.ObjectsExist(new List<string>() { "theDeviceIdA", "theDeviceIdB" });
 ```
 
 Working with events
@@ -102,6 +110,10 @@ You can use the `client.Events` methods:
     };
 
     client.Events.Post(new List<Event>() { event1, event2 });
+
+	client.Events.IsEventExist(Guid.Parse("83250b2e-28b0-4d9f-82cd-d7bad2230d4b"));
+
+	client.Events.EventsExist(new List<guid>() { Guid.Parse("0254f4df-30e3-47eb-bb67-48df1c91430a"), Guid.Parse("fcc3b165-45a6-42f9-80dd-dce27e753dea") });
 ```
 
 Working with Restitution (Searchs)

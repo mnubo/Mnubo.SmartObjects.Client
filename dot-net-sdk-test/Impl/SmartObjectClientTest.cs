@@ -71,6 +71,70 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         }
 
         [Test()]
+        public void ClientObjectSyncCreateExistsDelete()
+        {
+            SmartObject obj = TestUtils.CreateBasicObject();
+
+            objectClient.Create(obj);
+
+            Assert.AreEqual(true, objectClient.IsObjectExists(obj.DeviceId));
+
+            objectClient.Delete(obj.DeviceId);
+        }
+
+        [Test()]
+        public void ClientObjectSyncExistsObjectNotExists()
+        {
+            Assert.AreEqual(false, objectClient.IsObjectExists("unknown"));
+        }
+
+        [TestCase("")]
+        [TestCase(null)]
+        public void ClientObjectSyncExistBadRequest(string deviceId)
+        {
+            Assert.That(() => objectClient.IsObjectExists(deviceId),
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo("deviceId cannot be blank."));
+        }
+
+        [Test()]
+        public void ClientObjectSyncBatchCreateExistsDelete()
+        {
+            SmartObject obj = TestUtils.CreateBasicObject();
+
+            objectClient.Create(obj);
+
+            IEnumerable<Dictionary<string, bool>> expected = new List<Dictionary<string, bool>>()
+            {
+                new Dictionary<string, bool>()
+                {
+                    {obj.DeviceId, true}
+                },
+                new Dictionary<string, bool>()
+                {
+                    {"unknown", false}
+                }
+            };
+
+            IList<string> request = new List<string>()
+            {
+                obj.DeviceId,
+                "unknown"
+            };
+
+            Assert.AreEqual(expected, objectClient.ObjectsExist(request));
+
+            objectClient.Delete(obj.DeviceId);
+        }
+
+        public void ClientOwnerSyncBatchExistBadRequest()
+        {
+            Assert.That(() => objectClient.ObjectsExist(null),
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo("List of deviceIds cannot be null."));
+        }
+
+        [Test()]
         public void ClientSmartObjectSyncCreateBadRequest()
         {
             SmartObject smartObject = TestUtils.CreateObjectWrongAttribute();
@@ -301,6 +365,79 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                 Throws.TypeOf<AggregateException>()
                 .With.InnerException.TypeOf<ArgumentException>()
                 .With.InnerException.Message.EqualTo(errorMessage));
+        }
+
+        [Test()]
+        public void ClientObjectAsyncCreateExistsDelete()
+        {
+            SmartObject obj = TestUtils.CreateBasicObject();
+
+            objectClient.Create(obj);
+
+            Task<bool> boolTask = objectClient.IsObjectExistsAsync(obj.DeviceId);
+            boolTask.Wait();
+
+            Assert.AreEqual(true, boolTask.Result);
+
+            objectClient.Delete(obj.DeviceId);
+        }
+
+        [Test()]
+        public void ClientObjectAsyncExistsObjectNotExists()
+        {
+            Task<bool> boolTask = objectClient.IsObjectExistsAsync("unknown");
+            boolTask.Wait();
+
+            Assert.AreEqual(false, boolTask.Result);
+        }
+
+        [TestCase("")]
+        [TestCase(null)]
+        public void ClientObjectAsyncExistBadRequest(string deviceId)
+        {
+            Assert.That(() => objectClient.IsObjectExistsAsync(deviceId).Wait(),
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo("deviceId cannot be blank."));
+        }
+
+        [Test()]
+        public void ClientObjectAsyncBatchCreateExistsDelete()
+        {
+            SmartObject obj = TestUtils.CreateBasicObject();
+
+            objectClient.Create(obj);
+
+            IEnumerable<Dictionary<string, bool>> expected = new List<Dictionary<string, bool>>()
+            {
+                new Dictionary<string, bool>()
+                {
+                    {obj.DeviceId, true}
+                },
+                new Dictionary<string, bool>()
+                {
+                    {"unknown", false}
+                }
+            };
+
+            IList<string> request = new List<string>()
+            {
+                obj.DeviceId,
+                "unknown"
+            };
+
+            Task<IEnumerable<IDictionary<string,bool>>> existTask = objectClient.ObjectsExistAsync(request);
+            existTask.Wait();
+
+            Assert.AreEqual(expected, existTask.Result);
+
+            objectClient.Delete(obj.DeviceId);
+        }
+
+        public void ClientOwnerAsyncBatchExistBadRequest()
+        {
+            Assert.That(() => objectClient.ObjectsExistAsync(null).Wait(),
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo("List of deviceIds cannot be null."));
         }
 
         [Test()]
