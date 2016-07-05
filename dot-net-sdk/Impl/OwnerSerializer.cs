@@ -14,7 +14,6 @@ namespace Mnubo.SmartObjects.Client.Impl
         private const string RegistrationDateProperty = "x_registration_date";
         private const string PasswordProperty = "x_password";
         internal const string UsernameProperty = "username";
-        private const string EventIdProperty = "event_id";
 
         /// <summary>
         /// Serialize a list of owner to a Json string
@@ -53,11 +52,6 @@ namespace Mnubo.SmartObjects.Client.Impl
             if (!string.IsNullOrEmpty(owner.Password))
             {
                 ownerModelFlat.Add(PasswordProperty, owner.Password);
-            }
-
-            if (owner.EventId.HasValue)
-            {
-                ownerModelFlat.Add(EventIdProperty, owner.EventId);
             }
 
             foreach (KeyValuePair<string, object> attribute in owner.Attributes)
@@ -121,18 +115,6 @@ namespace Mnubo.SmartObjects.Client.Impl
                                 throw new InvalidOperationException("Field 'x_password' does not match TYPE 'TEXT'");
                             }
                             builder.Password = token.Value as string;
-                            break;
-                        }
-                    case EventIdProperty:
-                        {
-                            Guid guid;
-                            if (!(token.Value is string) ||
-                                string.IsNullOrEmpty(token.Value as string) ||
-                                !(Guid.TryParse(token.Value as string, out guid)))
-                            {
-                                throw new InvalidOperationException("Field 'x_event_id' does not match TYPE 'GUID'");
-                            }
-                            builder.EventId = guid;
                             break;
                         }
                     default:

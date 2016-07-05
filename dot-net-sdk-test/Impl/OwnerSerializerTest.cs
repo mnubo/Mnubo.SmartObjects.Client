@@ -27,7 +27,6 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                 Password = "password",
                 RegistrationDate = now,
                 Attributes = attributes,
-                EventId = Guid.Parse("9ab392d8-a865-48da-9035-0dc0a728b454")
             };
 
             string json = OwnerSerializer.SerializeOwner(owner);
@@ -35,7 +34,6 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                 "{\"username\":\"username\"," +
                 "\"x_registration_date\":\"" + now.ToString(EventSerializerTest.DatetimeFormat) + "\"," +
                 "\"x_password\":\"password\"," +
-                "\"event_id\":\"9ab392d8-a865-48da-9035-0dc0a728b454\"," +
                 "\"boolean\":false," +
                 "\"float\":10.5," +
                 "\"double\":10.0," +
@@ -80,8 +78,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                 "\"weight\": 125.5," +
                 "\"married\": true," +
                 "\"counter\": -13582," +
-                "\"list_owner\": [\"val1\",\"val2\",\"val3\"]," +
-                "\"event_id\":\"46aabccd-4442-6665-a1f0-49889330eaf3\"}";
+                "\"list_owner\": [\"val1\",\"val2\",\"val3\"]}";
 
             var attributes = ImmutableDictionary.CreateBuilder<string, object>();
             attributes.Add("age", 89);
@@ -93,7 +90,6 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             Owner owner = OwnerSerializer.DeserializeOwner(json);
 
             Assert.AreEqual(owner.Username, "test");
-            Assert.AreEqual(owner.EventId.ToString(), "46aabccd-4442-6665-a1f0-49889330eaf3");
             Assert.AreEqual(owner.Password, "password");
             Assert.AreEqual(owner.RegistrationDate.Value.ToString(EventSerializerTest.DatetimeFormat),
                 now.ToString(EventSerializerTest.DatetimeFormat));
@@ -110,7 +106,6 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             Assert.IsNull(owner.Password);
             Assert.IsNull(owner.Username);
             Assert.IsNull(owner.RegistrationDate);
-            Assert.IsNull(owner.EventId);
             Assert.IsNotNull(owner.Attributes);
             Assert.AreEqual(owner.Attributes.Count, 0);
         }
@@ -124,17 +119,6 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                 Throws.TypeOf<InvalidOperationException>()
                 .With.Message.EqualTo("Field 'x_password' does not match TYPE 'TEXT'"));
         }
-
-        [Test()]
-        public void OwnerDeserializeTestWrongEventIdType()
-        {
-            string json = "{\"username\":\"test\",\"event_id\":\"54545c5454-054-54\",\"string\":\"stringValue\"}";
-
-            Assert.That(() => OwnerSerializer.DeserializeOwner(json),
-                Throws.TypeOf<InvalidOperationException>()
-                .With.Message.EqualTo("Field 'x_event_id' does not match TYPE 'GUID'"));
-        }
-
 
         [Test()]
         public void OwnerDeserializeTestWrongUsernameType()

@@ -13,14 +13,12 @@ namespace Mnubo.SmartObjects.Client.Test.Model
         public void SmartObjectBuilderTest()
         {
             DateTime now = TestUtils.GetNowIgnoringMilis();
-            Guid eventId = Guid.NewGuid();
             Guid objectId = Guid.NewGuid();
             Dictionary<string, object> attributes = new Dictionary<string, object>();
             attributes.Add("String", "text");
 
             SmartObject myObject = new SmartObject.Builder()
             {
-                EventId = eventId,
                 ObjectId = objectId,
                 ObjectType = "objectType",
                 RegistrationDate = now,
@@ -32,7 +30,6 @@ namespace Mnubo.SmartObjects.Client.Test.Model
                 Username = "username"
             };
 
-            Assert.AreEqual(myObject.EventId, eventId);
             Assert.AreEqual(myObject.ObjectId, objectId);
             Assert.AreEqual(myObject.ObjectType, "objectType");
             Assert.AreEqual(myObject.RegistrationDate, now);
@@ -45,7 +42,6 @@ namespace Mnubo.SmartObjects.Client.Test.Model
         public void SmartObjectBuilderTestWithOwner()
         {
             DateTime now = TestUtils.GetNowIgnoringMilis();
-            Guid eventId = Guid.NewGuid();
             Guid objectId = Guid.NewGuid();
             Dictionary<string, object> attributes = new Dictionary<string, object>();
             attributes.Add("String", "text");
@@ -57,7 +53,6 @@ namespace Mnubo.SmartObjects.Client.Test.Model
 
             SmartObject myObject = new SmartObject.Builder()
             {
-                EventId = eventId,
                 ObjectId = objectId,
                 ObjectType = "objectType",
                 RegistrationDate = now,
@@ -69,7 +64,6 @@ namespace Mnubo.SmartObjects.Client.Test.Model
                 Username = "username"
             };
 
-            Assert.AreEqual(myObject.EventId, eventId);
             Assert.AreEqual(myObject.ObjectId, objectId);
             Assert.AreEqual(myObject.ObjectType, "objectType");
             Assert.AreEqual(myObject.RegistrationDate, now);
@@ -98,7 +92,6 @@ namespace Mnubo.SmartObjects.Client.Test.Model
                 }
             };
 
-            Assert.IsNull(myObject.EventId);
             Assert.IsNull(myObject.DeviceId);
             Assert.IsNull(myObject.ObjectId);
             Assert.IsNull(myObject.Username);
@@ -112,7 +105,6 @@ namespace Mnubo.SmartObjects.Client.Test.Model
         {
             SmartObject myObject = new SmartObject.Builder().Build();
 
-            Assert.IsNull(myObject.EventId);
             Assert.IsNull(myObject.DeviceId);
             Assert.IsNull(myObject.ObjectId);
             Assert.IsNull(myObject.Username);

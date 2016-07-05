@@ -96,6 +96,70 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         }
 
         [Test()]
+        public void ClientOwnerSyncCreateExistsDelete()
+        {
+            Owner owner = TestUtils.CreateBasicOwner();
+
+            ownerClient.Create(owner);
+
+            Assert.AreEqual(true, ownerClient.IsOwnerExists(owner.Username));
+
+            ownerClient.Delete(owner.Username);
+        }
+
+        [Test()]
+        public void ClientOwnerSyncExistsOwnerNotExists()
+        {
+            Assert.AreEqual(false, ownerClient.IsOwnerExists("unknown"));
+        }
+
+        [TestCase("")]
+        [TestCase(null)]
+        public void ClientOwnerSyncExistBadRequest(string username)
+        {
+            Assert.That(() => ownerClient.IsOwnerExists(username),
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo("username cannot be blank."));
+        }
+
+        [Test()]
+        public void ClientOwnerSyncBatchCreateExistsDelete()
+        {
+            Owner owner = TestUtils.CreateBasicOwner();
+
+            ownerClient.Create(owner);
+
+            IEnumerable<Dictionary<string, bool>> expected = new List<Dictionary<string, bool>>()
+            {
+                new Dictionary<string, bool>()
+                {
+                    {owner.Username, true}
+                },
+                new Dictionary<string, bool>()
+                {
+                    {"unknown", false}
+                }
+            };
+
+            IList<string> request = new List<string>()
+            {
+                owner.Username,
+                "unknown"
+            };
+
+            Assert.AreEqual(expected, ownerClient.OwnersExist(request));
+
+            ownerClient.Delete(owner.Username);
+        }
+
+        public void ClientOwnerSyncBatchExistBadRequest()
+        {
+            Assert.That(() => ownerClient.OwnersExist(null),
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo("List of usernames cannot be null."));
+        }
+
+        [Test()]
         public void ClientOwnerSyncCreateBadRequest()
         {
             Owner owner = TestUtils.CreateOwnerWrongAttribute();
@@ -126,7 +190,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         {
             Assert.That(() => ownerClient.Claim("Unknown", "Unknown"),
                 Throws.TypeOf<ArgumentException>()
-                .With.Message.EqualTo("Owner Unknown does not exist."));
+                .With.Message.EqualTo("Owner Unknown not found"));
         }
 
         [Test()]
@@ -375,6 +439,80 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             owners.ForEach((owner) => deleteTask.Add(
                 ownerClient.DeleteAsync(owner.Username)));
             Task.WaitAll(deleteTask.ToArray());
+        }
+
+        [Test()]
+        public void ClientOwnerAsyncCreateExistsDelete()
+        {
+            Owner owner = TestUtils.CreateBasicOwner();
+
+            ownerClient.Create(owner);
+
+            Task<bool> existTask = ownerClient.IsOwnerExistsAsync(owner.Username);
+            existTask.Wait();
+
+            Assert.AreEqual(true, existTask.Result);
+
+            ownerClient.Delete(owner.Username);
+        }
+
+        [Test()]
+        public void ClientOwnerAsyncExistsOwnerNotExists()
+        {
+            Task<bool> existTask = ownerClient.IsOwnerExistsAsync("unknown");
+            existTask.Wait();
+
+            Assert.AreEqual(false, existTask.Result);
+        }
+
+        [TestCase("")]
+        [TestCase(null)]
+        public void ClientOwnerAsyncExistBadRequest(string username)
+        {
+            Assert.That(() => ownerClient.IsOwnerExistsAsync(username).Wait(),
+                Throws.TypeOf<AggregateException>()
+                .With.InnerException.TypeOf<ArgumentException>()
+                .With.InnerException.Message.EqualTo("username cannot be blank."));
+        }
+
+        [Test()]
+        public void ClientOwnerAsyncBatchCreateExistsDelete()
+        {
+            Owner owner = TestUtils.CreateBasicOwner();
+
+            ownerClient.Create(owner);
+
+            IEnumerable<Dictionary<string, bool>> expected = new List<Dictionary<string, bool>>()
+            {
+                new Dictionary<string, bool>()
+                {
+                    {owner.Username, true}
+                },
+                new Dictionary<string, bool>()
+                {
+                    {"unknown", false}
+                }
+            };
+
+            IList<string> request = new List<string>()
+            {
+                owner.Username,
+                "unknown"
+            };
+
+            Task<IEnumerable<IDictionary<string, bool>>> existTask = ownerClient.OwnersExistAsync(request);
+            existTask.Wait();
+
+            Assert.AreEqual(expected, existTask.Result);
+
+            ownerClient.Delete(owner.Username);
+        }
+
+        public void ClientOwnerAsyncBatchExistBadRequest()
+        {
+            Assert.That(() => ownerClient.OwnersExistAsync(null).Wait(),
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo("List of usernames cannot be null."));
         }
 
         [Test()]

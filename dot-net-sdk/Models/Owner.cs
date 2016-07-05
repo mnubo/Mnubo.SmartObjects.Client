@@ -29,21 +29,14 @@ namespace Mnubo.SmartObjects.Client.Models
         /// </summary>
         public IImmutableDictionary<string, object> Attributes { get; }
 
-        /// <summary>
-        /// Get a nullable GUID event identifier.
-        /// </summary>
-        public Guid? EventId { get; }
-
         private Owner(
             string username,
             string password,
             DateTime? registrationDate,
-            IDictionary<string, object> attributes,
-            Guid? eventId)
+            IDictionary<string, object> attributes)
         {
             Username = username;
             Password = password;
-            EventId = eventId;
 
             if (registrationDate.HasValue)
             {
@@ -93,18 +86,12 @@ namespace Mnubo.SmartObjects.Client.Models
             /// </summary>
             public IDictionary<string, object> Attributes { get; set; }
 
-            /// <summary>
-            /// nullable GUID event identifier.
-            /// </summary>
-            public Guid? EventId { get; set; }
-
             public Builder()
             {
                 Username = null;
                 Password = null;
                 RegistrationDate = null;
                 Attributes = new Dictionary<String, Object>();
-                EventId = null;
             }
 
             /// <summary>
@@ -113,7 +100,7 @@ namespace Mnubo.SmartObjects.Client.Models
             /// <returns>Return a Owner built</returns>
             public Owner Build()
             {
-                return new Owner(Username, Password, RegistrationDate, Attributes, EventId);
+                return new Owner(Username, Password, RegistrationDate, Attributes);
             }
         }
     }

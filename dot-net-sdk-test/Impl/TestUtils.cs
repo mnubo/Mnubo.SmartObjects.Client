@@ -47,7 +47,6 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                     { OwnerAttributeName, "test" }
                 },
                 RegistrationDate = GetNowIgnoringMilis(),
-                EventId = Guid.NewGuid()
             };
         }
 
@@ -115,7 +114,6 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                     { ObjectAttributeName, "test" }
                 },
                 RegistrationDate = GetNowIgnoringMilis(),
-                EventId = Guid.NewGuid(),
                 Username = username
             };
         }

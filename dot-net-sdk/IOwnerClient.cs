@@ -51,6 +51,20 @@ namespace Mnubo.SmartObjects.Client
         IEnumerable<Result> CreateUpdate(IEnumerable<Owner> owners);
 
         /// <summary>
+        /// Allow validate if an owner exists.
+        /// </summary>
+        /// <param name="username">Owner's username to validate.</param>
+        /// <returns>true if the owner exists or false if not.</returns>
+        bool IsOwnerExists(string username);
+
+        /// <summary>
+        /// Allow validate if a list of owners exist.
+        /// </summary>
+        /// <param name="usernames">list of usernames to validate. ["userA", "userB" ]</param>
+        /// <returns>the list of usernames with an existing boolean, true if it exists or false if not. [{"userA":true},{"userB":false}]</returns>
+        IEnumerable<IDictionary<string, bool>> OwnersExist(IList<string> usernames);
+
+        /// <summary>
         /// Allows create a new owner in async mode.
         /// </summary>
         /// <param name="owner">owner to be created.</param>
@@ -95,5 +109,19 @@ namespace Mnubo.SmartObjects.Client
         /// <returns>the list of result.</returns>
         /// <returns>A async task.</returns>
         Task<IEnumerable<Result>> CreateUpdateAsync(IEnumerable<Owner> owners);
+
+        /// <summary>
+        /// Allow validate if an owner exists in async mode.
+        /// </summary>
+        /// <param name="username">Owner's username to validate.</param>
+        /// <returns>true if the owner exists or false if not.</returns>
+        Task<bool> IsOwnerExistsAsync(string username);
+
+        /// <summary>
+        /// Allow validate if a list of owners exist in async mode.
+        /// </summary>
+        /// <param name="usernames">list of usernames to validate. ["userA", "userB" ]</param>
+        /// <returns>the list of usernames with an existing boolean, true if it exists or false if not. [{"userA":true},{"userB":false}]</returns>
+        Task<IEnumerable<IDictionary<string, bool>>> OwnersExistAsync(IList<string> usernames);
     }
 }

@@ -15,7 +15,6 @@ namespace Mnubo.SmartObjects.Client.Test.Model
         public void OwnerBuilderTest()
         {
             DateTime now = TestUtils.GetNowIgnoringMilis();
-            Guid eventId = Guid.NewGuid();
 
             Owner owner = new Owner.Builder()
             {
@@ -26,10 +25,8 @@ namespace Mnubo.SmartObjects.Client.Test.Model
                 {
                     {"String", "text" }
                 },
-                EventId = eventId
             };
 
-            Assert.AreEqual(owner.EventId, eventId);
             Assert.AreEqual(owner.Password, "password");
             Assert.AreEqual(owner.Username, "username");
             Assert.AreEqual(owner.RegistrationDate, now);
@@ -56,7 +53,6 @@ namespace Mnubo.SmartObjects.Client.Test.Model
                 }
             };
 
-            Assert.IsNull(owner.EventId);
             Assert.IsNull(owner.Password);
             Assert.IsNull(owner.Username);
             Assert.IsNull(owner.RegistrationDate);
@@ -69,7 +65,6 @@ namespace Mnubo.SmartObjects.Client.Test.Model
             Owner owner = new Owner.Builder().Build();
 
             Assert.IsNull(owner.Username);
-            Assert.IsNull(owner.EventId);
             Assert.IsNull(owner.Password);
             Assert.IsNull(owner.RegistrationDate);
             Assert.True(owner.Attributes.Count == 0);
