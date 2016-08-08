@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace Mnubo.SmartObjects.Client.Models.Search
@@ -8,11 +9,13 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         /// <summary>
         /// List of columns of the result set.
         /// </summary>
+        [JsonProperty("columns")]
         public IList<ColumnDefinition> Columns { get;  }
 
         /// <summary>
         /// List the wors of the result set
         /// </summary>
+        [JsonProperty("rows")]
         public IList<Row> Rows { get; }
 
         /// <summary>

@@ -71,6 +71,7 @@
     <Compile Include="Impl\ResultSetDeserializer.cs" />
     <Compile Include="IRestitutionClient.cs" />
     <Compile Include="Models\Event.cs" />
+    <Compile Include="Models\EventResult.cs" />
     <Compile Include="Models\Search\ColumnDefinition.cs" />
     <Compile Include="Models\Search\DataSet.cs" />
     <Compile Include="Models\Search\Field.cs" />

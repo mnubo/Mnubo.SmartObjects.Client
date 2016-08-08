@@ -1,4 +1,6 @@
-﻿namespace Mnubo.SmartObjects.Client.Models.Search
+﻿using Newtonsoft.Json;
+
+namespace Mnubo.SmartObjects.Client.Models.Search
 {
     public class Field
     {
@@ -14,31 +16,37 @@
         /// <summary>
         /// Container type of the field
         /// </summary>
+        [JsonProperty("containerType")]
         public ContainerTypes ContainerType { get; }
 
         /// <summary>
         /// Descriuption of the field
         /// </summary>
+        [JsonProperty("description")]
         public string Description { get; }
 
         /// <summary>
         /// Display name of the field
         /// </summary>
+        [JsonProperty("displayName")]
         public string DisplayName { get; }
 
         /// <summary>
         /// High level type of the field
         /// </summary>
+        [JsonProperty("highLevelType")]
         public string HighLevelType { get; }
 
         /// <summary>
         /// Key of the field
         /// </summary>
+        [JsonProperty("key")]
         public string Key { get; }
 
         /// <summary>
         /// Is it a primary key.
         /// </summary>
+        [JsonProperty("primaryKey")]
         public bool IsPrimaryKey { get; }
 
         /// <summary>
