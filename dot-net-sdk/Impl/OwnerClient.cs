@@ -53,9 +53,9 @@ namespace Mnubo.SmartObjects.Client.Impl
             return ClientUtils.WaitTask<IEnumerable<Result>>(CreateUpdateAsync(owners));
         }
 
-        public bool IsOwnerExists(string username)
+        public bool OwnerExists(string username)
         {
-            return ClientUtils.WaitTask<bool>(IsOwnerExistsAsync(username));
+            return ClientUtils.WaitTask<bool>(OwnerExistsAsync(username));
         }
 
         public IEnumerable<IDictionary<string, bool>> OwnersExist(IList<string> usernames)
@@ -184,7 +184,7 @@ namespace Mnubo.SmartObjects.Client.Impl
             return JsonConvert.DeserializeObject<IEnumerable<Result>>(asynResult);
         }
 
-        public async Task<bool> IsOwnerExistsAsync(string username)
+        public async Task<bool> OwnerExistsAsync(string username)
         {
             if (string.IsNullOrEmpty(username))
             {
@@ -198,7 +198,7 @@ namespace Mnubo.SmartObjects.Client.Impl
 
             var asynResult = JsonConvert.DeserializeObject<IDictionary<string, bool>>(asynResultAsStr);
 
-            return asynResult != null && asynResult.Count == 1 && asynResult.ContainsKey(username) && asynResult["exists"];
+            return asynResult != null && asynResult.Count == 1 && asynResult.ContainsKey(username) && asynResult[username];
         }
 
         public async Task<IEnumerable<IDictionary<string, bool>>> OwnersExistAsync(IList<string> usernames)

@@ -55,7 +55,7 @@ namespace Mnubo.SmartObjects.Client
         /// </summary>
         /// <param name="username">Owner's username to validate.</param>
         /// <returns>true if the owner exists or false if not.</returns>
-        bool IsOwnerExists(string username);
+        bool OwnerExists(string username);
 
         /// <summary>
         /// Allow validate if a list of owners exist.
@@ -115,7 +115,7 @@ namespace Mnubo.SmartObjects.Client
         /// </summary>
         /// <param name="username">Owner's username to validate.</param>
         /// <returns>true if the owner exists or false if not.</returns>
-        Task<bool> IsOwnerExistsAsync(string username);
+        Task<bool> OwnerExistsAsync(string username);
 
         /// <summary>
         /// Allow validate if a list of owners exist in async mode.

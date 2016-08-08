@@ -18,14 +18,14 @@ namespace Mnubo.SmartObjects.Client.Impl
         }
 
         #region Sync calls
-        public void Post(IEnumerable<Event> events)
+        public IEnumerable<EventResult> Post(IEnumerable<Event> events)
         {
-            ClientUtils.WaitTask(PostAsync(events));
+            return ClientUtils.WaitTask(PostAsync(events));
         }
 
-        public bool IsEventExists(Guid eventId)
+        public bool EventExists(Guid eventId)
         {
-            return ClientUtils.WaitTask<bool>(IsEventExistsAsync(eventId));
+            return ClientUtils.WaitTask<bool>(EventExistsAsync(eventId));
         }
 
         public IEnumerable<IDictionary<string, bool>> EventsExist(IList<Guid> eventIds)
@@ -35,19 +35,21 @@ namespace Mnubo.SmartObjects.Client.Impl
         #endregion
 
         #region Async Calls
-        public async Task PostAsync(IEnumerable<Event> events)
+        public async Task<IEnumerable<EventResult>> PostAsync(IEnumerable<Event> events)
         {
             if (events == null || events.Count() == 0)
             {
                 throw new ArgumentException("Event list cannot be empty or null.");
             }
-            await client.sendAsyncRequest(
+            var asyncResult = await client.sendAsyncRequestWithResult(
                     HttpMethod.Post,
-                    string.Format("events"),
+                    "events?report_results=true",
                     EventSerializer.SerializeEvents(events));
+
+            return JsonConvert.DeserializeObject<IEnumerable<EventResult>>(asyncResult);        
         }
 
-        public async Task<bool> IsEventExistsAsync(Guid eventId)
+        public async Task<bool> EventExistsAsync(Guid eventId)
         {
             if (eventId == null)
             {
@@ -61,7 +63,7 @@ namespace Mnubo.SmartObjects.Client.Impl
 
             var asynResult = JsonConvert.DeserializeObject<IDictionary<string, bool>>(asynResultAsStr);
 
-            return asynResult != null && asynResult.Count == 1 && asynResult.ContainsKey(eventId.ToString()) && asynResult["exists"];
+            return asynResult != null && asynResult.Count == 1 && asynResult.ContainsKey(eventId.ToString()) && asynResult[eventId.ToString()];
         }
 
         public async Task<IEnumerable<IDictionary<string, bool>>> EventsExistAsync(IList<Guid> eventIds)

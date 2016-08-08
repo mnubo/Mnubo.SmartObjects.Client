@@ -41,7 +41,7 @@ namespace Mnubo.SmartObjects.Client
         /// </summary>
         /// <param name="deviceId">Object's deviceid to validate.</param>
         /// <returns>true if the object exists or false if not.</returns>
-        bool IsObjectExists(string deviceId);
+        bool ObjectExists(string deviceId);
 
         /// <summary>
         /// Allow validate if a list of objects exist.
@@ -84,7 +84,7 @@ namespace Mnubo.SmartObjects.Client
         /// </summary>
         /// <param name="deviceId">Object's deviceid to validate.</param>
         /// <returns>true if the object exists or false if not.</returns>
-        Task<bool> IsObjectExistsAsync(string deviceId);
+        Task<bool> ObjectExistsAsync(string deviceId);
 
         /// <summary>
         /// Allow validate if a list of objects exist in async mode.

@@ -6,3 +6,4 @@ Debug/
 obj/
 *.userprefs
 packagesBuild/
+*.TMP

@@ -43,9 +43,9 @@ namespace Mnubo.SmartObjects.Client.Impl
             return ClientUtils.WaitTask<IEnumerable<Result>>(CreateUpdateAsync(objects));
         }
 
-        public bool IsObjectExists(string deviceId)
+        public bool ObjectExists(string deviceId)
         {
-            return ClientUtils.WaitTask<bool>(IsObjectExistsAsync(deviceId));
+            return ClientUtils.WaitTask<bool>(ObjectExistsAsync(deviceId));
         }
 
         public IEnumerable<IDictionary<string, bool>> ObjectsExist(IList<string> deviceIds)
@@ -135,7 +135,7 @@ namespace Mnubo.SmartObjects.Client.Impl
             return JsonConvert.DeserializeObject<IEnumerable<Result>>(asynResult);
         }
 
-        public async Task<bool> IsObjectExistsAsync(string deviceId)
+        public async Task<bool> ObjectExistsAsync(string deviceId)
         {
             if (string.IsNullOrEmpty(deviceId))
             {
@@ -149,7 +149,7 @@ namespace Mnubo.SmartObjects.Client.Impl
 
             var asynResult = JsonConvert.DeserializeObject<IDictionary<string, bool>>(asynResultAsStr);
 
-            return asynResult != null && asynResult.Count == 1 && asynResult.ContainsKey(deviceId) && asynResult["exists"];
+            return asynResult != null && asynResult.Count == 1 && asynResult.ContainsKey(deviceId) && asynResult[deviceId];
         }
 
         public async Task<IEnumerable<IDictionary<string, bool>>> ObjectsExistAsync(IList<string> deviceIds)

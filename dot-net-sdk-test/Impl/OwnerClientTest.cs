@@ -6,6 +6,7 @@ using Mnubo.SmartObjects.Client.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using Nancy.Hosting.Self;
 
 namespace Mnubo.SmartObjects.Client.Test.Impl
 {
@@ -13,242 +14,76 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
     public class OwnerClientTest
     {
         private readonly ClientConfig config;
-        private readonly ISmartObjectsClient client;
-        private readonly IOwnerClient ownerClient;
+        private readonly NancyHost nancy;
+        private readonly int port;
 
         public OwnerClientTest()
         {
+            var configuration = new HostConfiguration() { UrlReservations = new UrlReservations() { CreateAutomatically = true } };
+            port = TestUtils.FreeTcpPort();
+
+            nancy = new NancyHost(configuration, new Uri(string.Format("http://localhost:{0}", port)));
+            nancy.Start();
+            System.Diagnostics.Debug.WriteLine(string.Format("Nancy has been started on host 'http://localhost:{0}'", port));
+
             config =
                 new ClientConfig.Builder()
                 {
                     Environment = ClientConfig.Environments.Sandbox,
-                    ConsumerKey = Config.ConsumerKey,
-                    ConsumerSecret = Config.ConsumerSecret
+                    ConsumerKey = "key",
+                    ConsumerSecret = "secret"
                 };
-            client = ClientFactory.Create(config);
-            ownerClient = client.Owners;
+        }
+
+        [OneTimeTearDown]
+        public void Dispose()
+        {
+            nancy.Stop();
         }
 
         #region Sync Calls
         [Test()]
-        public void ClientOwnerSyncCreateFullOwnerUpdateDelete()
+        public void ClientOwnerSyncCreate()
         {
-            Owner owner = TestUtils.CreateFullOwner();
-
-            ownerClient.Create(owner);
-
-            ownerClient.Update(TestUtils.CreateOwnerUpdateAttribute(), owner.Username);
-
-            ownerClient.Delete(owner.Username);
-        }
-
-        [Test()]
-        public void ClientOwnerSyncCreateBasicDelete()
-        {
-            Owner owner = TestUtils.CreateBasicOwner();
-
-            ownerClient.Create(owner);
-
-            ownerClient.Delete(owner.Username);
-        }
-
-        [Test()]
-        public void ClientOwnerSyncCreateClaimDelete()
-        {
-            SmartObject obj = TestUtils.CreateBasicObject();
-
-            Owner owner = TestUtils.CreateBasicOwner();
-
-            ownerClient.Create(owner);
-            client.Objects.Create(obj);
-
-            ownerClient.Claim(owner.Username, obj.DeviceId);
-
-            ownerClient.Delete(owner.Username);
-            client.Objects.Delete(obj.DeviceId);
-        }
-
-        [Test()]
-        public void ClientOwnerSyncUpdatePasswordDelete()
-        {
-            Owner owner = TestUtils.CreateBasicOwner();
-
-            ownerClient.Create(owner);
-
-            ownerClient.UpdatePassword(owner.Username, "newPassword");
-
-            ownerClient.Delete(owner.Username);
-        }
-
-        [Test()]
-        public void ClientOwnerSyncBatchCreateDelete()
-        {
-            List<Owner> owners = TestUtils.CreateOwners(200);
-
-            IEnumerable<Result> ownerResult = ownerClient.CreateUpdate(owners);
-
-            Assert.AreEqual(ownerResult.Count(), 200);
-
-            foreach (Owner owner in owners)
+            withSuccessfulResults(client =>
             {
-                ownerClient.Delete(owner.Username);
-            }
-        }
-
-        [Test()]
-        public void ClientOwnerSyncCreateExistsDelete()
-        {
-            Owner owner = TestUtils.CreateBasicOwner();
-
-            ownerClient.Create(owner);
-
-            Assert.AreEqual(true, ownerClient.IsOwnerExists(owner.Username));
-
-            ownerClient.Delete(owner.Username);
-        }
-
-        [Test()]
-        public void ClientOwnerSyncExistsOwnerNotExists()
-        {
-            Assert.AreEqual(false, ownerClient.IsOwnerExists("unknown"));
-        }
-
-        [TestCase("")]
-        [TestCase(null)]
-        public void ClientOwnerSyncExistBadRequest(string username)
-        {
-            Assert.That(() => ownerClient.IsOwnerExists(username),
-                Throws.TypeOf<ArgumentException>()
-                .With.Message.EqualTo("username cannot be blank."));
-        }
-
-        [Test()]
-        public void ClientOwnerSyncBatchCreateExistsDelete()
-        {
-            Owner owner = TestUtils.CreateBasicOwner();
-
-            ownerClient.Create(owner);
-
-            IEnumerable<Dictionary<string, bool>> expected = new List<Dictionary<string, bool>>()
-            {
-                new Dictionary<string, bool>()
-                {
-                    {owner.Username, true}
-                },
-                new Dictionary<string, bool>()
-                {
-                    {"unknown", false}
-                }
-            };
-
-            IList<string> request = new List<string>()
-            {
-                owner.Username,
-                "unknown"
-            };
-
-            Assert.AreEqual(expected, ownerClient.OwnersExist(request));
-
-            ownerClient.Delete(owner.Username);
-        }
-
-        public void ClientOwnerSyncBatchExistBadRequest()
-        {
-            Assert.That(() => ownerClient.OwnersExist(null),
-                Throws.TypeOf<ArgumentException>()
-                .With.Message.EqualTo("List of usernames cannot be null."));
+                client.Create(TestUtils.CreateTestOwner());
+            });
         }
 
         [Test()]
         public void ClientOwnerSyncCreateBadRequest()
         {
-            Owner owner = TestUtils.CreateOwnerWrongAttribute();
-
-            Assert.That(() => ownerClient.Create(owner),
-                Throws.TypeOf<ArgumentException>()
-                .With.Message.EqualTo("Unknown field 'unknow'"));
-        }
-
-        [Test()]
-        public void ClientOwnerSyncUpdateBadRequest()
-        {
-            Assert.That(() => ownerClient.Update(new Owner.Builder().Build(), "Unknown"),
-                Throws.TypeOf<ArgumentException>()
-                .With.Message.EqualTo("Owner's attributes cannot be null or empty."));
-        }
-
-        [Test()]
-        public void ClientOwnerSyncDeleteBadRequest()
-        {
-            Assert.That(() => ownerClient.Delete("Unknown"),
-                Throws.TypeOf<ArgumentException>()
-                .With.Message.EqualTo("Owner 'Unknown' not found."));
-        }
-
-        [Test()]
-        public void ClientOwnerSyncClaimBadRequest()
-        {
-            Assert.That(() => ownerClient.Claim("Unknown", "Unknown"),
-                Throws.TypeOf<ArgumentException>()
-                .With.Message.EqualTo("Owner Unknown not found"));
-        }
-
-        [Test()]
-        public void ClientOwnerSyncUpdatePasswordBadRequest()
-        {
-            Assert.That(() => ownerClient.UpdatePassword("Unknown", "Unknown"),
-                Throws.TypeOf<ArgumentException>()
-                .With.Message.EqualTo("The username : 'Unknown' not found."));
-        }
-
-        [Test()]
-        public void ClientOwnerSyncClaimNullUsername()
-        {
-            Assert.That(() => ownerClient.Claim(null, "deviceid"),
-                Throws.TypeOf<ArgumentException>()
-                .With.Message.EqualTo("username cannot be blank."));
-        }
-
-        [Test()]
-        public void ClientOwnerSyncClaimEmptyUsername()
-        {
-            Assert.That(() => ownerClient.Claim("", "deviceid"),
-                Throws.TypeOf<ArgumentException>()
-                .With.Message.EqualTo("username cannot be blank."));
-        }
-
-        [Test()]
-        public void ClientOwnerSyncClaimNullDeviceId()
-        {
-            Assert.That(() => ownerClient.Claim("username", null),
-                Throws.TypeOf<ArgumentException>()
-                .With.Message.EqualTo("device_Id cannot be blank."));
-        }
-
-        [Test()]
-        public void ClientOwnerSyncClaimEmptyDeviceId()
-        {
-            Assert.That(() => ownerClient.Claim("username", ""),
-                Throws.TypeOf<ArgumentException>()
-                .With.Message.EqualTo("device_Id cannot be blank."));
+            withFailedResults(client =>
+            {
+                 Assert.That(() => client.Create(TestUtils.CreateOwnerWrongAttribute()),
+                    Throws.TypeOf<ArgumentException>()
+                    .With.Message.EqualTo(TestUtils.ErrorMessage));
+            });    
         }
 
         [Test()]
         public void ClientOwnerSyncCreateNullBody()
         {
-            Assert.That(() => ownerClient.Create(null),
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.Create(null),
                 Throws.TypeOf<ArgumentException>()
                 .With.Message.EqualTo("owner body cannot be null."));
+            });
         }
 
         [Test()]
         public void ClientOwnerSyncCreateNotUsername()
         {
-            Owner owner = new Owner.Builder().Build();
+            withSuccessfulResults(client =>
+            {
+                Owner owner = new Owner.Builder().Build();
 
-            Assert.That(() => ownerClient.Create(owner),
+            Assert.That(() => client.Create(owner),
                 Throws.TypeOf<ArgumentException>()
                 .With.Message.EqualTo("username cannot be blank."));
+            });
         }
 
         [TestCase("", "username cannot be blank.", "password")]
@@ -257,470 +92,871 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         [TestCase("username", "password cannot be blank.", "")]
         public void ClientOwnerSyncCreateUsernamePasswordValidator(string username, string errorMessage, string password)
         {
-            Owner owner = new Owner.Builder()
+            withSuccessfulResults(client =>
+            {
+                Owner owner = new Owner.Builder()
             {
                 Username = username,
                 Password = password
             };
 
-            Assert.That(() => ownerClient.Create(owner),
+            Assert.That(() => client.Create(owner),
                 Throws.TypeOf<ArgumentException>()
                 .With.Message.EqualTo(errorMessage));
+            });
         }
 
         [Test()]
-        public void ClientOwnerSyncDeleteEmptyUsername()
+        public void ClientOwnerSyncUpdate()
         {
-            Assert.That(() => ownerClient.Delete(""),
+            withSuccessfulResults(client =>
+            {
+                client.Update(TestUtils.CreateOwnerUpdateAttribute(), TestUtils.Username);
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerSyncUpdateBadRequest()
+        {
+            withFailedResults(client =>
+            {
+                Assert.That(() => client.Update(TestUtils.CreateOwnerUpdateAttribute(), TestUtils.Username),
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo(TestUtils.ErrorMessage));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerSyncUpdateWithBlankUsernameBadRequest()
+        {
+
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.Update(TestUtils.CreateOwnerUpdateAttribute(), ""),
                 Throws.TypeOf<ArgumentException>()
                 .With.Message.EqualTo("username cannot be blank."));
+            });
         }
 
         [Test()]
-        public void ClientOwnerSyncDeleteNullUsername()
+        public void ClientOwnerSyncUpdateWithNullUsernameBadRequest()
         {
-            Assert.That(() => ownerClient.Delete(null),
+
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.Update(TestUtils.CreateOwnerUpdateAttribute(), null),
                 Throws.TypeOf<ArgumentException>()
                 .With.Message.EqualTo("username cannot be blank."));
+            });
         }
 
         [Test()]
-        public void ClientOwnerSyncUpdateNullBody()
+        public void ClientOwnerSyncUpdateWithNullAttributesUsernameBadRequest()
         {
-            Assert.That(() => ownerClient.Update(null, "Something"),
+
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.Update(null, TestUtils.Username),
                 Throws.TypeOf<ArgumentException>()
                 .With.Message.EqualTo("owner body cannot be null."));
+            });
         }
 
         [Test()]
-        public void ClientOwnerSyncUpdateEmptyUsername()
+        public void ClientOwnerSyncDelete()
         {
-            Assert.That(() => ownerClient.Update(new Owner.Builder().Build(), ""),
-                Throws.TypeOf<ArgumentException>()
-                .With.Message.EqualTo("username cannot be blank."));
+            withSuccessfulResults(client =>
+            {
+                client.Delete(TestUtils.Username);
+            });
         }
 
         [Test()]
-        public void ClientOwnerSyncUpdateNullUsername()
+        public void ClientOwnerSyncDeleteBadRequest()
         {
-            Assert.That(() => ownerClient.Update(new Owner.Builder().Build(), null),
+            withFailedResults(client =>
+            {
+                Assert.That(() => client.Delete(TestUtils.Username),
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo(TestUtils.ErrorMessage));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerSyncDeleteWithBlankUsernameBadRequest()
+        {
+
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.Delete(""),
                 Throws.TypeOf<ArgumentException>()
                 .With.Message.EqualTo("username cannot be blank."));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerSyncDeleteWithNullUsernameBadRequest()
+        {
+
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.Delete(null),
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo("username cannot be blank."));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerSyncClaim()
+        {
+            withSuccessfulResults(client =>
+            {
+                client.Claim(TestUtils.Username, TestUtils.DeviceId);
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerSyncClaimBadRequest()
+        {
+            withFailedResults(client =>
+            {
+                Assert.That(() => client.Claim(TestUtils.Username, TestUtils.DeviceId),
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo(TestUtils.ErrorMessage));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerSyncClaimNullUsername()
+        {
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.Claim(null, "deviceid"),
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo("username cannot be blank."));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerSyncClaimEmptyUsername()
+        {
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.Claim("", "deviceid"),
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo("username cannot be blank."));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerSyncClaimNullDeviceId()
+        {
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.Claim("username", null),
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo("device_Id cannot be blank."));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerSyncClaimEmptyDeviceId()
+        {
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.Claim("username", ""),
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo("device_Id cannot be blank."));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerSyncUpdatePassword()
+        {
+            withSuccessfulResults(client =>
+            {
+                client.UpdatePassword(TestUtils.Username, TestUtils.Password);
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerSyncUpdatePasswordBadRequest()
+        {
+            withFailedResults(client =>
+            {
+                Assert.That(() => client.UpdatePassword(TestUtils.Username, TestUtils.Password),
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo(TestUtils.ErrorMessage));
+            });
         }
 
         [Test()]
         public void ClientOwnerSyncUpdatePasswordEmptyUsername()
         {
-            Assert.That(() => ownerClient.UpdatePassword("", "newPassword"),
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.UpdatePassword("", "newPassword"),
                 Throws.TypeOf<ArgumentException>()
                 .With.Message.EqualTo("username cannot be blank."));
+            });
         }
 
         [Test()]
         public void ClientOwnerSyncUpdatePasswordNullUsername()
         {
-            Assert.That(() => ownerClient.UpdatePassword(null, "newPassword"),
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.UpdatePassword(null, "newPassword"),
                 Throws.TypeOf<ArgumentException>()
                 .With.Message.EqualTo("username cannot be blank."));
+            });
         }
 
         [Test()]
         public void ClientOwnerSyncUpdatePasswordEmptyPassword()
         {
-            Assert.That(() => ownerClient.UpdatePassword("username", ""),
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.UpdatePassword("username", ""),
                 Throws.TypeOf<ArgumentException>()
                 .With.Message.EqualTo("password cannot be blank."));
+            });
         }
 
         [Test()]
-        public void ClientOwnerSyncUpdatePasswordNullPassworde()
+        public void ClientOwnerSyncUpdatePasswordNullPassword()
         {
-            Assert.That(() => ownerClient.UpdatePassword("username", null),
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.UpdatePassword("username", null),
                 Throws.TypeOf<ArgumentException>()
                 .With.Message.EqualTo("password cannot be blank."));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerSyncBatchCreate()
+        {
+            IEnumerable<Result> expected = new List<Result>()
+            {
+                new Result("username0",Result.ResultStates.Success,null),
+                new Result("username1",Result.ResultStates.Success,null),
+                new Result("username2",Result.ResultStates.Success,null),
+                new Result("username3",Result.ResultStates.Success,null),
+                new Result("username4",Result.ResultStates.Success,null)
+
+            };
+            withSuccessfulResults(client =>
+            {
+                IEnumerable<Result> actual = client.CreateUpdate(TestUtils.CreateOwners(5));
+                CollectionAssert.AreEqual(expected,actual);
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerSyncBatchCreateBadRequest()
+        {
+            withFailedResults(client =>
+            {
+                Assert.That(() => client.CreateUpdate(TestUtils.CreateOwners(5)),
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo(TestUtils.ErrorMessage));
+            });
         }
 
         [Test()]
         public void ClientOwnerSyncBatchNullList()
         {
-            Assert.That(() => ownerClient.CreateUpdate(null),
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.CreateUpdate(null),
                 Throws.TypeOf<ArgumentException>()
                 .With.Message.EqualTo("owner body list cannot be null."));
+            });
         }
 
         [Test()]
         public void ClientOwnerSyncBatchEmptyList()
         {
-            Assert.That(() => ownerClient.CreateUpdate(new List<Owner>()),
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.CreateUpdate(new List<Owner>()),
                 Throws.TypeOf<ArgumentException>()
                 .With.Message.EqualTo("Owner body list cannot be empty or biger that 1000."));
+            });
         }
 
         [Test()]
         public void ClientOwnerSyncBatchMaxSizeList()
         {
-            List<Owner> owners = new List<Owner>();
+            withSuccessfulResults(client =>
+            {
+                List<Owner> owners = new List<Owner>();
 
             for (int i = 1; i <= 1001; i++)
             {
                 owners.Add(new Owner.Builder().Build());
             }
 
-            Assert.That(() => ownerClient.CreateUpdate(owners),
+            Assert.That(() => client.CreateUpdate(owners),
                 Throws.TypeOf<ArgumentException>()
                 .With.Message.EqualTo("Owner body list cannot be empty or biger that 1000."));
+            });
         }
 
         [Test()]
         public void ClientOwnerSyncBatchNullUsername()
         {
-            List<Owner> owners = new List<Owner>();
+            withSuccessfulResults(client =>
+            {
+                List<Owner> owners = new List<Owner>();
 
             for (int i = 1; i <= 2; i++)
             {
                 owners.Add(new Owner.Builder().Build());
             }
 
-            Assert.That(() => ownerClient.CreateUpdate(owners),
+            Assert.That(() => client.CreateUpdate(owners),
                 Throws.TypeOf<ArgumentException>()
                 .With.Message.EqualTo("username cannot be blank."));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerSyncExists()
+        {
+            withSuccessfulResults(client =>
+            {
+                Assert.IsTrue(client.OwnerExists(TestUtils.Username));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerSyncExistsOwnerNotExists()
+        {
+            withSuccessfulAndFailedResults(client =>
+            {
+                Assert.IsTrue(!client.OwnerExists(TestUtils.Username));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerSyncExistsBadRequest()
+        {
+            withFailedResults(client =>
+            {
+                Assert.That(() => client.OwnerExists(TestUtils.Username),
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo(TestUtils.ErrorMessage));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerSyncBatchExists()
+        {
+            IList<string> input = new List<string>() { "username0", "username1", "username2", "username3" };
+            IEnumerable<IDictionary<string, bool>> expectedResults = new List<Dictionary<string, bool>>()
+            {
+                new Dictionary<string, bool>() { { input[0].ToString(), true } },
+                new Dictionary<string, bool>() { { input[1].ToString(), false } },
+                new Dictionary<string, bool>() { { input[2].ToString(), true } },
+                new Dictionary<string, bool>() { { input[3].ToString(), false } }
+            };
+            withSuccessfulAndFailedResults(client =>
+            {
+                CollectionAssert.AreEqual(expectedResults, client.OwnersExist(input));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerSyncBatchExistBadRequest()
+        {
+            withFailedResults(client =>
+            {
+                Assert.That(() => client.OwnersExist(new List<string>() { "username0", "username1", "username2", "username3" }),
+                Throws.TypeOf<ArgumentException>()
+                .With.Message.EqualTo(TestUtils.ErrorMessage));
+            });
         }
         #endregion
 
         #region Async Calls
         [Test()]
-        public void ClientOwnerAsyncCreateOwnerUpdateClaimUpdatePasswordDelete()
+        public void ClientOwnerAsyncCreate()
         {
-            Owner owner = TestUtils.CreateOwner();
-            SmartObject obj = TestUtils.CreateBasicObject();
-
-            client.Objects.CreateAsync(obj).Wait();
-            ownerClient.CreateAsync(owner).Wait();
-
-            ownerClient.UpdateAsync(TestUtils.CreateOwnerUpdateAttribute(),owner.Username).Wait();
-
-            ownerClient.ClaimAsync(owner.Username, obj.DeviceId).Wait();
-
-            ownerClient.UpdatePasswordAsync(owner.Username, "newPasswd").Wait();
-
-            ownerClient.DeleteAsync(owner.Username).Wait();
-            client.Objects.Delete(obj.DeviceId);
-        }
-
-        [Test()]
-        public void ClientOwnerAsyncCreateOwnerUpdateDeleteList()
-        {
-            List<Owner> owners = TestUtils.CreateOwners(5);
-
-            List<Task> createTasks = new List<Task>();
-            owners.ForEach((owner) => createTasks.Add(ownerClient.CreateAsync(owner)));
-            Task.WaitAll(createTasks.ToArray());
-
-            List<Task> updateTask = new List<Task>();
-            owners.ForEach((owner) => updateTask.Add(
-                ownerClient.UpdateAsync(TestUtils.CreateOwnerUpdateAttribute(), owner.Username)));
-            Task.WaitAll(updateTask.ToArray());
-
-            List<Task> deleteTask = new List<Task>();
-            owners.ForEach((owner) => deleteTask.Add(
-                ownerClient.DeleteAsync(owner.Username)));
-            Task.WaitAll(deleteTask.ToArray());
-        }
-
-        [Test()]
-        public void ClientOwnerAsyncBatchDelete()
-        {
-            List<Owner> owners = TestUtils.CreateOwners(5);
-
-            Task<IEnumerable<Result>> resultListTask = ownerClient.CreateUpdateAsync(owners);
-            resultListTask.Wait();
-
-            List<Task> deleteTask = new List<Task>();
-            owners.ForEach((owner) => deleteTask.Add(
-                ownerClient.DeleteAsync(owner.Username)));
-            Task.WaitAll(deleteTask.ToArray());
-        }
-
-        [Test()]
-        public void ClientOwnerAsyncCreateExistsDelete()
-        {
-            Owner owner = TestUtils.CreateBasicOwner();
-
-            ownerClient.Create(owner);
-
-            Task<bool> existTask = ownerClient.IsOwnerExistsAsync(owner.Username);
-            existTask.Wait();
-
-            Assert.AreEqual(true, existTask.Result);
-
-            ownerClient.Delete(owner.Username);
-        }
-
-        [Test()]
-        public void ClientOwnerAsyncExistsOwnerNotExists()
-        {
-            Task<bool> existTask = ownerClient.IsOwnerExistsAsync("unknown");
-            existTask.Wait();
-
-            Assert.AreEqual(false, existTask.Result);
-        }
-
-        [TestCase("")]
-        [TestCase(null)]
-        public void ClientOwnerAsyncExistBadRequest(string username)
-        {
-            Assert.That(() => ownerClient.IsOwnerExistsAsync(username).Wait(),
-                Throws.TypeOf<AggregateException>()
-                .With.InnerException.TypeOf<ArgumentException>()
-                .With.InnerException.Message.EqualTo("username cannot be blank."));
-        }
-
-        [Test()]
-        public void ClientOwnerAsyncBatchCreateExistsDelete()
-        {
-            Owner owner = TestUtils.CreateBasicOwner();
-
-            ownerClient.Create(owner);
-
-            IEnumerable<Dictionary<string, bool>> expected = new List<Dictionary<string, bool>>()
+            withSuccessfulResults(client =>
             {
-                new Dictionary<string, bool>()
-                {
-                    {owner.Username, true}
-                },
-                new Dictionary<string, bool>()
-                {
-                    {"unknown", false}
-                }
-            };
+                client.CreateAsync(TestUtils.CreateTestOwner()).Wait();
+            });
+        }
 
-            IList<string> request = new List<string>()
+        [Test()]
+        public void ClientOwnerAsyncCreateBadRequest()
+        {
+            withFailedResults(client =>
             {
-                owner.Username,
-                "unknown"
-            };
+                Owner owner = TestUtils.CreateOwnerWrongAttribute();
 
-            Task<IEnumerable<IDictionary<string, bool>>> existTask = ownerClient.OwnersExistAsync(request);
-            existTask.Wait();
-
-            Assert.AreEqual(expected, existTask.Result);
-
-            ownerClient.Delete(owner.Username);
-        }
-
-        public void ClientOwnerAsyncBatchExistBadRequest()
-        {
-            Assert.That(() => ownerClient.OwnersExistAsync(null).Wait(),
-                Throws.TypeOf<ArgumentException>()
-                .With.Message.EqualTo("List of usernames cannot be null."));
-        }
-
-        [Test()]
-        public void ClientOwnerAsyncClaimNullUsername()
-        {
-            Assert.That(() => ownerClient.ClaimAsync(null, "deviceid").Wait(),
-                Throws.TypeOf<AggregateException>()
-                .With.InnerException.TypeOf<ArgumentException>()
-                .With.InnerException.Message.EqualTo("username cannot be blank."));
-        }
-
-        [Test()]
-        public void ClientOwnerAsyncClaimEmptyUsername()
-        {
-            Assert.That(() => ownerClient.ClaimAsync("", "deviceid").Wait(),
-                Throws.TypeOf<AggregateException>()
-                .With.InnerException.TypeOf<ArgumentException>()
-                .With.InnerException.Message.EqualTo("username cannot be blank."));
-        }
-
-        [Test()]
-        public void ClientOwnerAsyncClaimNullDeviceId()
-        {
-            Assert.That(() => ownerClient.ClaimAsync("username", null).Wait(),
-                Throws.TypeOf<AggregateException>()
-                .With.InnerException.TypeOf<ArgumentException>()
-                .With.InnerException.Message.EqualTo("device_Id cannot be blank."));
-        }
-
-        [Test()]
-        public void ClientOwnerAsyncClaimEmptyDeviceId()
-        {
-            Assert.That(() => ownerClient.ClaimAsync("username", "").Wait(),
-                Throws.TypeOf<AggregateException>()
-                .With.InnerException.TypeOf<ArgumentException>()
-                .With.InnerException.Message.EqualTo("device_Id cannot be blank."));
+                Assert.That(() => client.CreateAsync(owner).Wait(),
+                    Throws.TypeOf<AggregateException>()
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo(TestUtils.ErrorMessage));
+            });
         }
 
         [Test()]
         public void ClientOwnerAsyncCreateNullBody()
         {
-            Assert.That(() => ownerClient.CreateAsync(null).Wait(),
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.CreateAsync(null).Wait(),
                 Throws.TypeOf<AggregateException>()
-                .With.InnerException.TypeOf<ArgumentException>()
-                .With.InnerException.Message.EqualTo("owner body cannot be null."));
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo("owner body cannot be null."));
+            });
         }
 
         [Test()]
         public void ClientOwnerAsyncCreateNotUsername()
         {
-            Owner owner = new Owner.Builder().Build();
+            withSuccessfulResults(client =>
+            {
+                Owner owner = new Owner.Builder().Build();
 
-            Assert.That(() => ownerClient.CreateAsync(owner).Wait(),
-                Throws.TypeOf<AggregateException>()
-                .With.InnerException.TypeOf<ArgumentException>()
-                .With.InnerException.Message.EqualTo("username cannot be blank."));
+                Assert.That(() => client.CreateAsync(owner).Wait(),
+                    Throws.TypeOf<AggregateException>()
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo("username cannot be blank."));
+            });
         }
 
         [TestCase("", "username cannot be blank.", "password")]
         [TestCase(null, "username cannot be blank.", "password")]
         [TestCase("username", "password cannot be blank.", null)]
         [TestCase("username", "password cannot be blank.", "")]
-        public void ClientOwnerAsyncCreateEmptyUsername(string username, string errorMsg, string password)
+        public void ClientOwnerAsyncCreateUsernamePasswordValidator(string username, string errorMessage, string password)
         {
-            Owner owner = new Owner.Builder()
+            withSuccessfulResults(client =>
             {
-                Username = username,
-                Password = password
-            };
+                Owner owner = new Owner.Builder()
+                {
+                    Username = username,
+                    Password = password
+                };
 
-            Assert.That(() => ownerClient.CreateAsync(owner).Wait(),
-                Throws.TypeOf<AggregateException>()
-                .With.InnerException.TypeOf<ArgumentException>()
-                .With.InnerException.Message.EqualTo(errorMsg));
+                Assert.That(() => client.CreateAsync(owner).Wait(),
+                    Throws.TypeOf<AggregateException>()
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo(errorMessage));
+            });
         }
 
         [Test()]
-        public void ClientOwnerAsyncDeleteEmptyUsername()
+        public void ClientOwnerAsyncUpdate()
         {
-            Assert.That(() => ownerClient.DeleteAsync("").Wait(),
-                Throws.TypeOf<AggregateException>()
-                .With.InnerException.TypeOf<ArgumentException>()
-                .With.InnerException.Message.EqualTo("username cannot be blank."));
+            withSuccessfulResults(client =>
+            {
+                client.UpdateAsync(TestUtils.CreateOwnerUpdateAttribute(), TestUtils.Username).Wait();
+            });
         }
 
         [Test()]
-        public void ClientOwnerAsyncDeleteNullUsername()
+        public void ClientOwnerAsyncUpdateBadRequest()
         {
-            Assert.That(() => ownerClient.DeleteAsync(null).Wait(),
+            withFailedResults(client =>
+            {
+                Assert.That(() => client.UpdateAsync(TestUtils.CreateOwnerUpdateAttribute(), TestUtils.Username).Wait(),
                 Throws.TypeOf<AggregateException>()
-                .With.InnerException.TypeOf<ArgumentException>()
-                .With.InnerException.Message.EqualTo("username cannot be blank."));
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo(TestUtils.ErrorMessage));
+            });
         }
 
         [Test()]
-        public void ClientOwnerAsyncUpdateNullBody()
+        public void ClientOwnerAsyncUpdateWithBlankUsernameBadRequest()
         {
-            Assert.That(() => ownerClient.UpdateAsync(null, "Something").Wait(),
+
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.UpdateAsync(TestUtils.CreateOwnerUpdateAttribute(), "").Wait(),
                 Throws.TypeOf<AggregateException>()
-                .With.InnerException.TypeOf<ArgumentException>()
-                .With.InnerException.Message.EqualTo("owner body cannot be null."));
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo("username cannot be blank."));
+            });
         }
 
         [Test()]
-        public void ClientOwnerAsyncUpdateEmptyUsername()
+        public void ClientOwnerAsyncUpdateWithNullUsernameBadRequest()
         {
-            Assert.That(() => ownerClient.UpdateAsync(new Owner.Builder().Build(), "").Wait(),
+
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.UpdateAsync(TestUtils.CreateOwnerUpdateAttribute(), null).Wait(),
                 Throws.TypeOf<AggregateException>()
-                .With.InnerException.TypeOf<ArgumentException>()
-                .With.InnerException.Message.EqualTo("username cannot be blank."));
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo("username cannot be blank."));
+            });
         }
 
         [Test()]
-        public void ClientOwnerAsyncUpdateNullUsername()
+        public void ClientOwnerAsyncUpdateWithNullAttributesUsernameBadRequest()
         {
-            Assert.That(() => ownerClient.UpdateAsync(new Owner.Builder().Build(), null).Wait(),
+
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.UpdateAsync(null, TestUtils.Username).Wait(),
                 Throws.TypeOf<AggregateException>()
-                .With.InnerException.TypeOf<ArgumentException>()
-                .With.InnerException.Message.EqualTo("username cannot be blank."));
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo("owner body cannot be null."));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerAsyncDelete()
+        {
+            withSuccessfulResults(client =>
+            {
+                client.DeleteAsync(TestUtils.Username).Wait();
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerAsyncDeleteBadRequest()
+        {
+            withFailedResults(client =>
+            {
+                Assert.That(() => client.DeleteAsync(TestUtils.Username).Wait(),
+                Throws.TypeOf<AggregateException>()
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo(TestUtils.ErrorMessage));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerAsyncDeleteWithBlankUsernameBadRequest()
+        {
+
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.DeleteAsync("").Wait(),
+                Throws.TypeOf<AggregateException>()
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo("username cannot be blank."));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerAsyncDeleteWithNullUsernameBadRequest()
+        {
+
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.DeleteAsync(null).Wait(),
+               Throws.TypeOf<AggregateException>()
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo("username cannot be blank."));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerAsyncClaim()
+        {
+            withSuccessfulResults(client =>
+            {
+                client.ClaimAsync(TestUtils.Username, TestUtils.DeviceId).Wait();
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerAsyncClaimBadRequest()
+        {
+            withFailedResults(client =>
+            {
+                Assert.That(() => client.ClaimAsync(TestUtils.Username, TestUtils.DeviceId).Wait(),
+                Throws.TypeOf<AggregateException>()
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo(TestUtils.ErrorMessage));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerAsyncClaimNullUsername()
+        {
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.ClaimAsync(null, "deviceid").Wait(),
+                Throws.TypeOf<AggregateException>()
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo("username cannot be blank."));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerAsyncClaimEmptyUsername()
+        {
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.ClaimAsync("", "deviceid").Wait(),
+                Throws.TypeOf<AggregateException>()
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo("username cannot be blank."));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerAsyncClaimNullDeviceId()
+        {
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.ClaimAsync("username", null).Wait(),
+                Throws.TypeOf<AggregateException>()
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo("device_Id cannot be blank."));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerAsyncClaimEmptyDeviceId()
+        {
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.ClaimAsync("username", "").Wait(),
+                Throws.TypeOf<AggregateException>()
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo("device_Id cannot be blank."));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerAsyncUpdatePassword()
+        {
+            withSuccessfulResults(client =>
+            {
+                client.UpdatePasswordAsync(TestUtils.Username, TestUtils.Password).Wait();
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerAsyncUpdatePasswordBadRequest()
+        {
+            withFailedResults(client =>
+            {
+                Assert.That(() => client.UpdatePasswordAsync(TestUtils.Username, TestUtils.Password).Wait(),
+                Throws.TypeOf<AggregateException>()
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo(TestUtils.ErrorMessage));
+            });
         }
 
         [Test()]
         public void ClientOwnerAsyncUpdatePasswordEmptyUsername()
         {
-            Assert.That(() => ownerClient.UpdatePasswordAsync("", "newPassword").Wait(),
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.UpdatePasswordAsync("", "newPassword").Wait(),
                 Throws.TypeOf<AggregateException>()
-                .With.InnerException.TypeOf<ArgumentException>()
-                .With.InnerException.Message.EqualTo("username cannot be blank."));
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo("username cannot be blank."));
+            });
         }
 
         [Test()]
         public void ClientOwnerAsyncUpdatePasswordNullUsername()
         {
-            Assert.That(() => ownerClient.UpdatePasswordAsync(null, "newPassword").Wait(),
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.UpdatePasswordAsync(null, "newPassword").Wait(),
                 Throws.TypeOf<AggregateException>()
-                .With.InnerException.TypeOf<ArgumentException>()
-                .With.InnerException.Message.EqualTo("username cannot be blank."));
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo("username cannot be blank."));
+            });
         }
 
         [Test()]
         public void ClientOwnerAsyncUpdatePasswordEmptyPassword()
         {
-            Assert.That(() => ownerClient.UpdatePasswordAsync("username", "").Wait(),
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.UpdatePasswordAsync("username", "").Wait(),
                 Throws.TypeOf<AggregateException>()
-                .With.InnerException.TypeOf<ArgumentException>()
-                .With.InnerException.Message.EqualTo("password cannot be blank."));
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo("password cannot be blank."));
+            });
         }
 
         [Test()]
-        public void ClientOwnerAsyncUpdatePasswordNullPassworde()
+        public void ClientOwnerAsyncUpdatePasswordNullPassword()
         {
-            Assert.That(() => ownerClient.UpdatePasswordAsync("username", null).Wait(),
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.UpdatePasswordAsync("username", null).Wait(),
                 Throws.TypeOf<AggregateException>()
-                .With.InnerException.TypeOf<ArgumentException>()
-                .With.InnerException.Message.EqualTo("password cannot be blank."));
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo("password cannot be blank."));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerAsyncBatchCreate()
+        {
+            IEnumerable<Result> expected = new List<Result>()
+            {
+                new Result("username0",Result.ResultStates.Success,null),
+                new Result("username1",Result.ResultStates.Success,null),
+                new Result("username2",Result.ResultStates.Success,null),
+                new Result("username3",Result.ResultStates.Success,null),
+                new Result("username4",Result.ResultStates.Success,null)
+
+            };
+            withSuccessfulResults(client =>
+            {
+                Task<IEnumerable<Result>> resultTask = client.CreateUpdateAsync(TestUtils.CreateOwners(5));
+                resultTask.Wait();
+                CollectionAssert.AreEqual(expected, resultTask.Result);
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerAsyncBatchCreateBadRequest()
+        {
+            withFailedResults(client =>
+            {
+                Assert.That(() => client.CreateUpdateAsync(TestUtils.CreateOwners(5)).Wait(),
+                Throws.TypeOf<AggregateException>()
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo(TestUtils.ErrorMessage));
+            });
         }
 
         [Test()]
         public void ClientOwnerAsyncBatchNullList()
         {
-            Assert.That(() => ownerClient.CreateUpdateAsync(null).Wait(),
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.CreateUpdateAsync(null).Wait(),
                 Throws.TypeOf<AggregateException>()
-                .With.InnerException.TypeOf<ArgumentException>()
-                .With.InnerException.Message.EqualTo("owner body list cannot be null."));
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo("owner body list cannot be null."));
+            });
         }
 
         [Test()]
         public void ClientOwnerAsyncBatchEmptyList()
         {
-            Assert.That(() => ownerClient.CreateUpdateAsync(new List<Owner>()).Wait(),
+            withSuccessfulResults(client =>
+            {
+                Assert.That(() => client.CreateUpdateAsync(new List<Owner>()).Wait(),
                 Throws.TypeOf<AggregateException>()
-                .With.InnerException.TypeOf<ArgumentException>()
-                .With.InnerException.Message.EqualTo("Owner body list cannot be empty or biger that 1000."));
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo("Owner body list cannot be empty or biger that 1000."));
+            });
         }
 
         [Test()]
         public void ClientOwnerAsyncBatchMaxSizeList()
         {
-            List<Owner> owners = new List<Owner>();
-
-            for (int i = 1; i <= 1001; i++)
+            withSuccessfulResults(client =>
             {
-                owners.Add(new Owner.Builder().Build());
-            }
+                List<Owner> owners = new List<Owner>();
 
-            Assert.That(() => ownerClient.CreateUpdateAsync(owners).Wait(),
-                Throws.TypeOf<AggregateException>()
-                .With.InnerException.TypeOf<ArgumentException>()
-                .With.InnerException.Message.EqualTo("Owner body list cannot be empty or biger that 1000."));
+                for (int i = 1; i <= 1001; i++)
+                {
+                    owners.Add(new Owner.Builder().Build());
+                }
+
+                Assert.That(() => client.CreateUpdateAsync(owners).Wait(),
+                    Throws.TypeOf<AggregateException>()
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo("Owner body list cannot be empty or biger that 1000."));
+            });
         }
 
         [Test()]
         public void ClientOwnerAsyncBatchNullUsername()
         {
-            List<Owner> owners = new List<Owner>();
-
-            for (int i = 1; i <= 2; i++)
+            withSuccessfulResults(client =>
             {
-                owners.Add(new Owner.Builder().Build());
-            }
+                List<Owner> owners = new List<Owner>();
 
-            Assert.That(() => ownerClient.CreateUpdateAsync(owners).Wait(),
+                for (int i = 1; i <= 2; i++)
+                {
+                    owners.Add(new Owner.Builder().Build());
+                }
+
+                Assert.That(() => client.CreateUpdateAsync(owners).Wait(),
+                    Throws.TypeOf<AggregateException>()
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo("username cannot be blank."));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerAsyncExists()
+        {
+            withSuccessfulResults(client =>
+            {
+                Task<bool> result = client.OwnerExistsAsync(TestUtils.Username);
+                result.Wait();
+                Assert.IsTrue(result.Result);
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerAsyncExistsOwnerNotExists()
+        {
+            withSuccessfulAndFailedResults(client =>
+            {
+                Task<bool> result = client.OwnerExistsAsync(TestUtils.Username);
+                result.Wait();
+                Assert.IsTrue(!result.Result);
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerAsyncExistsBadRequest()
+        {
+            withFailedResults(client =>
+            {
+                Assert.That(() => client.OwnerExistsAsync(TestUtils.Username).Wait(),
                 Throws.TypeOf<AggregateException>()
-                .With.InnerException.TypeOf<ArgumentException>()
-                .With.InnerException.Message.EqualTo("username cannot be blank."));
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo(TestUtils.ErrorMessage));
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerAsyncBatchExists()
+        {
+            IList<string> input = new List<string>() { "username0", "username1", "username2", "username3" };
+            IEnumerable<IDictionary<string, bool>> expectedResults = new List<Dictionary<string, bool>>()
+            {
+                new Dictionary<string, bool>() { { input[0].ToString(), true } },
+                new Dictionary<string, bool>() { { input[1].ToString(), false } },
+                new Dictionary<string, bool>() { { input[2].ToString(), true } },
+                new Dictionary<string, bool>() { { input[3].ToString(), false } }
+            };
+            withSuccessfulAndFailedResults(client =>
+            {
+                Task<IEnumerable<IDictionary<string, bool>>> results = client.OwnersExistAsync(input);
+                results.Wait();
+                CollectionAssert.AreEqual(expectedResults, results.Result);
+            });
+        }
+
+        [Test()]
+        public void ClientOwnerAsyncBatchExistBadRequest()
+        {
+            withFailedResults(client =>
+            {
+                Assert.That(() => client.OwnersExistAsync(new List<string>() { "username0", "username1", "username2", "username3" }).Wait(),
+                Throws.TypeOf<AggregateException>()
+                    .With.InnerException.TypeOf<ArgumentException>()
+                    .With.InnerException.Message.EqualTo(TestUtils.ErrorMessage));
+            });
         }
         #endregion
 
+        #region Utils
         private void AssertIfAreDifferent(Owner ownerA, Owner ownerB)
         {
             Assert.AreEqual(ownerA.Username, ownerB.Username);
@@ -728,5 +964,27 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                 ownerB.RegistrationDate.Value.ToString(EventSerializerTest.DatetimeFormat));
             CollectionAssert.AreEqual(ownerA.Attributes, ownerB.Attributes);
         }
+
+        //Spawn a client which respond successfully to all events
+        internal void withSuccessfulResults(Action<IOwnerClient> test)
+        {
+            var httpClient = new HttpClient(config, "http", "localhost", port, SucceedAPIsMockModule.BasePath);
+            test(new OwnerClient(httpClient));
+        }
+
+        //Spawn a client which fail all request
+        internal void withFailedResults(Action<IOwnerClient> test)
+        {
+            var httpClient = new HttpClient(config, "http", "localhost", port, FailedAPIsMockModule.BasePath);
+            test(new OwnerClient(httpClient));
+        }
+
+        //Spawn a client which fail respond with a mix of failed and successful events
+        internal void withSuccessfulAndFailedResults(Action<IOwnerClient> test)
+        {
+            var httpClient = new HttpClient(config, "http", "localhost", port, BatchAPIsMockModule.BasePath);
+            test(new OwnerClient(httpClient));
+        }
+        #endregion
     }
 }

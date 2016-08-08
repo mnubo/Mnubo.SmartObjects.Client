@@ -47,5 +47,51 @@
             ResultState = result;
             Message = message;
         }
+
+        /// <summary>
+        /// Overriding Equals
+        /// </summary>
+        public override bool Equals(System.Object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+
+            Result other = obj as Result;
+            if ((System.Object)other == null)
+            {
+                return false;
+            }
+
+            return (ResourceId == other.ResourceId) && (ResultState == other.ResultState) && (Message == other.Message);
+        }
+
+        /// <summary>
+        /// Compare to another Result
+        /// </summary>
+        public bool Equals(Result other)
+        {
+            if ((object)other == null)
+            {
+                return false;
+            }
+
+            return (ResourceId == other.ResourceId) && (ResultState == other.ResultState) && (Message == other.Message);
+        }
+
+
+        /// <summary>
+        /// Overriding GetHashCode
+        /// </summary>
+        public override int GetHashCode()
+        {
+            int hash = 17;
+            hash = hash * 23 + ResourceId.GetHashCode();
+            hash = hash * 23 + ResultState.GetHashCode();
+            hash = hash * 23 + Message.GetHashCode();
+
+            return hash;
+        }
     }
 }
