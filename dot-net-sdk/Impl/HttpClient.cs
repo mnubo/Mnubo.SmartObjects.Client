@@ -23,6 +23,10 @@ namespace Mnubo.SmartObjects.Client.Impl
 
         private const string DefaultBasePath = "/api/v3/";
 
+        private readonly string clientSchema;
+        private readonly string hostname;
+        private readonly int hostPort;
+        private readonly string basePath;
         private readonly CredentialHandler credentialHandler;
         private readonly Environments enviroment;
         private readonly System.Net.Http.HttpClient client;
@@ -32,10 +36,28 @@ namespace Mnubo.SmartObjects.Client.Impl
             client = new System.Net.Http.HttpClient();
             client.Timeout = TimeSpan.FromMilliseconds(config.ClientTimeout);
             client.MaxResponseContentBufferSize = config.MaxResponseContentBufferSize;
-
+            
             credentialHandler = new CredentialHandler(config, client);
 
             enviroment = config.Environment;
+            clientSchema = DefaultClientSchema;
+            hostname = HttpClient.addressMapping[enviroment];
+            hostPort = DefaultHostPort;
+            basePath = DefaultBasePath;
+        }
+
+        internal HttpClient(ClientConfig config, string clientSchema, string hostname, int hostPort, string basePath )
+        {
+            client = new System.Net.Http.HttpClient();
+            client.Timeout = TimeSpan.FromMilliseconds(config.ClientTimeout);
+            client.MaxResponseContentBufferSize = config.MaxResponseContentBufferSize;
+            credentialHandler = new CredentialHandler(config, client, clientSchema, hostname, hostPort);
+
+            enviroment = config.Environment;
+            this.clientSchema = clientSchema;
+            this.hostname = hostname;
+            this.hostPort = hostPort;
+            this.basePath = basePath;
         }
 
         internal async Task<string> sendAsyncRequestWithResult(HttpMethod method, string path)
@@ -59,7 +81,7 @@ namespace Mnubo.SmartObjects.Client.Impl
             HttpResponseMessage response = null;
             try
             {
-                UriBuilder uriBuilder = new UriBuilder(DefaultClientSchema, HttpClient.addressMapping[enviroment], DefaultHostPort, DefaultBasePath + path);
+                UriBuilder uriBuilder = new UriBuilder(clientSchema, hostname, hostPort, basePath + path);
 
                 request = new HttpRequestMessage(method, uriBuilder.Uri);
                 request.Headers.Add("Authorization", credentialHandler.GetAuthenticationToken());
@@ -74,17 +96,18 @@ namespace Mnubo.SmartObjects.Client.Impl
                 string message = await response.Content.ReadAsStringAsync();
 
                 if (response.StatusCode == HttpStatusCode.OK ||
-                    response.StatusCode == HttpStatusCode.Created)
+                    response.StatusCode == HttpStatusCode.Created ||
+                    (int)response.StatusCode == 207)
                 {
                     return message;
                 }
                 else if (response.StatusCode == HttpStatusCode.BadRequest)
                 {
-                    throw new ArgumentException(GetMessageFromReponse(message));
+                    throw new ArgumentException(message);
                 }
 
                 throw new InvalidOperationException(
-                    string.Format("status code: {0}, message {1}", response.StatusCode, GetMessageFromReponse(message)));
+                    string.Format("status code: {0}, message {1}", response.StatusCode, message));
             }
             finally
             {
@@ -97,11 +120,6 @@ namespace Mnubo.SmartObjects.Client.Impl
                     response.Dispose();
                 }
             }
-        }
-
-        private string GetMessageFromReponse(string responseMessage)
-        {
-            return JsonConvert.DeserializeObject<Dictionary<string, string>>(responseMessage)["message"];
         }
 
         public void Dispose()

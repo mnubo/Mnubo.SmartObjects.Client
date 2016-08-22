@@ -1,4 +1,5 @@
 ﻿using Mnubo.SmartObjects.Client.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -36,6 +37,20 @@ namespace Mnubo.SmartObjects.Client
         IEnumerable<Result> CreateUpdate(IEnumerable<SmartObject> objs);
 
         /// <summary>
+        /// Allow validate if an object exists.
+        /// </summary>
+        /// <param name="deviceId">Object's deviceid to validate.</param>
+        /// <returns>true if the object exists or false if not.</returns>
+        bool ObjectExists(string deviceId);
+
+        /// <summary>
+        /// Allow validate if a list of objects exist.
+        /// </summary>
+        /// <param name="deviceIds">list of deviceIds to validate. ["deviceA", "deviceB" ]</param>
+        /// <returns>the list of deviceIds with an existing boolean, true if it exists or false if not. [{"deviceA":true},{"deviceB":false}]</returns>
+        IEnumerable<IDictionary<string, bool>> ObjectsExist(IList<string> deviceIds);
+
+        /// <summary>
         /// Allows create a new object in async mode.
         /// </summary>
         /// <param name="smartObject">object to be created</param>
@@ -63,5 +78,19 @@ namespace Mnubo.SmartObjects.Client
         /// <param name="objs">List of the objects</param>
         /// <returns>A async task.</returns>
         Task<IEnumerable<Result>> CreateUpdateAsync(IEnumerable<SmartObject> objs);
+
+        /// <summary>
+        /// Allow validate if an object exists in async mode.
+        /// </summary>
+        /// <param name="deviceId">Object's deviceid to validate.</param>
+        /// <returns>true if the object exists or false if not.</returns>
+        Task<bool> ObjectExistsAsync(string deviceId);
+
+        /// <summary>
+        /// Allow validate if a list of objects exist in async mode.
+        /// </summary>
+        /// <param name="deviceIds">list of deviceIds to validate. ["deviceA", "deviceB" ]</param>
+        /// <returns>the list of deviceIds with an existing boolean, true if it exists or false if not. [{"deviceA":true},{"deviceB":false}]</returns>
+        Task<IEnumerable<IDictionary<string, bool>>> ObjectsExistAsync(IList<string> deviceIds);
     }
 }

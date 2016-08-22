@@ -23,7 +23,6 @@ namespace Con.Mnubo.Dotnetsdktest.Test.Impl
 
             SmartObject myObject = new SmartObject.Builder()
             {
-                EventId = Guid.Parse("98c62f5c-ad48-4ef8-8d70-dbe3a1e8b17f"),
                 DeviceId = "test",
                 ObjectType = "type",
                 RegistrationDate = now,
@@ -40,7 +39,6 @@ namespace Con.Mnubo.Dotnetsdktest.Test.Impl
                 "{\"x_device_id\":\"test\"," +
                 "\"x_registration_date\":\"" + now.ToString(EventSerializerTest.DatetimeFormat) + "\"," +
                 "\"x_object_type\":\"type\"," +
-                "\"event_id\":\"98c62f5c-ad48-4ef8-8d70-dbe3a1e8b17f\"," +
                 "\"float\":10.5," +
                 "\"double\":10.0," +
                 "\"string\":\"stringValue\"}",
@@ -52,14 +50,13 @@ namespace Con.Mnubo.Dotnetsdktest.Test.Impl
         {
             SmartObject myObject = new SmartObject.Builder()
             {
-                EventId = Guid.Parse("671c8315-952b-4c69-8c37-d2d58a64af9e"),
                 DeviceId = "test",
                 Username = "owner"
             };
 
             string json = ObjectSerializer.SerializeObject(myObject);
             Assert.AreEqual(
-                "{\"x_device_id\":\"test\",\"event_id\":\"671c8315-952b-4c69-8c37-d2d58a64af9e\",\"x_owner\":{\"username\":\"owner\"}}",
+                "{\"x_device_id\":\"test\",\"x_owner\":{\"username\":\"owner\"}}",
                 json);
         }
 
@@ -105,8 +102,7 @@ namespace Con.Mnubo.Dotnetsdktest.Test.Impl
                 "\"married\": true," +
                 "\"counter\": -13582," +
                 "\"list_SmartObject\": [\"val1\",\"val2\",\"val3\"]," +
-                "\"x_owner\" : { \"username\":\"owner\",\"sometrash\":8888}," +
-                "\"event_id\":\"46aabccd-4442-6665-a1f0-49889330eaf3\"}";
+                "\"x_owner\" : { \"username\":\"owner\",\"sometrash\":8888}}";
 
             var attributes = ImmutableDictionary.CreateBuilder<string, object>();
             attributes.Add("age", 89);
@@ -118,7 +114,6 @@ namespace Con.Mnubo.Dotnetsdktest.Test.Impl
             SmartObject SmartObject = ObjectSerializer.DeserializeObject(json);
 
             Assert.AreEqual(SmartObject.DeviceId, "test");
-            Assert.AreEqual(SmartObject.EventId.ToString(), "46aabccd-4442-6665-a1f0-49889330eaf3");
             Assert.AreEqual(SmartObject.ObjectType, "type");
             Assert.AreEqual(SmartObject.Username, "owner");
             Assert.AreEqual(SmartObject.RegistrationDate.Value.ToString(EventSerializerTest.DatetimeFormat),
@@ -135,7 +130,6 @@ namespace Con.Mnubo.Dotnetsdktest.Test.Impl
             SmartObject SmartObject = ObjectSerializer.DeserializeObject(json);
 
             Assert.IsNull(SmartObject.DeviceId);
-            Assert.IsNull(SmartObject.EventId);
             Assert.IsNull(SmartObject.ObjectType);
             Assert.IsNull(SmartObject.Username);
             Assert.IsNull(SmartObject.RegistrationDate);
@@ -151,7 +145,6 @@ namespace Con.Mnubo.Dotnetsdktest.Test.Impl
             SmartObject SmartObject = ObjectSerializer.DeserializeObject(json);
 
             Assert.IsNull(SmartObject.DeviceId);
-            Assert.IsNull(SmartObject.EventId);
             Assert.IsNull(SmartObject.ObjectType);
             Assert.IsNull(SmartObject.Username);
             Assert.IsNull(SmartObject.RegistrationDate);
@@ -168,7 +161,6 @@ namespace Con.Mnubo.Dotnetsdktest.Test.Impl
             Assert.IsNull(SmartObject.DeviceId);
             Assert.IsNull(SmartObject.ObjectType);
             Assert.IsNull(SmartObject.RegistrationDate);
-            Assert.IsNull(SmartObject.EventId);
             Assert.IsNull(SmartObject.Username);
             Assert.IsNotNull(SmartObject.Attributes);
             Assert.AreEqual(SmartObject.Attributes.Count, 0);
@@ -183,17 +175,6 @@ namespace Con.Mnubo.Dotnetsdktest.Test.Impl
                 Throws.TypeOf<InvalidOperationException>()
                 .With.Message.EqualTo("Field 'x_device_id' does not match TYPE 'TEXT'"));
         }
-
-        [Test()]
-        public void SmartObjectDeserializeTestWrongEventIdType()
-        {
-            string json = "{\"event_id\":\"54545c5454-054-54\",\"string\":\"stringValue\"}";
-
-            Assert.That(() => ObjectSerializer.DeserializeObject(json),
-                Throws.TypeOf<InvalidOperationException>()
-                .With.Message.EqualTo("Field 'x_event_id' does not match TYPE 'GUID'"));
-        }
-
 
         [Test()]
         public void SmartObjectDeserializeTestWrongObjectType()

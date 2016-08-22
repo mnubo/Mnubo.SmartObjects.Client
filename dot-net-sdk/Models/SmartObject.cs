@@ -39,22 +39,15 @@ namespace Mnubo.SmartObjects.Client.Models
         /// </summary>
         public IImmutableDictionary<string, object> Attributes { get; }
 
-        /// <summary>
-        /// Get a nullable GUID event identifier.
-        /// </summary>
-        public Guid? EventId { get; }
-
 		private SmartObject(
             string deviceId,
             Guid? objectId,
             string objectType,
             DateTime? registrationDate,
             string username,
-            IDictionary<string, object> attributes,
-            Guid? eventId)
+            IDictionary<string, object> attributes)
         {
             DeviceId = deviceId;
-            EventId = eventId;
             ObjectId = objectId;
             ObjectType = objectType;
             Username = username;
@@ -117,11 +110,6 @@ namespace Mnubo.SmartObjects.Client.Models
             /// </summary>
             public IDictionary<string, object> Attributes { get; set; }
 
-            /// <summary>
-            /// nullable GUID event identifier.
-            /// </summary>
-            public Guid? EventId { get; set; }
-
             public Builder()
             {
                 DeviceId = null;
@@ -129,7 +117,6 @@ namespace Mnubo.SmartObjects.Client.Models
                 ObjectType = null;
                 RegistrationDate = null;
                 Username = null;
-                EventId = null;
                 Attributes = new Dictionary<string, object>();
             }
 
@@ -139,7 +126,7 @@ namespace Mnubo.SmartObjects.Client.Models
             /// <returns>Return a SmartObject built</returns>
             public SmartObject Build()
                 {
-                    return new SmartObject(DeviceId, ObjectId, ObjectType, RegistrationDate, Username, Attributes, EventId);
+                    return new SmartObject(DeviceId, ObjectId, ObjectType, RegistrationDate, Username, Attributes);
                 }
             }
     }

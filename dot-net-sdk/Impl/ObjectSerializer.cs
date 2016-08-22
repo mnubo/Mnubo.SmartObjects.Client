@@ -15,7 +15,6 @@ namespace Mnubo.SmartObjects.Client.Impl
         private const string ObjectTypeProperty = "x_object_type";
         private const string RegistrationDateProperty = "x_registration_date";
         private const string OwnerProperty = "x_owner";
-        private const string EventIdProperty = "event_id";
 
         /// <summary>
         /// Serialize a list of smartobject to a Json string
@@ -54,11 +53,6 @@ namespace Mnubo.SmartObjects.Client.Impl
             if (!string.IsNullOrEmpty(smartObject.ObjectType))
             {
                 objectModelFlat.Add(ObjectTypeProperty, smartObject.ObjectType);
-            }
-
-            if (smartObject.EventId.HasValue)
-            {
-                objectModelFlat.Add(EventIdProperty, smartObject.EventId);
             }
 
             if (!string.IsNullOrEmpty(smartObject.Username))
@@ -130,18 +124,6 @@ namespace Mnubo.SmartObjects.Client.Impl
                                 throw new InvalidOperationException("Field 'x_object_type' does not match TYPE 'TEXT'");
                             }
                             builder.ObjectType = token.Value as string;
-                            break;
-                        }
-                    case EventIdProperty:
-                        {
-                            Guid guid;
-                            if (!(token.Value is string) ||
-                                string.IsNullOrEmpty(token.Value as string) ||
-                                !(Guid.TryParse(token.Value as string, out guid)))
-                            {
-                                throw new InvalidOperationException("Field 'x_event_id' does not match TYPE 'GUID'");
-                            }
-                            builder.EventId = guid;
                             break;
                         }
                     case OwnerProperty:

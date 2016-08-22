@@ -42,6 +42,16 @@ namespace Mnubo.SmartObjects.Client.Impl
         {
             return ClientUtils.WaitTask<IEnumerable<Result>>(CreateUpdateAsync(objects));
         }
+
+        public bool ObjectExists(string deviceId)
+        {
+            return ClientUtils.WaitTask<bool>(ObjectExistsAsync(deviceId));
+        }
+
+        public IEnumerable<IDictionary<string, bool>> ObjectsExist(IList<string> deviceIds)
+        {
+            return ClientUtils.WaitTask<IEnumerable<IDictionary<string, bool>>>(ObjectsExistAsync(deviceIds));
+        }
         #endregion
 
         #region Async Calls
@@ -123,6 +133,38 @@ namespace Mnubo.SmartObjects.Client.Impl
                 ObjectSerializer.SerializeObjects(objects));
 
             return JsonConvert.DeserializeObject<IEnumerable<Result>>(asynResult);
+        }
+
+        public async Task<bool> ObjectExistsAsync(string deviceId)
+        {
+            if (string.IsNullOrEmpty(deviceId))
+            {
+                throw new ArgumentException("deviceId cannot be blank.");
+            }
+
+            var asynResultAsStr = await client.sendAsyncRequestWithResult(
+                HttpMethod.Get,
+                string.Format("objects/exists/{0}", deviceId),
+                null);
+
+            var asynResult = JsonConvert.DeserializeObject<IDictionary<string, bool>>(asynResultAsStr);
+
+            return asynResult != null && asynResult.Count == 1 && asynResult.ContainsKey(deviceId) && asynResult[deviceId];
+        }
+
+        public async Task<IEnumerable<IDictionary<string, bool>>> ObjectsExistAsync(IList<string> deviceIds)
+        {
+            if (deviceIds == null)
+            {
+                throw new ArgumentException("List of deviceIds cannot be null.");
+            }
+
+            var asynResultAsStr = await client.sendAsyncRequestWithResult(
+                HttpMethod.Post,
+                "objects/exists",
+                JsonConvert.SerializeObject(deviceIds));
+
+            return JsonConvert.DeserializeObject<IEnumerable<IDictionary<string, bool>>>(asynResultAsStr);
         }
         #endregion
     }

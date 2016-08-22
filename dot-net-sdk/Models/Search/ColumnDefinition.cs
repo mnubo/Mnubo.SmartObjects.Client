@@ -1,15 +1,19 @@
-﻿namespace Mnubo.SmartObjects.Client.Models.Search
+﻿using Newtonsoft.Json;
+
+namespace Mnubo.SmartObjects.Client.Models.Search
 {
     public class ColumnDefinition
     {
         /// <summary>
         /// Label associated to the column
         /// </summary>
+        [JsonProperty("label")]
         public string Label { get; }
 
         /// <summary>
         /// Highlevel type associated to the column
         /// </summary>
+        [JsonProperty("type")]
         public string HighLevelType { get; }
 
         /// <summary>

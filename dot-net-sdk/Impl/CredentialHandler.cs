@@ -50,6 +50,33 @@ namespace Mnubo.SmartObjects.Client.Impl
             (sender, certificate, chain, errors) => true;
         }
 
+        internal CredentialHandler(ClientConfig config, System.Net.Http.HttpClient client, String scheme, String host, int port)
+        {
+            this.client = client;
+            autorizationBasicToken = Convert.ToBase64String(
+                System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(
+                    config.ConsumerKey +
+                    TokenConsumerSeparation +
+                    config.ConsumerSecret));
+
+            UriBuilder uriBuilder = new UriBuilder(
+                scheme,
+                host,
+                port,
+                TokenPath);
+            uriBuilder.Query =
+                TokenGrandType + "=" +
+                TokenGrandTypeValue + "&" +
+                TokenScope + "=" +
+                HttpClient.DefaultScope;
+
+            tokenRequest = new HttpRequestMessage(HttpMethod.Post, uriBuilder.Uri);
+            tokenRequest.Headers.Authorization = new AuthenticationHeaderValue(TokenAuthenticationType, autorizationBasicToken);
+
+            System.Net.ServicePointManager.ServerCertificateValidationCallback +=
+            (sender, certificate, chain, errors) => true;
+        }
+
         internal string GetAuthenticationToken()
         {
             if (token == null || token.IsExpired())
