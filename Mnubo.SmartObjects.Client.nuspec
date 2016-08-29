@@ -14,19 +14,19 @@
 	Adding exists APIs.
 	From IEventClient:
             bool EventExists(Guid eventId)
-            IDictionary<string, bool> EventsExist(IList<Guid> eventIds)
-            Task<bool> EventExistsAsync(Guid eventId)
-            Task<IDictionary<string, bool>> EventsExistAsync(IList<Guid> eventIds)
+            IDictionary&lt;string, bool&gt; EventsExist(IList&lt;Guid&gt; eventIds)
+            Task&lt;bool&gt; EventExistsAsync(Guid eventId)
+            Task&lt;IDictionary&lt;string, bool&gt;&gt; EventsExistAsync(IList&lt;Guid&gt; eventIds)
   From IObjectClient:
             bool ObjectExists(string deviceId)
-            IDictionary<string, bool> ObjectsExist(IList<string> deviceIds)
-            Task<bool> ObjectExistsAsync(string deviceId)
-            Task<IDictionary<string, bool>> ObjectsExistAsync(IList<string> deviceIds)
+            IDictionary&lt;string, bool> ObjectsExist(IList&lt;string> deviceIds)
+            Task&lt;bool> ObjectExistsAsync(string deviceId)
+            Task$ltIDictionary&lt;string, bool&gt;&gt; ObjectsExistAsync(IList&lt;string&gt; deviceIds)
   From IOwnerClient:
             bool OwnerExists(string username)
-            IDictionary<string, bool> OwnersExist(IList<string> usernames)
-            Task<bool> OwnerExistsAsync(string username)
-            Task<IDictionary<string, bool>> OwnersExistAsync(IList<string> usernames)        
+            IDictionary&lt;string, bool&gt; OwnersExist(IList&lt;string&gt; usernames)
+            Task&lt;bool&gt; OwnerExistsAsync(string username)
+            Task&lt; IDictionary&lt;string, bool&gt;&gt; OwnersExistAsync(IList&lt;string&gt; usernames)        
 	</releaseNotes>
         <copyright>Copyright 2016</copyright>
         <dependencies>
