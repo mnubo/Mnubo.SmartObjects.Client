@@ -47,8 +47,8 @@ namespace Mnubo.SmartObjects.Client
         /// Allow validate if a list of objects exist.
         /// </summary>
         /// <param name="deviceIds">list of deviceIds to validate. ["deviceA", "deviceB" ]</param>
-        /// <returns>the list of deviceIds with an existing boolean, true if it exists or false if not. [{"deviceA":true},{"deviceB":false}]</returns>
-        IEnumerable<IDictionary<string, bool>> ObjectsExist(IList<string> deviceIds);
+        /// <returns>the dictionary of deviceIds with an existing boolean, true if it exists or false if not. {"deviceA":true},{"deviceB":false}</returns>
+        IDictionary<string, bool> ObjectsExist(IList<string> deviceIds);
 
         /// <summary>
         /// Allows create a new object in async mode.
@@ -90,7 +90,7 @@ namespace Mnubo.SmartObjects.Client
         /// Allow validate if a list of objects exist in async mode.
         /// </summary>
         /// <param name="deviceIds">list of deviceIds to validate. ["deviceA", "deviceB" ]</param>
-        /// <returns>the list of deviceIds with an existing boolean, true if it exists or false if not. [{"deviceA":true},{"deviceB":false}]</returns>
-        Task<IEnumerable<IDictionary<string, bool>>> ObjectsExistAsync(IList<string> deviceIds);
+        /// <returns>the dictionary of deviceIds with an existing boolean, true if it exists or false if not. {"deviceA":true},{"deviceB":false}</returns>
+        Task<IDictionary<string, bool>> ObjectsExistAsync(IList<string> deviceIds);
     }
 }

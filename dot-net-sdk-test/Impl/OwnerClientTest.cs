@@ -455,12 +455,12 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         public void ClientOwnerSyncBatchExists()
         {
             IList<string> input = new List<string>() { "username0", "username1", "username2", "username3" };
-            IEnumerable<IDictionary<string, bool>> expectedResults = new List<Dictionary<string, bool>>()
+            IDictionary<string, bool> expectedResults = new Dictionary<string, bool>()
             {
-                new Dictionary<string, bool>() { { input[0].ToString(), true } },
-                new Dictionary<string, bool>() { { input[1].ToString(), false } },
-                new Dictionary<string, bool>() { { input[2].ToString(), true } },
-                new Dictionary<string, bool>() { { input[3].ToString(), false } }
+                { input[0].ToString(), true },
+                { input[1].ToString(), false },
+                { input[2].ToString(), true },
+                { input[3].ToString(), false }
             };
             withSuccessfulAndFailedResults(client =>
             {
@@ -928,16 +928,16 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         public void ClientOwnerAsyncBatchExists()
         {
             IList<string> input = new List<string>() { "username0", "username1", "username2", "username3" };
-            IEnumerable<IDictionary<string, bool>> expectedResults = new List<Dictionary<string, bool>>()
+            IDictionary<string, bool> expectedResults = new Dictionary<string, bool>()
             {
-                new Dictionary<string, bool>() { { input[0].ToString(), true } },
-                new Dictionary<string, bool>() { { input[1].ToString(), false } },
-                new Dictionary<string, bool>() { { input[2].ToString(), true } },
-                new Dictionary<string, bool>() { { input[3].ToString(), false } }
+                { input[0].ToString(), true },
+                { input[1].ToString(), false },
+                { input[2].ToString(), true },
+                { input[3].ToString(), false }
             };
             withSuccessfulAndFailedResults(client =>
             {
-                Task<IEnumerable<IDictionary<string, bool>>> results = client.OwnersExistAsync(input);
+                Task<IDictionary<string, bool>> results = client.OwnersExistAsync(input);
                 results.Wait();
                 CollectionAssert.AreEqual(expectedResults, results.Result);
             });

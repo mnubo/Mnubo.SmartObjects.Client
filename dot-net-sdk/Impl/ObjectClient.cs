@@ -48,9 +48,9 @@ namespace Mnubo.SmartObjects.Client.Impl
             return ClientUtils.WaitTask<bool>(ObjectExistsAsync(deviceId));
         }
 
-        public IEnumerable<IDictionary<string, bool>> ObjectsExist(IList<string> deviceIds)
+        public IDictionary<string, bool> ObjectsExist(IList<string> deviceIds)
         {
-            return ClientUtils.WaitTask<IEnumerable<IDictionary<string, bool>>>(ObjectsExistAsync(deviceIds));
+            return ClientUtils.WaitTask<IDictionary<string, bool>>(ObjectsExistAsync(deviceIds));
         }
         #endregion
 
@@ -152,7 +152,7 @@ namespace Mnubo.SmartObjects.Client.Impl
             return asynResult != null && asynResult.Count == 1 && asynResult.ContainsKey(deviceId) && asynResult[deviceId];
         }
 
-        public async Task<IEnumerable<IDictionary<string, bool>>> ObjectsExistAsync(IList<string> deviceIds)
+        public async Task<IDictionary<string, bool>> ObjectsExistAsync(IList<string> deviceIds)
         {
             if (deviceIds == null)
             {
@@ -164,7 +164,7 @@ namespace Mnubo.SmartObjects.Client.Impl
                 "objects/exists",
                 JsonConvert.SerializeObject(deviceIds));
 
-            return JsonConvert.DeserializeObject<IEnumerable<IDictionary<string, bool>>>(asynResultAsStr);
+            return ExistResultsDeserializer.DeserializeExistResults(asynResultAsStr);
         }
         #endregion
     }

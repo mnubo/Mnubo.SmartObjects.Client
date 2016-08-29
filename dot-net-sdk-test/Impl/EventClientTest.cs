@@ -180,12 +180,12 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         public void ClientEventSyncPostEventBatchExist()
         {
             IList<Guid> input = new List<Guid>() { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
-            IEnumerable<IDictionary<string, bool>> expectedResults = new List<Dictionary<string, bool>>()
+            IDictionary<string, bool> expectedResults = new Dictionary<string, bool>()
             {
-                new Dictionary<string, bool>() { { input[0].ToString(), true } },
-                new Dictionary<string, bool>() { { input[1].ToString(), false } },
-                new Dictionary<string, bool>() { { input[2].ToString(), true } },
-                new Dictionary<string, bool>() { { input[3].ToString(), false } }
+                { input[0].ToString(), true },
+                { input[1].ToString(), false },
+                { input[2].ToString(), true },
+                { input[3].ToString(), false }
             };
             withSuccessfulAndFailedResults(client =>
             {
@@ -345,12 +345,12 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         public void ClientEventAsyncPostEventBatchExist()
         {
             IList<Guid> input = new List<Guid>() { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
-            IEnumerable<IDictionary<string, bool>> expectedResults = new List<Dictionary<string, bool>>()
+            IDictionary<string, bool> expectedResults = new Dictionary<string, bool>()
             {
-                new Dictionary<string, bool>() { { input[0].ToString(), true } },
-                new Dictionary<string, bool>() { { input[1].ToString(), false } },
-                new Dictionary<string, bool>() { { input[2].ToString(), true } },
-                new Dictionary<string, bool>() { { input[3].ToString(), false } }
+                { input[0].ToString(), true },
+                { input[1].ToString(), false },
+                { input[2].ToString(), true },
+                { input[3].ToString(), false }
             };
             withSuccessfulAndFailedResults(client =>
             {
