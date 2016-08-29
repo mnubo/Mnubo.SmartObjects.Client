@@ -28,9 +28,9 @@ namespace Mnubo.SmartObjects.Client.Impl
             return ClientUtils.WaitTask<bool>(EventExistsAsync(eventId));
         }
 
-        public IEnumerable<IDictionary<string, bool>> EventsExist(IList<Guid> eventIds)
+        public IDictionary<string, bool> EventsExist(IList<Guid> eventIds)
         {
-            return ClientUtils.WaitTask<IEnumerable<IDictionary<string, bool>>>(EventsExistAsync(eventIds));
+            return ClientUtils.WaitTask<IDictionary<string, bool>>(EventsExistAsync(eventIds));
         }
         #endregion
 
@@ -66,7 +66,7 @@ namespace Mnubo.SmartObjects.Client.Impl
             return asynResult != null && asynResult.Count == 1 && asynResult.ContainsKey(eventId.ToString()) && asynResult[eventId.ToString()];
         }
 
-        public async Task<IEnumerable<IDictionary<string, bool>>> EventsExistAsync(IList<Guid> eventIds)
+        public async Task<IDictionary<string, bool>> EventsExistAsync(IList<Guid> eventIds)
         {
             if (eventIds == null)
             {
@@ -78,7 +78,7 @@ namespace Mnubo.SmartObjects.Client.Impl
                 "events/exists",
                 JsonConvert.SerializeObject(eventIds));
 
-            return JsonConvert.DeserializeObject<IEnumerable<IDictionary<string, bool>>>(asynResultAsStr);
+            return ExistResultsDeserializer.DeserializeExistResults(asynResultAsStr);
         }
         #endregion
     }
