@@ -3,7 +3,7 @@
 Introduction
 ============
 
-This is a .NET implemenation of the [API documentation](https://sop.mtl.mnubo.com/apps/doc/?i=t).
+This is a .NET implementation of the [API documentation](https://sop.mtl.mnubo.com/apps/doc/?i=t).
 
 Architecture
 ============
@@ -35,7 +35,7 @@ Download the source code and include it in your .NET Application project.
 Usage
 =====
 
-To get a client instance use the `ClientFactory`  Class. 
+To get a client instance use the `ClientFactory`  Class.
 
 ```
     ClientConfig config = new ClientConfig.Builder() {
@@ -96,7 +96,7 @@ You can use the `client.Owners` synchronous methods:
 	bool doesExists = client.Owners.OwnerExists("theUsername");
 
 	//Check if a batch of owners are provisioned
-	IEnumerable<IDictionary<string, bool>> existResults = client.Owners.OwnersExist(new List<string>() { "theUsernameA", "theUsernameB" });
+	IDictionary<string, bool> existResults = client.Owners.OwnersExist(new List<string>() { "theUsernameA", "theUsernameB" });
 ```
 
 Or you can use the `client.Owners` asynchronous methods:
@@ -146,7 +146,7 @@ Or you can use the `client.Owners` asynchronous methods:
 	Task<bool> doesExists = client.Owners.OwnerExistsAsync("theUsername");
 
 	//Check if a batch of owners are provisioned
-	Task<IEnumerable<IDictionary<string, bool>>> existResults = client.Owners.OwnersExistAsync(new List<string>() { "theUsernameA", "theUsernameB" });
+	Task<IDictionary<string, bool>> existResults = client.Owners.OwnersExistAsync(new List<string>() { "theUsernameA", "theUsernameB" });
 ```
 
 Working with objects
@@ -192,7 +192,7 @@ You can use the `client.Objects` synchronous methods:
 	bool doesExists = client.Objects.ObjectExists("theDeviceId");
 
 	//Check if a batch of object is provisioned
-	IEnumerable<IDictionary<string, bool>> existResults = client.Objects.ObjectsExist(new List<string>() { "theDeviceIdA", "theDeviceIdB" });
+	IDictionary<string, bool> existResults = client.Objects.ObjectsExist(new List<string>() { "theDeviceIdA", "theDeviceIdB" });
 ```
 
 Or you can use the `client.Objects` asynchronous methods:
@@ -236,7 +236,7 @@ Or you can use the `client.Objects` asynchronous methods:
 	Task<bool> doesExists = client.Objects.ObjectExistsAsync("theDeviceId");
 
 	//Check if a batch of object is provisioned
-	Task<IEnumerable<IDictionary<string, bool>>> existResults = client.Objects.ObjectsExistAsync(new List<string>() { "theDeviceIdA", "theDeviceIdB" });
+	Task<IDictionary<string, bool>> existResults = client.Objects.ObjectsExistAsync(new List<string>() { "theDeviceIdA", "theDeviceIdB" });
 ```
 
 Working with events
@@ -277,7 +277,7 @@ You can use the `client.Events` synchronous methods:
 	bool doesExists = client.Events.EventExists(Guid.Parse("83250b2e-28b0-4d9f-82cd-d7bad2230d4b"));
 
 	//Check if a batch of event IDs exists
-	IEnumerable<IDictionary<string, bool>> existResults = client.Events.EventsExist(new List<guid>() { Guid.Parse("0254f4df-30e3-47eb-bb67-48df1c91430a"), Guid.Parse("fcc3b165-45a6-42f9-80dd-dce27e753dea") });
+	IDictionary<string, bool> existResults = client.Events.EventsExist(new List<guid>() { Guid.Parse("0254f4df-30e3-47eb-bb67-48df1c91430a"), Guid.Parse("fcc3b165-45a6-42f9-80dd-dce27e753dea") });
 ```
 
 Or you can use the `client.Events` asynchronous methods:
@@ -316,7 +316,7 @@ Or you can use the `client.Events` asynchronous methods:
 	Task<bool> doesExists = client.Events.EventExists(Guid.Parse("83250b2e-28b0-4d9f-82cd-d7bad2230d4b"));
 
 	//Check if a batch of event IDs exists
-	Task<IEnumerable<IDictionary<string, bool>>> existResults = client.Events.EventsExist(new List<guid>() { Guid.Parse("0254f4df-30e3-47eb-bb67-48df1c91430a"), Guid.Parse("fcc3b165-45a6-42f9-80dd-dce27e753dea") });
+	Task<IDictionary<string, bool>> existResults = client.Events.EventsExist(new List<guid>() { Guid.Parse("0254f4df-30e3-47eb-bb67-48df1c91430a"), Guid.Parse("fcc3b165-45a6-42f9-80dd-dce27e753dea") });
 ```
 
 Working with Restitution (Searchs)
