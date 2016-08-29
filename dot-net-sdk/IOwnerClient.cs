@@ -61,8 +61,8 @@ namespace Mnubo.SmartObjects.Client
         /// Allow validate if a list of owners exist.
         /// </summary>
         /// <param name="usernames">list of usernames to validate. ["userA", "userB" ]</param>
-        /// <returns>the list of usernames with an existing boolean, true if it exists or false if not. [{"userA":true},{"userB":false}]</returns>
-        IEnumerable<IDictionary<string, bool>> OwnersExist(IList<string> usernames);
+        /// <returns>the dictionary of usernames with an existing boolean, true if it exists or false if not. {"userA":true},{"userB":false}</returns>
+        IDictionary<string, bool> OwnersExist(IList<string> usernames);
 
         /// <summary>
         /// Allows create a new owner in async mode.
@@ -121,7 +121,7 @@ namespace Mnubo.SmartObjects.Client
         /// Allow validate if a list of owners exist in async mode.
         /// </summary>
         /// <param name="usernames">list of usernames to validate. ["userA", "userB" ]</param>
-        /// <returns>the list of usernames with an existing boolean, true if it exists or false if not. [{"userA":true},{"userB":false}]</returns>
-        Task<IEnumerable<IDictionary<string, bool>>> OwnersExistAsync(IList<string> usernames);
+        /// <returns>the dictionary of usernames with an existing boolean, true if it exists or false if not. {"userA":true},{"userB":false}</returns>
+        Task<IDictionary<string, bool>> OwnersExistAsync(IList<string> usernames);
     }
 }

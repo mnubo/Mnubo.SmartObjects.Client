@@ -31,8 +31,8 @@ namespace Mnubo.SmartObjects.Client
         /// Allow validate if a list of events exist.
         /// </summary>
         /// <param name="eventIds">list of eventIds to validate. ["eventA", "eventB" ]</param>
-        /// <returns>the list of eventIds with an existing boolean, true if it exists or false if not. [{"eventA":true},{"eventB":false}]</returns>
-        IEnumerable<IDictionary<string, bool>> EventsExist(IList<Guid> eventIds);
+        /// <returns>the dictionary of eventIds with an existing boolean, true if it exists or false if not. {"eventA":true},{"eventB":false}</returns>
+        IDictionary<string, bool> EventsExist(IList<Guid> eventIds);
 
         /// <summary>
         /// Allows post events to several objects. In this case, the device id is taken
@@ -56,7 +56,7 @@ namespace Mnubo.SmartObjects.Client
         /// Allow validate if a list of events exist in async mode.
         /// </summary>
         /// <param name="eventIds">list of eventIds to validate. ["eventA", "eventB" ]</param>
-        /// <returns>the list of eventIds with an existing boolean, true if it exists or false if not. [{"eventA":true},{"eventB":false}]</returns>
-        Task<IEnumerable<IDictionary<string, bool>>> EventsExistAsync(IList<Guid> eventIds);
+        /// <returns>the dictionary of eventIds with an existing boolean, true if it exists or false if not. {"eventA":true},{"eventB":false}</returns>
+        Task<IDictionary<string, bool>> EventsExistAsync(IList<Guid> eventIds);
     }
 }

@@ -68,6 +68,7 @@
     <Compile Include="Impl\ClientUtils.cs" />
     <Compile Include="Impl\ResultDeserializer.cs" />
     <Compile Include="Impl\RestitutionClient.cs" />
+    <Compile Include="Impl\ExistResultsDeserializer.cs" />
     <Compile Include="Impl\ResultSetDeserializer.cs" />
     <Compile Include="IRestitutionClient.cs" />
     <Compile Include="Models\Event.cs" />
