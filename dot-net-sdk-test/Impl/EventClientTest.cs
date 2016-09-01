@@ -51,18 +51,18 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
 
         #region Sync Calls
         [Test()]
-        public void ClientEventSyncPostFullEvent()
+        public void ClientEventSyncSendFullEvent()
         {
             withSuccessfulResults(client => 
             {
                 IEnumerable<EventResult> expected;
-                var actual = client.Post(TestUtils.CreateEventsAndSuccessfulResults("deviceId", 2, out expected));
+                var actual = client.Send(TestUtils.CreateEventsAndSuccessfulResults("deviceId", 2, out expected));
                 CollectionAssert.AreEqual(expected, actual);
             });
         }
 
         [Test()]
-        public void ClientEventSyncPostBasicEvent()
+        public void ClientEventSyncSendBasicEvent()
         {
             withSuccessfulResults(client =>
             {
@@ -72,7 +72,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                     new EventResult(Guid.Empty, true, EventResult.ResultStates.success, null),
                 };
 
-                var actual = client.Post(
+                var actual = client.Send(
                     new List<Event>()
                     {
                         TestUtils.CreateBasicEvent("deviceId"),
@@ -84,7 +84,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         }
 
         [Test()]
-        public void ClientEventSyncPostWithBadRequest()
+        public void ClientEventSyncSendWithBadRequest()
         {
             withFailedResults(client =>
             {
@@ -94,7 +94,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                     new EventResult(Guid.Empty, true, EventResult.ResultStates.success, null),
                 };
 
-                Assert.That(() => client.Post(
+                Assert.That(() => client.Send(
                     new List<Event>()
                     {
                         TestUtils.CreateBasicEvent("deviceId"),
@@ -106,7 +106,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         }
 
         [Test()]
-        public void ClientEventSyncPostWithMultiResults()
+        public void ClientEventSyncSendWithMultiResults()
         {
             withSuccessfulAndFailedResults(client =>
             {
@@ -119,7 +119,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                     new EventResult(Guid.Empty, false, EventResult.ResultStates.success, null)
                 };
 
-                var actual = client.Post(
+                var actual = client.Send(
                     new List<Event>()
                     {
                         TestUtils.CreateEventWithEventId("deviceId", eventId),
@@ -141,7 +141,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         {
             withSuccessfulResults(client =>
             {
-                Assert.That(() => client.Post(null),
+                Assert.That(() => client.Send(null),
                     Throws.TypeOf<ArgumentException>()
                     .With.Message.EqualTo("Event list cannot be empty or null."));
             });
@@ -152,14 +152,14 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         {
             withSuccessfulResults(client =>
             {
-                Assert.That(() => client.Post(new List<Event>()),
+                Assert.That(() => client.Send(new List<Event>()),
                     Throws.TypeOf<ArgumentException>()
                     .With.Message.EqualTo("Event list cannot be empty or null."));
             });
         }
 
         [Test()]
-        public void ClientEventSyncPostEventExistsWhenIdExists()
+        public void ClientEventSyncSendEventExistsWhenIdExists()
         {
             withSuccessfulResults(client =>
             {
@@ -168,7 +168,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         }
 
         [Test()]
-        public void ClientEventSyncPostEventExistsWhenIdNotExists()
+        public void ClientEventSyncSendEventExistsWhenIdNotExists()
         {
             withSuccessfulAndFailedResults(client =>
             {
@@ -177,7 +177,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         }
 
         [Test()]
-        public void ClientEventSyncPostEventBatchExist()
+        public void ClientEventSyncSendEventBatchExist()
         {
             IList<Guid> input = new List<Guid>() { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
             IDictionary<string, bool> expectedResults = new Dictionary<string, bool>()
@@ -206,19 +206,19 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
 
         #region Async Calls
         [Test()]
-        public void ClientEventAsyncPostFullEvent()
+        public void ClientEventAsyncSendFullEvent()
         {
             withSuccessfulResults(client =>
             {
                 IEnumerable<EventResult> expected;
-                var actual = client.PostAsync(TestUtils.CreateEventsAndSuccessfulResults("deviceId", 2, out expected));
+                var actual = client.SendAsync(TestUtils.CreateEventsAndSuccessfulResults("deviceId", 2, out expected));
                 actual.Wait();
                 CollectionAssert.AreEqual(expected, actual.Result);
             });
         }
 
         [Test()]
-        public void ClientEventAsyncPostBasicEvent()
+        public void ClientEventAsyncSendBasicEvent()
         {
             withSuccessfulResults(client =>
             {
@@ -228,7 +228,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                     new EventResult(Guid.Empty, true, EventResult.ResultStates.success, null),
                 };
 
-                var actual = client.PostAsync(
+                var actual = client.SendAsync(
                     new List<Event>()
                     {
                         TestUtils.CreateBasicEvent("deviceId"),
@@ -241,7 +241,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         }
 
         [Test()]
-        public void ClientEventAsyncPostWithBadRequest()
+        public void ClientEventAsyncSendWithBadRequest()
         {
             withFailedResults(client =>
             {
@@ -251,7 +251,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                     new EventResult(Guid.Empty, true, EventResult.ResultStates.success, null),
                 };
 
-                Assert.That(() => client.PostAsync(
+                Assert.That(() => client.SendAsync(
                     new List<Event>()
                     {
                         TestUtils.CreateBasicEvent("deviceId"),
@@ -264,7 +264,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         }
 
         [Test()]
-        public void ClientEventAsyncPostWithMultiResults()
+        public void ClientEventAsyncSendWithMultiResults()
         {
             withSuccessfulAndFailedResults(client =>
             {
@@ -277,7 +277,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                     new EventResult(Guid.Empty, false, EventResult.ResultStates.success, null)
                 };
 
-                var actual = client.PostAsync(
+                var actual = client.SendAsync(
                     new List<Event>()
                     {
                         TestUtils.CreateEventWithEventId("deviceId", eventId),
@@ -300,7 +300,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         {
             withSuccessfulResults(client =>
             {
-                Assert.That(() => client.PostAsync(null).Wait(),
+                Assert.That(() => client.SendAsync(null).Wait(),
                     Throws.TypeOf<AggregateException>()
                     .With.InnerException.TypeOf<ArgumentException>()
                     .With.InnerException.Message.EqualTo("Event list cannot be empty or null."));
@@ -312,7 +312,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         {
             withSuccessfulResults(client =>
             {
-                Assert.That(() => client.PostAsync(new List<Event>()).Wait(),
+                Assert.That(() => client.SendAsync(new List<Event>()).Wait(),
                     Throws.TypeOf<AggregateException>()
                     .With.InnerException.TypeOf<ArgumentException>()
                     .With.InnerException.Message.EqualTo("Event list cannot be empty or null."));
@@ -320,7 +320,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         }
 
         [Test()]
-        public void ClientEventAsyncPostEventExistsWhenIdExists()
+        public void ClientEventAsyncSendEventExistsWhenIdExists()
         {
             withSuccessfulResults(client =>
             {
@@ -331,7 +331,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         }
 
         [Test()]
-        public void ClientEventAsyncPostEventExistsWhenIdNotExists()
+        public void ClientEventAsyncSendEventExistsWhenIdNotExists()
         {
             withSuccessfulAndFailedResults(client =>
             {
@@ -342,7 +342,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         }
 
         [Test()]
-        public void ClientEventAsyncPostEventBatchExist()
+        public void ClientEventAsyncSendEventBatchExist()
         {
             IList<Guid> input = new List<Guid>() { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
             IDictionary<string, bool> expectedResults = new Dictionary<string, bool>()

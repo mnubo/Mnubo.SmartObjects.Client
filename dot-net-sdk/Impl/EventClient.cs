@@ -18,9 +18,14 @@ namespace Mnubo.SmartObjects.Client.Impl
         }
 
         #region Sync calls
+        public IEnumerable<EventResult> Send(IEnumerable<Event> events)
+        {
+            return ClientUtils.WaitTask(SendAsync(events));
+        }
+
         public IEnumerable<EventResult> Post(IEnumerable<Event> events)
         {
-            return ClientUtils.WaitTask(PostAsync(events));
+            return Send(events);
         }
 
         public bool EventExists(Guid eventId)
@@ -35,7 +40,7 @@ namespace Mnubo.SmartObjects.Client.Impl
         #endregion
 
         #region Async Calls
-        public async Task<IEnumerable<EventResult>> PostAsync(IEnumerable<Event> events)
+        public async Task<IEnumerable<EventResult>> SendAsync(IEnumerable<Event> events)
         {
             if (events == null || events.Count() == 0)
             {
@@ -47,6 +52,11 @@ namespace Mnubo.SmartObjects.Client.Impl
                     EventSerializer.SerializeEvents(events));
 
             return JsonConvert.DeserializeObject<IEnumerable<EventResult>>(asyncResult);        
+        }
+
+        public async Task<IEnumerable<EventResult>> PostAsync(IEnumerable<Event> events)
+        {
+            return await SendAsync(events);
         }
 
         public async Task<bool> EventExistsAsync(Guid eventId)

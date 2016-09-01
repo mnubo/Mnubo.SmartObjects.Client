@@ -262,7 +262,7 @@ You can use the `client.Events` synchronous methods:
     };
 
 	//Scan results to get individual result of event
-    IEnumerable<EventResult> results = client.Events.Post(new List<Event>() { event1, event2 });
+    IEnumerable<EventResult> results = client.Events.Send(new List<Event>() { event1, event2 });
 	for(EventResult result in results)
 	{
 		Console.WriteLine(string.Format("id={0} objectExists={1} result={2} message={3}",
@@ -300,7 +300,7 @@ Or you can use the `client.Events` asynchronous methods:
     };
 
 	//Scan results to get individual result of event
-    Task<IEnumerable<EventResult>> results = client.Events.Post(new List<Event>() { event1, event2 });
+    Task<IEnumerable<EventResult>> results = client.Events.Send(new List<Event>() { event1, event2 });
 	results.Wait();
 	for(EventResult result in results.Result)
 	{

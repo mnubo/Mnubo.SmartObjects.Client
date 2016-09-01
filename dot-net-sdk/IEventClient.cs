@@ -11,13 +11,16 @@ namespace Mnubo.SmartObjects.Client
     public interface IEventClient
     {
         /// <summary>
-        /// Allows post events to several objects. In this case, the device id is taken
-        /// directly from each event. Thus, a post will be sent by each event in the list in sync mode.
-        /// The API return an individual result for each event in the same order as they have been
+        /// Allows sending events to several objects in batch mode. In this case, the device id is taken
+        /// directly from each event. 
+        /// The API returns an individual result for each event in the same order as they have been
         /// sent.  
         /// </summary>
         /// <param name="events">list the events to send</param>
         /// <returns>Result of each element in the batch</returns> 
+        IEnumerable<EventResult> Send(IEnumerable<Event> events);
+
+        [Obsolete("Please use `Send(events)` instead. Will be removed in a future version.")]
         IEnumerable<EventResult> Post(IEnumerable<Event> events);
 
         /// <summary>
@@ -35,14 +38,16 @@ namespace Mnubo.SmartObjects.Client
         IDictionary<string, bool> EventsExist(IList<Guid> eventIds);
 
         /// <summary>
-        /// Allows post events to several objects. In this case, the device id is taken
-        /// directly from each event. Thus, a post will be sent by each event in the list in async mode
-        /// The API return an individual result for each event in the same order as they have been
+        /// Allows sending events to several objects in batch mode. In this case, the device id is taken
+        /// directly from each event.
+        /// The API returns an individual result for each event in the same order as they have been
         /// sent.
         /// </summary>
         /// <param name="events">list the events to send</param>
         /// <returns>Result of each element in the batch</returns> 
+        Task<IEnumerable<EventResult>> SendAsync(IEnumerable<Event> events);
 
+        [Obsolete("Please use `SendAsync(events)` instead. Will be removed in a future version.")]
         Task<IEnumerable<EventResult>> PostAsync(IEnumerable<Event> events);
 
         /// <summary>
