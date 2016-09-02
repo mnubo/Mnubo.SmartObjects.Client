@@ -38,6 +38,11 @@ namespace Mnubo.SmartObjects.Client.Config
         /// </summary>
         public long MaxResponseContentBufferSize { get; }
 
+        /// <summary>
+        /// get if compressing data enabled
+        /// </summary>
+        public bool CompressionEnabled { get; }
+
         private ClientConfig() { }
 
         private ClientConfig(
@@ -45,7 +50,8 @@ namespace Mnubo.SmartObjects.Client.Config
             String consumerKey,
             String consumerSecret,
             int clientTimeout,
-            long maxResponseContentBufferSize)
+            long maxResponseContentBufferSize,
+            bool compressionEnabled)
         {
             if (String.IsNullOrEmpty(consumerKey))
             {
@@ -72,6 +78,7 @@ namespace Mnubo.SmartObjects.Client.Config
             ConsumerSecret = consumerSecret;
             ClientTimeout = clientTimeout;
             MaxResponseContentBufferSize = maxResponseContentBufferSize;
+            CompressionEnabled = compressionEnabled;
         }
 
         /// <summary>
@@ -80,7 +87,8 @@ namespace Mnubo.SmartObjects.Client.Config
         public sealed class Builder
         {
             public const int DefaultTimeout = 30000;
-            public const long DefaultMaxResponseCcontentBufferSize = 1000000;
+            public const long DefaultMaxResponseContentBufferSize = 1000000;
+            public const bool DefaultCompressionEnabled = true;
 
             /// <summary>
             /// build a new immutable mnubo's config instance from the builder.
@@ -116,10 +124,16 @@ namespace Mnubo.SmartObjects.Client.Config
             /// </summary>
             public long MaxResponseContentBufferSize { get; set; }
 
+            /// <summary>
+            /// Enable compressing data (gzip format) for network requests (default: true)
+            /// </summary>
+            public bool CompressionEnabled { get; set; }
+
             public Builder()
             {
                 ClientTimeout = DefaultTimeout;
-                MaxResponseContentBufferSize = DefaultMaxResponseCcontentBufferSize;
+                MaxResponseContentBufferSize = DefaultMaxResponseContentBufferSize;
+                CompressionEnabled = DefaultCompressionEnabled;
             }
 
             public ClientConfig Build()
@@ -129,7 +143,8 @@ namespace Mnubo.SmartObjects.Client.Config
                     ConsumerKey,
                     ConsumerSecret,
                     ClientTimeout,
-                    MaxResponseContentBufferSize);
+                    MaxResponseContentBufferSize,
+                    CompressionEnabled);
             }
         }
     }
