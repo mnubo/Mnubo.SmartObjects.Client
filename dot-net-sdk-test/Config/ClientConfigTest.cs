@@ -21,7 +21,8 @@ namespace Mnubo.SmartObjects.Client.Test.Config
             Assert.AreEqual(config.ConsumerKey, "CK");
             Assert.AreEqual(config.ConsumerSecret, "CS");
             Assert.AreEqual(config.ClientTimeout, ClientConfig.Builder.DefaultTimeout);
-            Assert.AreEqual(config.MaxResponseContentBufferSize, ClientConfig.Builder.DefaultMaxResponseCcontentBufferSize);
+            Assert.AreEqual(config.MaxResponseContentBufferSize, ClientConfig.Builder.DefaultMaxResponseContentBufferSize);
+            Assert.AreEqual(config.CompressionEnabled, true);
         }
 
         [Test()]
@@ -33,7 +34,8 @@ namespace Mnubo.SmartObjects.Client.Test.Config
                 ConsumerKey = "CK",
                 ConsumerSecret = "CS",
                 ClientTimeout = 50000,
-                MaxResponseContentBufferSize = 1000000
+                MaxResponseContentBufferSize = 1000000,
+                CompressionEnabled = false
             };
 
             Assert.AreEqual(config.Environment, ClientConfig.Environments.Sandbox);
@@ -41,6 +43,7 @@ namespace Mnubo.SmartObjects.Client.Test.Config
             Assert.AreEqual(config.ConsumerSecret, "CS");
             Assert.AreEqual(config.ClientTimeout, 50000);
             Assert.AreEqual(config.MaxResponseContentBufferSize, 1000000);
+            Assert.AreEqual(config.CompressionEnabled, false);
         }
 
 
@@ -53,7 +56,8 @@ namespace Mnubo.SmartObjects.Client.Test.Config
                 ConsumerKey = "CK",
                 ConsumerSecret = "CS",
                 ClientTimeout = 155,
-                MaxResponseContentBufferSize = 166
+                MaxResponseContentBufferSize = 166,
+                CompressionEnabled = true
             };
 
             Assert.AreEqual(config.Environment, ClientConfig.Environments.Sandbox);
@@ -61,6 +65,7 @@ namespace Mnubo.SmartObjects.Client.Test.Config
             Assert.AreEqual(config.ConsumerSecret, "CS");
             Assert.AreEqual(config.ClientTimeout, 155);
             Assert.AreEqual(config.MaxResponseContentBufferSize, 166);
+            Assert.AreEqual(config.CompressionEnabled, true);
         }
 
         [TestCase(ClientConfig.Environments.Sandbox, null, "CS", 155, 166, "securityConsumerKey property cannot be blank.")]

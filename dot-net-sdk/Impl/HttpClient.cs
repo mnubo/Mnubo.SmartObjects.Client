@@ -9,6 +9,7 @@ using System.Net;
 using Newtonsoft.Json;
 using System.IO;
 using System.IO.Compression;
+using System.Net.Http.Headers;
 
 namespace Mnubo.SmartObjects.Client.Impl
 {
@@ -99,15 +100,14 @@ namespace Mnubo.SmartObjects.Client.Impl
                 {
                     if(compressionEnabled)
                     {
-                        byte[] data = Encoding.UTF8.GetBytes(body);
-                        MemoryStream stream = new MemoryStream();
-                        using (GZipStream gz = new GZipStream(stream, CompressionMode.Compress, true)) 
+                        var data = Encoding.UTF8.GetBytes(body);
+                        var stream = new MemoryStream();
+                        using (var gz = new GZipStream(stream, CompressionMode.Compress)) 
                         {
                             gz.Write(data, 0, data.Length);
-                            gz.Flush();
                         }
 
-                        byte[] compressed = stream.ToArray();
+                        var compressed = stream.ToArray();
                         stream.Dispose();
                         
                         request.Content = new ByteArrayContent(compressed);
@@ -115,8 +115,10 @@ namespace Mnubo.SmartObjects.Client.Impl
                     }
                     else
                     {
-                        request.Content = new StringContent(body, Encoding.UTF8, "application/json");
+                        request.Content = new StringContent(body, Encoding.UTF8);
                     }
+
+                    request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 }
 
                 response = await client.SendAsync(request);

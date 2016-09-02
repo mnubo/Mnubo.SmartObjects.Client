@@ -8,6 +8,8 @@ using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,7 +31,32 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             var entity = request.Body;
             byte[] data = new byte[entity.Length];
             entity.Read(data, 0, (int)entity.Length);
-            return System.Text.Encoding.Default.GetString(data);
+
+            if ( IsGzipCompressed(request) )
+            {
+                return GzipDecompress(data);
+            }
+            else
+            {
+                return System.Text.Encoding.Default.GetString(data);
+            }
+        }
+
+        internal static bool IsGzipCompressed(Request request)
+        {
+            return request.Headers.Any(
+                header => string.Equals(header.Key, "Content-Encoding", StringComparison.OrdinalIgnoreCase) && header.Value.Contains("gzip")
+            );
+        }
+
+        internal static string GzipDecompress(byte[] data)
+        {
+            using (var stream = new MemoryStream(data))
+            using (var gz = new GZipStream(stream, CompressionMode.Decompress))
+            using (var reader = new StreamReader(gz))
+            {
+                return reader.ReadToEnd();
+            }
         }
     }
 
