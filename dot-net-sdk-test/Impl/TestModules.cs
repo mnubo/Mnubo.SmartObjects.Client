@@ -218,6 +218,11 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                     return FailedAPIsMockModule.badRequest();
                 }
 
+                if (!this.Request.Headers.AcceptEncoding.Contains("gzip"))
+                {
+                    return FailedAPIsMockModule.badRequest();
+                }
+
                 var body = NancyUtils.BodyAsString(this.Request);
                 if(body != TestJsonString)
                 {
