@@ -7,6 +7,9 @@ using System.Text;
 using static Mnubo.SmartObjects.Client.Config.ClientConfig;
 using System.Net;
 using Newtonsoft.Json;
+using System.IO;
+using System.IO.Compression;
+using System.Net.Http.Headers;
 
 namespace Mnubo.SmartObjects.Client.Impl
 {
@@ -27,33 +30,42 @@ namespace Mnubo.SmartObjects.Client.Impl
         private readonly string hostname;
         private readonly int hostPort;
         private readonly string basePath;
+        private readonly bool compressionEnabled = ClientConfig.Builder.DefaultCompressionEnabled;
         private readonly CredentialHandler credentialHandler;
-        private readonly Environments enviroment;
+        private readonly Environments environment;
+        private readonly System.Net.Http.HttpClientHandler handler;
         private readonly System.Net.Http.HttpClient client;
 
         internal HttpClient(ClientConfig config)
         {
-            client = new System.Net.Http.HttpClient();
+            // receiving compressed data is always allowed
+            handler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate };
+
+            client = new System.Net.Http.HttpClient(handler);
             client.Timeout = TimeSpan.FromMilliseconds(config.ClientTimeout);
             client.MaxResponseContentBufferSize = config.MaxResponseContentBufferSize;
             
             credentialHandler = new CredentialHandler(config, client);
 
-            enviroment = config.Environment;
+            environment = config.Environment;
+            compressionEnabled = config.CompressionEnabled;
             clientSchema = DefaultClientSchema;
-            hostname = HttpClient.addressMapping[enviroment];
+            hostname = HttpClient.addressMapping[environment];
             hostPort = DefaultHostPort;
             basePath = DefaultBasePath;
         }
 
         internal HttpClient(ClientConfig config, string clientSchema, string hostname, int hostPort, string basePath )
         {
-            client = new System.Net.Http.HttpClient();
+            handler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate };
+
+            client = new System.Net.Http.HttpClient(handler);
             client.Timeout = TimeSpan.FromMilliseconds(config.ClientTimeout);
             client.MaxResponseContentBufferSize = config.MaxResponseContentBufferSize;
             credentialHandler = new CredentialHandler(config, client, clientSchema, hostname, hostPort);
 
-            enviroment = config.Environment;
+            environment = config.Environment;
+            compressionEnabled = config.CompressionEnabled;
             this.clientSchema = clientSchema;
             this.hostname = hostname;
             this.hostPort = hostPort;
@@ -88,7 +100,27 @@ namespace Mnubo.SmartObjects.Client.Impl
 
                 if (!string.IsNullOrEmpty(body))
                 {
-                    request.Content = new StringContent(body, Encoding.UTF8, "application/json");
+                    if(compressionEnabled)
+                    {
+                        var data = Encoding.UTF8.GetBytes(body);
+                        var stream = new MemoryStream();
+                        using (var gz = new GZipStream(stream, CompressionMode.Compress)) 
+                        {
+                            await gz.WriteAsync(data, 0, data.Length);
+                        }
+
+                        var compressed = stream.ToArray();
+                        stream.Dispose();
+                        
+                        request.Content = new ByteArrayContent(compressed);
+                        request.Content.Headers.ContentEncoding.Add("gzip");
+                    }
+                    else
+                    {
+                        request.Content = new StringContent(body, Encoding.UTF8);
+                    }
+
+                    request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 }
 
                 response = await client.SendAsync(request);

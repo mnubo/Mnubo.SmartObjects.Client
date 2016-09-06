@@ -1,9 +1,11 @@
 # Mnubo's SmartObjects platform .NET client
 
+
 Introduction
 ============
 
 This is a .NET implementation of the [API documentation](https://sop.mtl.mnubo.com/apps/doc/?i=t).
+
 
 Architecture
 ============
@@ -16,28 +18,32 @@ This SDK supports both synchronous and asynchronous (non-blocking) calls. As see
 
 Client token authentication is supported. User token authentication is not supported yet.
 
+
 Prerequisites
 =============
 
 - SDK requires .NET 4.5.1 or higher.
 - SDK has been built using nuget.
 
+
 Installation & Configuration
 ============================
 
 Include the mnubo client in your .NET application using Nuget (Coming Soon).
+
 
 Download source code
 ---------------------
 
 Download the source code and include it in your .NET Application project.
 
+
 Usage
 =====
 
 To get a client instance use the `ClientFactory`  Class.
 
-```
+```c#
     ClientConfig config = new ClientConfig.Builder() {
         Environment = Environments.Sandbox,
         ConsumerKey = "theConsumerKey",
@@ -47,12 +53,14 @@ To get a client instance use the `ClientFactory`  Class.
     var client = ClientFactory.Create(config);
 ```
 
+By default, all requests are compressed using `gzip`, this can be disabled by setting the `CompressionEnabled` of the configuration to `false`.
+
 Working with owners
 -------------------
 
 You can use the `client.Owners` synchronous methods:
 
-```
+```c#
     Owner owner1 = new Owner.Builder() {
         Username = "theUsername1",
         Password = "thePassword"
@@ -101,7 +109,7 @@ You can use the `client.Owners` synchronous methods:
 
 Or you can use the `client.Owners` asynchronous methods:
 
-```
+```c#
     Owner owner1 = new Owner.Builder() {
         Username = "theUsername1",
         Password = "thePassword"
@@ -149,12 +157,13 @@ Or you can use the `client.Owners` asynchronous methods:
 	Task<IDictionary<string, bool>> existResults = client.Owners.OwnersExistAsync(new List<string>() { "theUsernameA", "theUsernameB" });
 ```
 
+
 Working with objects
 --------------------
 
 You can use the `client.Objects` synchronous methods:
 
-```
+```c#
     SmartObject smartObject1 = new SmartObject.Builder() {
         DeviceId = "theDeviceId1",
         ObjectType = "theObjectType"
@@ -197,7 +206,7 @@ You can use the `client.Objects` synchronous methods:
 
 Or you can use the `client.Objects` asynchronous methods:
 
-```
+```c#
     SmartObject smartObject1 = new SmartObject.Builder() {
         DeviceId = "theDeviceId1",
         ObjectType = "theObjectType"
@@ -239,12 +248,13 @@ Or you can use the `client.Objects` asynchronous methods:
 	Task<IDictionary<string, bool>> existResults = client.Objects.ObjectsExistAsync(new List<string>() { "theDeviceIdA", "theDeviceIdB" });
 ```
 
+
 Working with events
 -------------------
 
 You can use the `client.Events` synchronous methods:
 
-```
+```c#
     Event event1 = new Event.Builder() {
         EventType = "theEventType",
         DeviceId = "aDeviceId",
@@ -282,7 +292,7 @@ You can use the `client.Events` synchronous methods:
 
 Or you can use the `client.Events` asynchronous methods:
 
-```
+```c#
     Event event1 = new Event.Builder() {
         EventType = "theEventType",
         DeviceId = "aDeviceId",
@@ -319,12 +329,13 @@ Or you can use the `client.Events` asynchronous methods:
 	Task<IDictionary<string, bool>> existResults = client.Events.EventsExist(new List<guid>() { Guid.Parse("0254f4df-30e3-47eb-bb67-48df1c91430a"), Guid.Parse("fcc3b165-45a6-42f9-80dd-dce27e753dea") });
 ```
 
+
 Working with Restitution (Searchs)
 -------------------
 
 You can use the `client.Restitution` synchronous methods:
 
-```
+```c#
 	//To get all Datasets associated to the Namespace:
     List<DataSet> datasets = client.Restitution.GetDataSets();
 
@@ -335,7 +346,7 @@ You can use the `client.Restitution` synchronous methods:
 
 Or you can use the `client.Restitution` asynchronous methods:
 
-```
+```c#
 	//To get all Datasets associated to the Namespace:
     Task<List<DataSet>> datasets = client.Restitution.GetDataSetsAsync();
 
@@ -345,6 +356,7 @@ Or you can use the `client.Restitution` asynchronous methods:
 ```
 
 Please take a look in the documentation of Mnubo to get more detail about how to use the Search API.
+
 
 References
 ==========

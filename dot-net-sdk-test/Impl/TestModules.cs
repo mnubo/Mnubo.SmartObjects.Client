@@ -8,6 +8,8 @@ using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,7 +31,43 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             var entity = request.Body;
             byte[] data = new byte[entity.Length];
             entity.Read(data, 0, (int)entity.Length);
-            return System.Text.Encoding.Default.GetString(data);
+
+            if ( IsGzipCompressed(request) )
+            {
+                return GzipDecompress(data);
+            }
+            else
+            {
+                return Encoding.Default.GetString(data);
+            }
+        }
+
+        internal static bool IsGzipCompressed(Request request)
+        {
+            return request.Headers.Any(
+                header => string.Equals(header.Key, "Content-Encoding", StringComparison.OrdinalIgnoreCase) && header.Value.Contains("gzip")
+            );
+        }
+
+        internal static string GzipDecompress(byte[] data)
+        {
+            using (var stream = new MemoryStream(data))
+            using (var gz = new GZipStream(stream, CompressionMode.Decompress))
+            using (var reader = new StreamReader(gz))
+            {
+                return reader.ReadToEnd();
+            }
+        }
+
+        internal static byte[] GzipCompress(string body)
+        {
+            var data = Encoding.UTF8.GetBytes(body);
+            var stream = new MemoryStream();
+            using (var gz = new GZipStream(stream, CompressionMode.Compress))
+            {
+                gz.Write(data, 0, data.Length);
+            }
+            return stream.ToArray();
         }
     }
 
@@ -47,7 +85,8 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
 
     public class SucceedAPIsMockModule : Nancy.NancyModule
     {
-        internal static string BasePath = "/succeed/api/v2/objects/"; 
+        internal static string BasePath = "/succeed/api/v2/objects/";
+        internal static string TestJsonString = @"[{""x_event_type"":""wind_direction_changed"",""x_object"":{""x_device_id"":""deviceId""},""wind_direction"":""sdktest854070""} , {""x_event_type"":""wind_direction_changed"",""x_object"":{""x_device_id"":""deviceId""},""wind_direction"":""sdktest90186""}]";
 
         public SucceedAPIsMockModule()
         {
@@ -170,6 +209,49 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             Post[BasePath + "search/basic"] = x => {
                 Assert.AreEqual(TestUtils.CreateQuery(), NancyUtils.BodyAsString(this.Request));
                 return TestUtils.CreateExpectedSearchResult();
+            };
+
+            // test HttpClient itself
+            Post[BasePath + "compressed"] = x => {
+                if (!NancyUtils.IsGzipCompressed(this.Request))
+                {
+                    return FailedAPIsMockModule.badRequest();
+                }
+
+                var body = NancyUtils.BodyAsString(this.Request);
+                if(body != TestJsonString)
+                {
+                    return FailedAPIsMockModule.badRequest();
+                }
+
+                var data = Encoding.UTF8.GetBytes(body);
+                var response = new Response();
+                response.Headers.Add("Content-Encoding", "gzip");
+                response.Headers.Add("Content-Type", "application/json");
+                response.Contents = stream =>
+                {
+                    using (var gz = new GZipStream(stream, CompressionMode.Compress))
+                    {
+                        gz.Write(data, 0, data.Length);
+                        gz.Flush();
+                    }
+                };
+                return response;
+            };
+
+            Post[BasePath + "decompressed"] = x => {
+                if (NancyUtils.IsGzipCompressed(this.Request))
+                {
+                    return FailedAPIsMockModule.badRequest();
+                }
+
+                var body = NancyUtils.BodyAsString(this.Request);
+                if (body != TestJsonString)
+                {
+                    return FailedAPIsMockModule.badRequest();
+                }
+
+                return TestJsonString;
             };
         }
     }
@@ -450,7 +532,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             };
         }
 
-        private static Response badRequest()
+        public static Response badRequest()
         {
             var response = (Response)TestUtils.ErrorMessage;
             response.StatusCode = HttpStatusCode.BadRequest;
