@@ -57,7 +57,9 @@ namespace Mnubo.SmartObjects.Client.Impl
 
         internal HttpClient(ClientConfig config, string clientSchema, string hostname, int hostPort, string basePath )
         {
-            client = new System.Net.Http.HttpClient();
+            handler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate };
+
+            client = new System.Net.Http.HttpClient(handler);
             client.Timeout = TimeSpan.FromMilliseconds(config.ClientTimeout);
             client.MaxResponseContentBufferSize = config.MaxResponseContentBufferSize;
             credentialHandler = new CredentialHandler(config, client, clientSchema, hostname, hostPort);
@@ -104,7 +106,7 @@ namespace Mnubo.SmartObjects.Client.Impl
                         var stream = new MemoryStream();
                         using (var gz = new GZipStream(stream, CompressionMode.Compress)) 
                         {
-                            gz.Write(data, 0, data.Length);
+                            await gz.WriteAsync(data, 0, data.Length);
                         }
 
                         var compressed = stream.ToArray();

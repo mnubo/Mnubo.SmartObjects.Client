@@ -37,6 +37,7 @@
   <ItemGroup>
     <Compile Include="Config\ClientConfigTest.cs" />
     <Compile Include="Impl\ExistResultsDeserializerTest.cs" />
+    <Compile Include="Impl\HttpClientTest.cs" />
     <Compile Include="Impl\RestitutionClientTest.cs" />
     <Compile Include="Impl\TestModules.cs" />
     <Compile Include="Impl\TestUtils.cs" />
