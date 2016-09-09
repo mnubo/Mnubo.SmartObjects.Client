@@ -358,7 +358,21 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             }
         }
 
-        public  static List<Owner> DeserializeOwners(string json)
+
+		public static void AssertJsonEquals(string json, List<string> items)
+		{
+			foreach(var item in items)
+			{
+				int first = json.IndexOf(item);
+				int last = json.LastIndexOf(item);
+				Assert.GreaterOrEqual(first, 0);
+				Assert.AreEqual(first, last);
+			}
+
+			Assert.AreEqual(json.Count((c) => c == ','), items.Count - 1);
+		}
+
+		public  static List<Owner> DeserializeOwners(string json)
         {
             List<Owner> owners = new List<Owner>();
             foreach (var jsonObject in JArray.Parse(json))

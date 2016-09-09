@@ -26,7 +26,7 @@ namespace Con.Mnubo.Dotnetsdktest.Test.Impl
                 DeviceId = "test",
                 ObjectType = "type",
                 RegistrationDate = now,
-                Attributes = new Dictionary<string, object>()
+                Attributes = new SortedDictionary<string, object>()
                 {
                     { "string", "stringValue" },
                     { "double", 10d },
@@ -35,14 +35,15 @@ namespace Con.Mnubo.Dotnetsdktest.Test.Impl
             };
 
             string json = ObjectSerializer.SerializeObject(myObject);
-            Assert.AreEqual(
-                "{\"x_device_id\":\"test\"," +
-                "\"x_registration_date\":\"" + now.ToString(EventSerializerTest.DatetimeFormat) + "\"," +
-                "\"x_object_type\":\"type\"," +
-                "\"float\":10.5," +
-                "\"double\":10.0," +
-                "\"string\":\"stringValue\"}",
-                json);
+			TestUtils.AssertJsonEquals(json, new List<string>
+			{
+				"\"x_device_id\":\"test\"",
+				$"\"x_registration_date\":\"{now.ToString(EventSerializerTest.DatetimeFormat)}\"",
+				"\"x_object_type\":\"type\"",
+				"\"float\":10.5",
+				"\"double\":10.0",
+				"\"string\":\"stringValue\""
+			});
         }
 
         [Test()]

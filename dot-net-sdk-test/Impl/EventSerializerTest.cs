@@ -38,15 +38,16 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             };
 
             string json = EventSerializer.SerializeEvent(eventBuilt);
-            Assert.AreEqual(
-                "{\"x_event_type\":\"type\"," +
-                "\"x_timestamp\":\"" + now.ToString(DatetimeFormat) + "\"," +
-                "\"event_id\":\"98c62f5c-ad48-4ef8-8d70-dbe3a1e8b17f\"," +
-                "\"boolean\":false," +
-                "\"float\":10.5," +
-                "\"double\":10.0," +
-                "\"string\":\"stringValue\"}",
-                json);
+			TestUtils.AssertJsonEquals(json, new List<string>
+			{
+				"\"x_event_type\":\"type\"",
+				$"\"x_timestamp\":\"{now.ToString(DatetimeFormat)}\"",
+				"\"event_id\":\"98c62f5c-ad48-4ef8-8d70-dbe3a1e8b17f\"",
+				"\"boolean\":false",
+				"\"float\":10.5",
+				"\"double\":10.0",
+				"\"string\":\"stringValue\""
+			});
         }
 
         [Test()]
