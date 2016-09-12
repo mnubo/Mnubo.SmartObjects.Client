@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mnubo.SmartObjects.Client", "dot-net-sdk\Mnubo.SmartObjects.Client.csproj", "{E799C8B9-ECE3-4D9B-B454-7471320482E0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mnubo.SmartObjects.Client", "smartobjects-net-client\Mnubo.SmartObjects.Client.csproj", "{E799C8B9-ECE3-4D9B-B454-7471320482E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mnubo.SmartObjects.Client.Test", "dot-net-sdk-test\Mnubo.SmartObjects.Client.Test.csproj", "{13302EE4-2478-4616-94C8-1D6F1A05DBBE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mnubo.SmartObjects.Client.Test", "smartobjects-net-client-test\Mnubo.SmartObjects.Client.Test.csproj", "{13302EE4-2478-4616-94C8-1D6F1A05DBBE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6916200C-AE87-41D6-88B6-B3DCABD6D16C}"
 	ProjectSection(SolutionItems) = preProject

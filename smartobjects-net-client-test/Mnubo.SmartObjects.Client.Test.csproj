@@ -59,7 +59,7 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\dot-net-sdk\Mnubo.SmartObjects.Client.csproj">
+    <ProjectReference Include="..\smartobjects-net-client\Mnubo.SmartObjects.Client.csproj">
       <Project>{E799C8B9-ECE3-4D9B-B454-7471320482E0}</Project>
       <Name>Mnubo.SmartObjects.Client</Name>
     </ProjectReference>

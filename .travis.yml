@@ -1,0 +1,11 @@
+language: csharp
+solution: smartobjects-net-client.sln
+mono:
+  - latest
+  - 4.4.0
+install:
+  - nuget restore smartobjects-net-client.sln
+  - nuget install NUnit.Runners -OutputDirectory testrunner
+script:
+  - xbuild /p:Configuration=Release smartobjects-net-client.sln
+  - mono ./testrunner/NUnit.ConsoleRunner.*/tools/nunit3-console.exe ./smartobjects-net-client-test/bin/Release/Mnubo.SmartObjects.Client.Test.dll
