@@ -12,5 +12,7 @@ if [ -z "$RELEASE_NOTES" ]; then
     exit 1
 fi  
 
-sed -e "s/\${VERSION}/$VERSION/g" -e "s/\${AUTHORS}/$AUTHORS/g" -e "s/\${RELEASE_NOTES}/$RELEASE_NOTES/g" Mnubo.SmartObjects.Client.nuspec.tmpl > Mnubo.SmartObjects.Client.nuspec
-
+eval "cat <<EOF
+$(<Mnubo.SmartObjects.Client.nuspec.tmpl)
+EOF
+" > Mnubo.SmartObjects.Client.nuspec
