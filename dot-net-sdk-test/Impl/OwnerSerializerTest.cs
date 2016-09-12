@@ -30,15 +30,16 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             };
 
             string json = OwnerSerializer.SerializeOwner(owner);
-            Assert.AreEqual(
-                "{\"username\":\"username\"," +
-                "\"x_registration_date\":\"" + now.ToString(EventSerializerTest.DatetimeFormat) + "\"," +
-                "\"x_password\":\"password\"," +
-                "\"boolean\":false," +
-                "\"float\":10.5," +
-                "\"double\":10.0," +
-                "\"string\":\"stringValue\"}",
-                json);
+			TestUtils.AssertJsonEquals(json, new List<string>
+			{
+				"\"username\":\"username\"",
+				$"\"x_registration_date\":\"{now.ToString(EventSerializerTest.DatetimeFormat)}\"",
+				"\"x_password\":\"password\"",
+				"\"float\":10.5",
+				"\"boolean\":false",
+				"\"double\":10.0",
+				"\"string\":\"stringValue\""
+			});
         }
 
         [Test()]
