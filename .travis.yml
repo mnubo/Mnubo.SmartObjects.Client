@@ -2,7 +2,7 @@ language: csharp
 solution: smartobjects-net-client.sln
 mono:
   - latest
-  - 4.4.0
+  - 4.4.2
 install:
   - nuget restore smartobjects-net-client.sln
   - nuget install NUnit.Runners -OutputDirectory testrunner
