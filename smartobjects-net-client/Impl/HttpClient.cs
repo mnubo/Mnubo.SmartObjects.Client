@@ -93,7 +93,12 @@ namespace Mnubo.SmartObjects.Client.Impl
             HttpResponseMessage response = null;
             try
             {
-                UriBuilder uriBuilder = new UriBuilder(clientSchema, hostname, hostPort, basePath + path);
+                var pathAndQuery = path.Split(new char[] { '?' });
+                UriBuilder uriBuilder = new UriBuilder(clientSchema, hostname, hostPort, basePath + pathAndQuery[0]);
+                if(pathAndQuery.Length > 1)
+                {
+                    uriBuilder.Query = pathAndQuery[1];
+                }
 
                 request = new HttpRequestMessage(method, uriBuilder.Uri);
                 request.Headers.Add("Authorization", credentialHandler.GetAuthenticationToken());
