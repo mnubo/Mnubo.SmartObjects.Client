@@ -2,16 +2,15 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>Mnubo.SmartObjects.Client</id>
-        <version>${VERSION}</version>
-        <authors>${AUTHORS}</authors>
+        <version>1.1.12</version>
+        <authors>David Masse</authors>
         <owners>mnubo, inc.</owners>
         <licenseUrl>https://opensource.org/licenses/apache-2.0</licenseUrl>
         <projectUrl>https://github.com/mnubo/smartobjects-net-client</projectUrl>
         <iconUrl>https://raw.githubusercontent.com/mnubo/smartobjects-net-client/master/mnubo.png</iconUrl>
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
         <description>mnubo SmartObjects .Net SDK client</description>
-        <releaseNotes>
-${RELEASE_NOTES}
+        <releaseNotes>Fix EventsClient.send()
 	</releaseNotes>
         <copyright>Copyright 2016</copyright>
         <dependencies>
