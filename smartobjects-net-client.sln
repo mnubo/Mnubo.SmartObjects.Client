@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mnubo.SmartObjects.Client",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mnubo.SmartObjects.Client.Test", "smartobjects-net-client-test\Mnubo.SmartObjects.Client.Test.csproj", "{13302EE4-2478-4616-94C8-1D6F1A05DBBE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mnubo.SmartObjects.Client.ITTest", "smartobjects-net-client-ittest\Mnubo.SmartObjects.Client.ITTest.csproj", "{13302EE4-2478-4616-94C8-1D6F1A05DBBF}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6916200C-AE87-41D6-88B6-B3DCABD6D16C}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
@@ -26,6 +28,10 @@ Global
 		{13302EE4-2478-4616-94C8-1D6F1A05DBBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13302EE4-2478-4616-94C8-1D6F1A05DBBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13302EE4-2478-4616-94C8-1D6F1A05DBBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13302EE4-2478-4616-94C8-1D6F1A05DBBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13302EE4-2478-4616-94C8-1D6F1A05DBBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13302EE4-2478-4616-94C8-1D6F1A05DBBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13302EE4-2478-4616-94C8-1D6F1A05DBBF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
