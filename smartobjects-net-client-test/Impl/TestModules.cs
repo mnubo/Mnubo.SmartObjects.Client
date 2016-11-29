@@ -85,7 +85,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
 
     public class SucceedAPIsMockModule : Nancy.NancyModule
     {
-        internal static string BasePath = "/succeed/api/v2/objects/";
+        internal static string BasePath = "/succeed/api/v3/objects/";
         internal static string TestJsonString = @"[{""x_event_type"":""wind_direction_changed"",""x_object"":{""x_device_id"":""deviceId""},""wind_direction"":""sdktest854070""} , {""x_event_type"":""wind_direction_changed"",""x_object"":{""x_device_id"":""deviceId""},""wind_direction"":""sdktest90186""}]";
 
         public SucceedAPIsMockModule()
@@ -269,7 +269,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
 
     public class BatchAPIsMockModule : Nancy.NancyModule
     {
-        internal static string BasePath = "/batch/api/v2/objects/";
+        internal static string BasePath = "/batch/api/v3/objects/";
         internal static string ErrorMessage = "event failed";
 
         public BatchAPIsMockModule()
@@ -461,7 +461,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
 
     public class FailedAPIsMockModule : Nancy.NancyModule
     {
-        internal static string BasePath = "/failed/api/v2/objects/";
+        internal static string BasePath = "/failed/api/v3/objects/";
 
         public FailedAPIsMockModule()
         {
