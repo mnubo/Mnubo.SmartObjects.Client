@@ -28,6 +28,11 @@ namespace Mnubo.SmartObjects.Client.Impl
             ClientUtils.WaitTask(ClaimAsync(username, deviceId));
         }
 
+        public void Unclaim(string username, string deviceId)
+        {
+            ClientUtils.WaitTask(UnclaimAsync(username, deviceId));
+        }
+
         public void Create(Owner owner)
         {
             ClientUtils.WaitTask(CreateAsync(owner));
@@ -102,6 +107,22 @@ namespace Mnubo.SmartObjects.Client.Impl
 
             await client.sendAsyncRequest(HttpMethod.Post,
                     string.Format("owners/{0}/objects/{1}/claim", username, deviceId));
+        }
+
+        public async Task UnclaimAsync(string username, string deviceId)
+        {
+            if (string.IsNullOrEmpty(username))
+            {
+                throw new ArgumentException("username cannot be blank.");
+            }
+
+            if (string.IsNullOrEmpty(deviceId))
+            {
+                throw new ArgumentException("device_Id cannot be blank.");
+            }
+
+            await client.sendAsyncRequest(HttpMethod.Post,
+                    string.Format("owners/{0}/objects/{1}/unclaim", username, deviceId));
         }
 
         public async Task UpdateAsync(Owner owner, string username)

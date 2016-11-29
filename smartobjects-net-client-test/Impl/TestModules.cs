@@ -170,6 +170,12 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                 return 200;
             };
 
+            Post[BasePath + "owners/{username}/objects/{deviceId}/unclaim"] = x => {
+                Assert.AreEqual(TestUtils.DeviceId, (string)x.deviceId);
+                Assert.AreEqual(TestUtils.Username, (string)x.username);
+                return 200;
+            };
+
             Delete[BasePath + "owners/{username}"] = x => {
 
                 Assert.AreEqual(TestUtils.Username, (string)x.username);
@@ -285,7 +291,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                     {
                         results.Add(new Result(owner.Username, Result.ResultStates.Error, TestUtils.ErrorMessage));
                     }
-                    
+
                 }
 
                 var response = (Response)JsonConvert.SerializeObject(results);
@@ -476,6 +482,10 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             };
 
             Post[BasePath + "owners/{username}/objects/{deviceId}/claim"] = x => {
+                return badRequest();
+            };
+
+            Post[BasePath + "owners/{username}/objects/{deviceId}/unclaim"] = x => {
                 return badRequest();
             };
 
