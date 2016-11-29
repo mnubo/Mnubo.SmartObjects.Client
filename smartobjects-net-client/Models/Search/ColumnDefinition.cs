@@ -17,7 +17,7 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         public string HighLevelType { get; }
 
         /// <summary>
-        /// create a new instance.
+        /// Create a new instance.
         /// </summary>
         /// <param name="label">Label associate to the column</param>
         /// <param name="highLevelType">High level type associate to the column</param>

@@ -16,11 +16,11 @@ namespace Mnubo.SmartObjects.Client.Models
         public enum ResultStates
         {
             /// <summary>
-            /// every was well with the request.
+            /// Everything went well with the request.
             /// </summary>
             success,
             /// <summary>
-            /// the requested event_id already exists.
+            /// The requested event_id already exists.
             /// </summary>
             conflict,
             /// <summary>
@@ -44,7 +44,7 @@ namespace Mnubo.SmartObjects.Client.Models
         /// <summary>
         /// return the result of the request, this can be 'success' or 'error'.
         /// </summary>
-        /// 
+        ///
         [JsonProperty("result")]
         [JsonConverter(typeof(StringEnumConverter))]
         public ResultStates Result { get; }
