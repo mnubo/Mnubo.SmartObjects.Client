@@ -12,7 +12,7 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         public IImmutableList<object> Values { get; }
 
         /// <summary>
-        /// create a new instance
+        /// Create a new instance
         /// </summary>
         /// <param name="Values">list of values</param>
         public Row(IList<object> values)

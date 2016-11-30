@@ -17,11 +17,18 @@ namespace Mnubo.SmartObjects.Client
         void Create(Owner owner);
 
         /// <summary>
-        /// Allows an existing owner claim one existing object in sync mode.
+        /// Allows an existing owner to claim one existing object in sync mode.
         /// </summary>
-        /// <param name="username">owner how claim the object.</param>
+        /// <param name="username">owner who claims the object.</param>
         /// <param name="deviceId">object claimed.</param>
         void Claim(string username, string deviceId);
+
+        /// <summary>
+        /// Allows an existing owner to unclaim one of his objects in sync mode.
+        /// </summary>
+        /// <param name="username">owner how claim the object.</param>
+        /// <param name="deviceId">object to unclaim.</param>
+        void Unclaim(string username, string deviceId);
 
         /// <summary>
         /// Allows update an existing owner in sync mode.
@@ -72,12 +79,19 @@ namespace Mnubo.SmartObjects.Client
         Task CreateAsync(Owner owner);
 
         /// <summary>
-        /// Allows an existing owner claim one existing object in async mode.
+        /// Allows an existing owner to claim one existing object in async mode.
         /// </summary>
-        /// <param name="username">owner how claim the object</param>
+        /// <param name="username">owner who claims the object</param>
         /// <param name="deviceId">object claimed</param>
         /// <returns>A async task.</returns>
         Task ClaimAsync(string username, string deviceId);
+
+        /// <summary>
+        /// Allows an existing owner to unclaim one of his objects in async mode.
+        /// </summary>
+        /// <param name="username">owner how claim the object.</param>
+        /// <param name="deviceId">object to unclaim.</param>
+        Task UnclaimAsync(string username, string deviceId);
 
         /// <summary>
         /// Allows update an existing owner in async mode.

@@ -85,7 +85,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
 
     public class SucceedAPIsMockModule : Nancy.NancyModule
     {
-        internal static string BasePath = "/succeed/api/v2/objects/";
+        internal static string BasePath = "/succeed/api/v3/objects/";
         internal static string TestJsonString = @"[{""x_event_type"":""wind_direction_changed"",""x_object"":{""x_device_id"":""deviceId""},""wind_direction"":""sdktest854070""} , {""x_event_type"":""wind_direction_changed"",""x_object"":{""x_device_id"":""deviceId""},""wind_direction"":""sdktest90186""}]";
 
         public SucceedAPIsMockModule()
@@ -165,6 +165,12 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             };
 
             Post[BasePath + "owners/{username}/objects/{deviceId}/claim"] = x => {
+                Assert.AreEqual(TestUtils.DeviceId, (string)x.deviceId);
+                Assert.AreEqual(TestUtils.Username, (string)x.username);
+                return 200;
+            };
+
+            Post[BasePath + "owners/{username}/objects/{deviceId}/unclaim"] = x => {
                 Assert.AreEqual(TestUtils.DeviceId, (string)x.deviceId);
                 Assert.AreEqual(TestUtils.Username, (string)x.username);
                 return 200;
@@ -263,7 +269,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
 
     public class BatchAPIsMockModule : Nancy.NancyModule
     {
-        internal static string BasePath = "/batch/api/v2/objects/";
+        internal static string BasePath = "/batch/api/v3/objects/";
         internal static string ErrorMessage = "event failed";
 
         public BatchAPIsMockModule()
@@ -285,7 +291,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                     {
                         results.Add(new Result(owner.Username, Result.ResultStates.Error, TestUtils.ErrorMessage));
                     }
-                    
+
                 }
 
                 var response = (Response)JsonConvert.SerializeObject(results);
@@ -455,7 +461,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
 
     public class FailedAPIsMockModule : Nancy.NancyModule
     {
-        internal static string BasePath = "/failed/api/v2/objects/";
+        internal static string BasePath = "/failed/api/v3/objects/";
 
         public FailedAPIsMockModule()
         {
@@ -476,6 +482,10 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             };
 
             Post[BasePath + "owners/{username}/objects/{deviceId}/claim"] = x => {
+                return badRequest();
+            };
+
+            Post[BasePath + "owners/{username}/objects/{deviceId}/unclaim"] = x => {
                 return badRequest();
             };
 

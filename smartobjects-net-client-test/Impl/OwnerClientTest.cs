@@ -59,7 +59,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                  Assert.That(() => client.Create(TestUtils.CreateOwnerWrongAttribute()),
                     Throws.TypeOf<ArgumentException>()
                     .With.Message.EqualTo(TestUtils.ErrorMessage));
-            });    
+            });
         }
 
         [Test()]
@@ -226,47 +226,18 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             });
         }
 
-        [Test()]
-        public void ClientOwnerSyncClaimNullUsername()
+        [TestCase("", "", "username cannot be blank.")]
+        [TestCase(null, "", "username cannot be blank.")]
+        [TestCase("username", "", "device_Id cannot be blank.")]
+        [TestCase("username", null, "device_Id cannot be blank.")]
+        public void ClientOwnerSyncClaimInvalid(string username, string deviceId, string errorMessage)
         {
             withSuccessfulResults(client =>
             {
-                Assert.That(() => client.Claim(null, "deviceid"),
-                Throws.TypeOf<ArgumentException>()
-                .With.Message.EqualTo("username cannot be blank."));
-            });
-        }
-
-        [Test()]
-        public void ClientOwnerSyncClaimEmptyUsername()
-        {
-            withSuccessfulResults(client =>
-            {
-                Assert.That(() => client.Claim("", "deviceid"),
-                Throws.TypeOf<ArgumentException>()
-                .With.Message.EqualTo("username cannot be blank."));
-            });
-        }
-
-        [Test()]
-        public void ClientOwnerSyncClaimNullDeviceId()
-        {
-            withSuccessfulResults(client =>
-            {
-                Assert.That(() => client.Claim("username", null),
-                Throws.TypeOf<ArgumentException>()
-                .With.Message.EqualTo("device_Id cannot be blank."));
-            });
-        }
-
-        [Test()]
-        public void ClientOwnerSyncClaimEmptyDeviceId()
-        {
-            withSuccessfulResults(client =>
-            {
-                Assert.That(() => client.Claim("username", ""),
-                Throws.TypeOf<ArgumentException>()
-                .With.Message.EqualTo("device_Id cannot be blank."));
+                Assert.That(
+                    () => client.Claim(username, deviceId),
+                    Throws.TypeOf<ArgumentException>().With.Message.EqualTo(errorMessage)
+                );
             });
         }
 
@@ -679,51 +650,58 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             });
         }
 
-        [Test()]
-        public void ClientOwnerAsyncClaimNullUsername()
+        [TestCase("", "", "username cannot be blank.")]
+        [TestCase(null, "", "username cannot be blank.")]
+        [TestCase("username", "", "device_Id cannot be blank.")]
+        [TestCase("username", null, "device_Id cannot be blank.")]
+        public void ClientOwnerAsyncClaimInvalid(string username, string deviceId, string errorMessage)
         {
             withSuccessfulResults(client =>
             {
-                Assert.That(() => client.ClaimAsync(null, "deviceid").Wait(),
-                Throws.TypeOf<AggregateException>()
-                    .With.InnerException.TypeOf<ArgumentException>()
-                    .With.InnerException.Message.EqualTo("username cannot be blank."));
+                Assert.That(
+                    () => client.ClaimAsync(username, deviceId).Wait(),
+                    Throws.TypeOf<AggregateException>()
+                        .With.InnerException.TypeOf<ArgumentException>()
+                        .With.InnerException.Message.EqualTo(errorMessage)
+                );
             });
         }
 
         [Test()]
-        public void ClientOwnerAsyncClaimEmptyUsername()
+        public void ClientOwnerAsyncUnclaim()
         {
             withSuccessfulResults(client =>
             {
-                Assert.That(() => client.ClaimAsync("", "deviceid").Wait(),
-                Throws.TypeOf<AggregateException>()
-                    .With.InnerException.TypeOf<ArgumentException>()
-                    .With.InnerException.Message.EqualTo("username cannot be blank."));
+                client.UnclaimAsync(TestUtils.Username, TestUtils.DeviceId).Wait();
             });
         }
 
         [Test()]
-        public void ClientOwnerAsyncClaimNullDeviceId()
+        public void ClientOwnerAsyncUnclaimBadRequest()
         {
-            withSuccessfulResults(client =>
+            withFailedResults(client =>
             {
-                Assert.That(() => client.ClaimAsync("username", null).Wait(),
+                Assert.That(() => client.UnclaimAsync(TestUtils.Username, TestUtils.DeviceId).Wait(),
                 Throws.TypeOf<AggregateException>()
                     .With.InnerException.TypeOf<ArgumentException>()
-                    .With.InnerException.Message.EqualTo("device_Id cannot be blank."));
+                    .With.InnerException.Message.EqualTo(TestUtils.ErrorMessage));
             });
         }
 
-        [Test()]
-        public void ClientOwnerAsyncClaimEmptyDeviceId()
+        [TestCase("", "", "username cannot be blank.")]
+        [TestCase(null, "", "username cannot be blank.")]
+        [TestCase("username", "", "device_Id cannot be blank.")]
+        [TestCase("username", null, "device_Id cannot be blank.")]
+        public void ClientOwnerAsyncUnclaimInvalid(string username, string deviceId, string errorMessage)
         {
             withSuccessfulResults(client =>
             {
-                Assert.That(() => client.ClaimAsync("username", "").Wait(),
-                Throws.TypeOf<AggregateException>()
-                    .With.InnerException.TypeOf<ArgumentException>()
-                    .With.InnerException.Message.EqualTo("device_Id cannot be blank."));
+                Assert.That(
+                    () => client.UnclaimAsync(username, deviceId).Wait(),
+                    Throws.TypeOf<AggregateException>()
+                        .With.InnerException.TypeOf<ArgumentException>()
+                        .With.InnerException.Message.EqualTo(errorMessage)
+                );
             });
         }
 

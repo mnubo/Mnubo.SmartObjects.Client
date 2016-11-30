@@ -8,3 +8,4 @@ obj/
 packagesBuild/
 *.TMP
 *.nupkg
+testrunner/

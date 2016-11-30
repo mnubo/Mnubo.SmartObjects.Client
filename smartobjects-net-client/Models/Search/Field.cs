@@ -50,7 +50,7 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         public bool IsPrimaryKey { get; }
 
         /// <summary>
-        /// Creat a new instance
+        /// Create a new instance
         /// </summary>
         /// <param name="containerType">container type</param>
         /// <param name="description">drescription</param>

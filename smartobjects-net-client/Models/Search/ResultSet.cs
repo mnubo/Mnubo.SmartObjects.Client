@@ -13,7 +13,7 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         public IList<ColumnDefinition> Columns { get;  }
 
         /// <summary>
-        /// List the wors of the result set
+        /// List the rows of the result set
         /// </summary>
         [JsonProperty("rows")]
         public IList<Row> Rows { get; }
