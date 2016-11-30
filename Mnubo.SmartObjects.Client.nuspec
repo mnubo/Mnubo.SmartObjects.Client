@@ -2,15 +2,18 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>Mnubo.SmartObjects.Client</id>
-        <version>1.1.12</version>
-        <authors>David Masse</authors>
+        <version>1.1.13</version>
+        <authors>David Francoeur,David Masse,Julien Letrouit,Manuel Vonthron,Mauro Arias</authors>
         <owners>mnubo, inc.</owners>
         <licenseUrl>https://opensource.org/licenses/apache-2.0</licenseUrl>
         <projectUrl>https://github.com/mnubo/smartobjects-net-client</projectUrl>
         <iconUrl>https://raw.githubusercontent.com/mnubo/smartobjects-net-client/master/mnubo.png</iconUrl>
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
         <description>mnubo SmartObjects .Net SDK client</description>
-        <releaseNotes>Fix EventsClient.send()
+        <releaseNotes>
+### Features
+
+* **POST /api/v3/owners/{username}/objects/{device}/unclaim**: support for unclaim object
 	</releaseNotes>
         <copyright>Copyright 2016</copyright>
         <dependencies>
