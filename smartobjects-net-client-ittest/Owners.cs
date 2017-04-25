@@ -200,6 +200,58 @@ namespace Mnubo.SmartObjects.Client.ITTest
         }
 
         [Test()]
+        public void TestBatchClaimUnclaim()
+        {
+            String uuid = Guid.NewGuid().ToString();
+            String value1 = "value-" + uuid;
+            Owner owner = new Owner.Builder() {
+                Username = "username-" + uuid,
+                Password = "password-" + uuid,
+                Attributes = new Dictionary<string,object>() {
+                    {"owner_text_attribute", value1}
+                }
+            };
+
+            SmartObject smartObject = new SmartObject.Builder() {
+                DeviceId = "deviceId-" + uuid,
+                ObjectType = "object_type1",
+                Attributes = new Dictionary<string,object>() {
+                    {"object_text_attribute", value1}
+                }
+            };
+
+
+            Dictionary<string,object> body = new Dictionary<string,object>() {
+                {"x_timestamp", "2017-04-24T16:13:11+00:00"}
+            };
+            IEnumerable<ClaimOrUnclaim>  valid = new List<ClaimOrUnclaim>() {
+                new ClaimOrUnclaim(owner.Username, smartObject.DeviceId, body)
+            };
+            IEnumerable<ClaimOrUnclaim>  unknownUsername = new List<ClaimOrUnclaim>() {
+                new ClaimOrUnclaim(uuid, smartObject.DeviceId, body)
+            };
+            IEnumerable<ClaimOrUnclaim>  unknownDeviceId = new List<ClaimOrUnclaim>() {
+                new ClaimOrUnclaim(owner.Username, uuid, body)
+            };
+
+            client.Owners.Create(owner);
+            client.Objects.Create(smartObject);
+
+            ITTestHelper.AllFailed(client.Owners.BatchClaim(unknownUsername));
+            ITTestHelper.AllFailed(client.Owners.BatchClaim(unknownDeviceId));
+
+            ITTestHelper.AllSuccess(client.Owners.BatchClaim(valid));
+
+            ITTestHelper.AllFailed(client.Owners.BatchUnclaim(unknownUsername));
+            ITTestHelper.AllFailed(client.Owners.BatchUnclaim(unknownDeviceId));
+
+            ITTestHelper.AllSuccess(client.Owners.BatchUnclaim(valid));
+
+            //Already unclaimed
+            ITTestHelper.AllFailed(client.Owners.BatchUnclaim(valid));
+        }
+
+        [Test()]
         public void TestCreateAndUpdate()
         {
             String uuid = Guid.NewGuid().ToString();

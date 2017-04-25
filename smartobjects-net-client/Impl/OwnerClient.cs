@@ -32,6 +32,15 @@ namespace Mnubo.SmartObjects.Client.Impl
         {
             ClientUtils.WaitTask(UnclaimAsync(username, deviceId, body));
         }
+        public IEnumerable<Result> BatchClaim(IEnumerable<ClaimOrUnclaim> claims)
+        {
+            return ClientUtils.WaitTask(BatchClaimAsync(claims));
+        }
+
+        public IEnumerable<Result> BatchUnclaim(IEnumerable<ClaimOrUnclaim> unclaims)
+        {
+            return ClientUtils.WaitTask(BatchUnclaimAsync(unclaims));
+        }
 
         public void Create(Owner owner)
         {
@@ -155,6 +164,47 @@ namespace Mnubo.SmartObjects.Client.Impl
                         })
                 );
             }
+        }
+        public async Task<IEnumerable<Result>> BatchClaimAsync(IEnumerable<ClaimOrUnclaim> claims)
+        {
+            if (claims == null)
+            {
+                throw new ArgumentException("claims list cannot be null.");
+            }
+
+            if (claims.Count() > BatchMaxSize)
+            {
+                throw new ArgumentException(string.Format("Claims list cannot be greater than {0}.", BatchMaxSize));
+            }
+
+            var asynResult = await client.sendAsyncRequestWithResult(
+                HttpMethod.Post,
+                "owners/claim",
+                ClaimOrUnclaimSerializer.SerializeClaimOrUnclaims(claims)
+            );
+
+            return JsonConvert.DeserializeObject<IEnumerable<Result>>(asynResult);
+        }
+
+        public async Task<IEnumerable<Result>> BatchUnclaimAsync(IEnumerable<ClaimOrUnclaim> unclaims)
+        {
+            if (unclaims == null)
+            {
+                throw new ArgumentException("unclaims list cannot be null.");
+            }
+
+            if (unclaims.Count() > BatchMaxSize)
+            {
+                throw new ArgumentException(string.Format("Claims list cannot be greater than {0}.", BatchMaxSize));
+            }
+
+            var asynResult = await client.sendAsyncRequestWithResult(
+                HttpMethod.Post,
+                "owners/unclaim",
+                ClaimOrUnclaimSerializer.SerializeClaimOrUnclaims(unclaims)
+            );
+
+            return JsonConvert.DeserializeObject<IEnumerable<Result>>(asynResult);
         }
 
         public async Task UpdateAsync(Owner owner, string username)

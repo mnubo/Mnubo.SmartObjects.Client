@@ -1,5 +1,7 @@
+using Mnubo.SmartObjects.Client.Models;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
 
@@ -37,6 +39,22 @@ namespace Mnubo.SmartObjects.Client.ITTest
             }
             if (lastAssertionException != null) {
                 throw lastAssertionException;
+            }
+        }
+        public static void AllFailed(IEnumerable<Result> results)
+        {
+            if (results != null) {
+                foreach (Result result in results) {
+                    Assert.AreEqual(Result.ResultStates.Error, result.ResultState);
+                }
+            }
+        }
+        public static void AllSuccess(IEnumerable<Result> results)
+        {
+            if (results != null) {
+                foreach (Result result in results) {
+                    Assert.AreEqual(Result.ResultStates.Success, result.ResultState);
+                }
             }
         }
     }

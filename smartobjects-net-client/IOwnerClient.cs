@@ -33,6 +33,20 @@ namespace Mnubo.SmartObjects.Client
         void Unclaim(string username, string deviceId, Dictionary<string, object> body = null);
 
         /// <summary>
+        /// Allows to batch claim in async mode.
+        /// </summary>
+        /// <param name="claime">list of ClaimOrUnclaim.</param>
+        /// <returns>A list of Result</returns>
+        IEnumerable<Result> BatchClaim(IEnumerable<ClaimOrUnclaim> claims);
+
+        /// <summary>
+        /// Allows to batch unclaim in async mode.
+        /// </summary>
+        /// <param name="claime">list of ClaimOrUnclaim.</param>
+        /// <returns>A list of Result</returns>
+        IEnumerable<Result> BatchUnclaim(IEnumerable<ClaimOrUnclaim> unclaims);
+
+        /// <summary>
         /// Allows update an existing owner in sync mode.
         /// </summary>
         /// <param name="owner">new values of the owner to be updated.</param>
@@ -95,6 +109,20 @@ namespace Mnubo.SmartObjects.Client
         /// <param name="username">owner how claim the object.</param>
         /// <param name="deviceId">object to unclaim.</param>
         Task UnclaimAsync(string username, string deviceId, Dictionary<string, object> body = null);
+
+        /// <summary>
+        /// Allows to batch claim in async mode.
+        /// </summary>
+        /// <param name="claime">list of ClaimOrUnclaim.</param>
+        /// <returns>A async task with a list of Result.</returns>
+        Task<IEnumerable<Result>> BatchClaimAsync(IEnumerable<ClaimOrUnclaim> claims);
+
+        /// <summary>
+        /// Allows to batch unclaim in async mode.
+        /// </summary>
+        /// <param name="claime">list of ClaimOrUnclaim.</param>
+        /// <returns>A async task with a list of Result.</returns>
+        Task<IEnumerable<Result>> BatchUnclaimAsync(IEnumerable<ClaimOrUnclaim> unclaims);
 
         /// <summary>
         /// Allows update an existing owner in async mode.
