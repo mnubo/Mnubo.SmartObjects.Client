@@ -21,14 +21,16 @@ namespace Mnubo.SmartObjects.Client
         /// </summary>
         /// <param name="username">owner who claims the object.</param>
         /// <param name="deviceId">object claimed.</param>
-        void Claim(string username, string deviceId);
+        /// <param name="body">body to include with the claim.</param>
+        void Claim(string username, string deviceId, Dictionary<string, object> body = null);
 
         /// <summary>
         /// Allows an existing owner to unclaim one of his objects in sync mode.
         /// </summary>
         /// <param name="username">owner how claim the object.</param>
         /// <param name="deviceId">object to unclaim.</param>
-        void Unclaim(string username, string deviceId);
+        /// <param name="body">body to include with the unclaim.</param>
+        void Unclaim(string username, string deviceId, Dictionary<string, object> body = null);
 
         /// <summary>
         /// Allows update an existing owner in sync mode.
@@ -83,21 +85,23 @@ namespace Mnubo.SmartObjects.Client
         /// </summary>
         /// <param name="username">owner who claims the object</param>
         /// <param name="deviceId">object claimed</param>
+        /// <param name="body">body to include with the claim.</param>
         /// <returns>A async task.</returns>
-        Task ClaimAsync(string username, string deviceId);
+        Task ClaimAsync(string username, string deviceId, Dictionary<string, object> body = null);
 
         /// <summary>
         /// Allows an existing owner to unclaim one of his objects in async mode.
         /// </summary>
         /// <param name="username">owner how claim the object.</param>
         /// <param name="deviceId">object to unclaim.</param>
-        Task UnclaimAsync(string username, string deviceId);
+        Task UnclaimAsync(string username, string deviceId, Dictionary<string, object> body = null);
 
         /// <summary>
         /// Allows update an existing owner in async mode.
         /// </summary>
         /// <param name="owner">new values of the owner to be updated</param>
         /// <param name="username">Owner to be updated</param>
+        /// <param name="body">body to include with the unclaim.</param>
         /// <returns>A async task.</returns>
         Task UpdateAsync(Owner owner, string username);
 

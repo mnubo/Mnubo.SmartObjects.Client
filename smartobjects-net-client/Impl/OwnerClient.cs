@@ -23,14 +23,14 @@ namespace Mnubo.SmartObjects.Client.Impl
         }
 
         #region Sync calls
-        public void Claim(string username, string deviceId)
+        public void Claim(string username, string deviceId, Dictionary<string, object> body)
         {
-            ClientUtils.WaitTask(ClaimAsync(username, deviceId));
+            ClientUtils.WaitTask(ClaimAsync(username, deviceId, body));
         }
 
-        public void Unclaim(string username, string deviceId)
+        public void Unclaim(string username, string deviceId, Dictionary<string, object> body)
         {
-            ClientUtils.WaitTask(UnclaimAsync(username, deviceId));
+            ClientUtils.WaitTask(UnclaimAsync(username, deviceId, body));
         }
 
         public void Create(Owner owner)
@@ -93,7 +93,7 @@ namespace Mnubo.SmartObjects.Client.Impl
                 OwnerSerializer.SerializeOwner(owner));
         }
 
-        public async Task ClaimAsync(string username, string deviceId)
+        public async Task ClaimAsync(string username, string deviceId, Dictionary<string, object> body)
         {
             if (string.IsNullOrEmpty(username))
             {
@@ -105,11 +105,27 @@ namespace Mnubo.SmartObjects.Client.Impl
                 throw new ArgumentException("device_Id cannot be blank.");
             }
 
-            await client.sendAsyncRequest(HttpMethod.Post,
-                    string.Format("owners/{0}/objects/{1}/claim", username, deviceId));
+            if (body == null || body.Count == 0) {
+                await client.sendAsyncRequest(
+                    HttpMethod.Post,
+                    string.Format("owners/{0}/objects/{1}/claim", username, deviceId)
+                );
+            } else {
+                await client.sendAsyncRequest(
+                    HttpMethod.Post,
+                    string.Format("owners/{0}/objects/{1}/claim", username, deviceId),
+                    JsonConvert.SerializeObject(
+                        body,
+                        new JsonSerializerSettings
+                        {
+                            NullValueHandling = NullValueHandling.Ignore,
+                            DateFormatString = EventSerializer.DatetimeFormat
+                        })
+                );
+            }
         }
 
-        public async Task UnclaimAsync(string username, string deviceId)
+        public async Task UnclaimAsync(string username, string deviceId, Dictionary<string, object> body)
         {
             if (string.IsNullOrEmpty(username))
             {
@@ -121,8 +137,24 @@ namespace Mnubo.SmartObjects.Client.Impl
                 throw new ArgumentException("device_Id cannot be blank.");
             }
 
-            await client.sendAsyncRequest(HttpMethod.Post,
-                    string.Format("owners/{0}/objects/{1}/unclaim", username, deviceId));
+            if (body == null || body.Count == 0) {
+                await client.sendAsyncRequest(
+                    HttpMethod.Post,
+                    string.Format("owners/{0}/objects/{1}/unclaim", username, deviceId)
+                );
+            } else {
+                await client.sendAsyncRequest(
+                    HttpMethod.Post,
+                    string.Format("owners/{0}/objects/{1}/unclaim", username, deviceId),
+                    JsonConvert.SerializeObject(
+                        body,
+                        new JsonSerializerSettings
+                        {
+                            NullValueHandling = NullValueHandling.Ignore,
+                            DateFormatString = EventSerializer.DatetimeFormat
+                        })
+                );
+            }
         }
 
         public async Task UpdateAsync(Owner owner, string username)
