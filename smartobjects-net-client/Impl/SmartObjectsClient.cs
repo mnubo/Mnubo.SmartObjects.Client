@@ -9,6 +9,7 @@ namespace Mnubo.SmartObjects.Client.Impl
         public IOwnerClient Owners { get; }
         public IEventClient Events { get; }
         public IRestitutionClient Restitution { get; }
+        public IModelClient Model { get; }
 
         internal SmartObjectsClient(ClientConfig config)
         {
@@ -18,6 +19,7 @@ namespace Mnubo.SmartObjects.Client.Impl
             Owners = new OwnerClient(client);
             Events = new EventClient(client);
             Restitution = new RestitutionClient(client);
+            Model = new ModelClient(client);
         }
 
         public void Dispose()

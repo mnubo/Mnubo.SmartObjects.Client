@@ -97,11 +97,13 @@
     <Compile Include="Impl\SmartObjectsClient.cs" />
     <Compile Include="Impl\ObjectClient.cs" />
     <Compile Include="Impl\OwnerClient.cs" />
+    <Compile Include="Impl\ModelClient.cs" />
     <Compile Include="Impl\HttpClient.cs" />
     <Compile Include="IEventClient.cs" />
     <Compile Include="ISmartObjectsClient.cs" />
     <Compile Include="IObjectClient.cs" />
     <Compile Include="IOwnerClient.cs" />
+    <Compile Include="IModelClient.cs" />
     <Compile Include="Models\Search\Row.cs" />
     <Compile Include="Models\Search\ResultSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

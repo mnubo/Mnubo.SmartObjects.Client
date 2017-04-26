@@ -39,6 +39,7 @@
     <Compile Include="Owners.cs" />
     <Compile Include="Objects.cs" />
     <Compile Include="Events.cs" />
+    <Compile Include="Model.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -23,5 +23,10 @@ namespace Mnubo.SmartObjects.Client
         /// Returns Search API Client, giving access to post search requests.
         /// </summary>
         IRestitutionClient Restitution { get;  }
+
+        /// <summary>
+        /// Returns Model API Client, giving access to the model.
+        /// </summary>
+        IModelClient Model { get;  }
     }
 }
