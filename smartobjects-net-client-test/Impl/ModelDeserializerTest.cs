@@ -126,114 +126,89 @@ namespace Con.Mnubo.Dotnetsdktest.Test.Impl
                 }
             ";
             Model model = ModelDeserializer.DeserializeModel(json);
-            Assert.Multiple(() =>
-            {
-                Assert.AreEqual(2, model.EventTypes.Count, "event types count");
-                Assert.AreEqual(2, model.Timeseries.Count, "timeseries count");
-                Assert.AreEqual(1, model.ObjectTypes.Count, "object types count");
-                Assert.AreEqual(2, model.ObjectAttributes.Count, "object attributes count");
-                Assert.AreEqual(1, model.OwnerAttributes.Count, "owner attributes count");
-                Assert.AreEqual(1, model.Sessionizers.Count, "sessionizers count");
-            });
+            Assert.AreEqual(2, model.EventTypes.Count, "event types count");
+            Assert.AreEqual(2, model.Timeseries.Count, "timeseries count");
+            Assert.AreEqual(1, model.ObjectTypes.Count, "object types count");
+            Assert.AreEqual(2, model.ObjectAttributes.Count, "object attributes count");
+            Assert.AreEqual(1, model.OwnerAttributes.Count, "owner attributes count");
+            Assert.AreEqual(1, model.Sessionizers.Count, "sessionizers count");
 
             EventType type1 = model.EventTypes[0];
-            Assert.Multiple(() => {
-                Assert.AreEqual("event_type1", type1.Key);
-                Assert.AreEqual("desc", type1.Description);
-                Assert.AreEqual("scheduled", type1.Origin);
-                Assert.AreEqual(new List<string>(){"ts_number_attribute", "ts_text_attribute"}, type1.TimeseriesKeys);
-            });
+            Assert.AreEqual("event_type1", type1.Key);
+            Assert.AreEqual("desc", type1.Description);
+            Assert.AreEqual("scheduled", type1.Origin);
+            Assert.AreEqual(new List<string>(){"ts_number_attribute", "ts_text_attribute"}, type1.TimeseriesKeys);
             EventType type2 = model.EventTypes[1];
-            Assert.Multiple(() => {
-                Assert.AreEqual("event_type2", type2.Key);
-                Assert.AreEqual("desc", type2.Description);
-                Assert.AreEqual("rule", type2.Origin);
-                Assert.AreEqual(new List<string>(){"ts_text_attribute"}, type2.TimeseriesKeys);
-            });
-            
+            Assert.AreEqual("event_type2", type2.Key);
+            Assert.AreEqual("desc", type2.Description);
+            Assert.AreEqual("rule", type2.Origin);
+            Assert.AreEqual(new List<string>(){"ts_text_attribute"}, type2.TimeseriesKeys);
+        
             ObjectType oType = model.ObjectTypes[0];
-            Assert.Multiple(() => {
-                Assert.AreEqual("object_type1", oType.Key);
-                Assert.AreEqual("desc", oType.Description);
-                Assert.AreEqual(new List<string>(){"object_text_attribute", "object_int_attribute"}, oType.ObjectAttributeKeys);
-            });
+            Assert.AreEqual("object_type1", oType.Key);
+            Assert.AreEqual("desc", oType.Description);
+            Assert.AreEqual(new List<string>(){"object_text_attribute", "object_int_attribute"}, oType.ObjectAttributeKeys);
             
             ObjectAttribute object1 = model.ObjectAttributes[0];
-            Assert.Multiple(() => {
-                Assert.AreEqual("object_text_attribute", object1.Key);
-                Assert.AreEqual("dp object_text_attribute", object1.DisplayName);
-                Assert.AreEqual("desc object_text_attribute", object1.Description);
-                Assert.AreEqual("TEXT", object1.HighLevelType);
-                Assert.AreEqual("none", object1.ContainerType);
-                Assert.AreEqual(new List<string>(){"object_type1"}, object1.ObjectTypeKeys);
-            });
+            Assert.AreEqual("object_text_attribute", object1.Key);
+            Assert.AreEqual("dp object_text_attribute", object1.DisplayName);
+            Assert.AreEqual("desc object_text_attribute", object1.Description);
+            Assert.AreEqual("TEXT", object1.HighLevelType);
+            Assert.AreEqual("none", object1.ContainerType);
+            Assert.AreEqual(new List<string>(){"object_type1"}, object1.ObjectTypeKeys);
             
             ObjectAttribute object2 = model.ObjectAttributes[1];
-            Assert.Multiple(() => {
-                Assert.AreEqual("object_int_attribute", object2.Key);
-                Assert.AreEqual("dp object_int_attribute", object2.DisplayName);
-                Assert.AreEqual("desc object_int_attribute", object2.Description);
-                Assert.AreEqual("INT", object2.HighLevelType);
-                Assert.AreEqual("list", object2.ContainerType);
-                Assert.AreEqual(new List<string>(){"object_type1"}, object2.ObjectTypeKeys);
-            });
+            Assert.AreEqual("object_int_attribute", object2.Key);
+            Assert.AreEqual("dp object_int_attribute", object2.DisplayName);
+            Assert.AreEqual("desc object_int_attribute", object2.Description);
+            Assert.AreEqual("INT", object2.HighLevelType);
+            Assert.AreEqual("list", object2.ContainerType);
+            Assert.AreEqual(new List<string>(){"object_type1"}, object2.ObjectTypeKeys);
             
             
             Timeseries ts1 = model.Timeseries[0];
-            Assert.Multiple(() => {
-                Assert.AreEqual("ts_number_attribute", ts1.Key);
-                Assert.AreEqual("dp ts_number_attribute", ts1.DisplayName);
-                Assert.AreEqual("desc ts_number_attribute", ts1.Description);
-                Assert.AreEqual("DOUBLE", ts1.HighLevelType);
-                Assert.AreEqual(new List<string>(){"event_type1"}, ts1.EventTypeKeys);
-            });
+            Assert.AreEqual("ts_number_attribute", ts1.Key);
+            Assert.AreEqual("dp ts_number_attribute", ts1.DisplayName);
+            Assert.AreEqual("desc ts_number_attribute", ts1.Description);
+            Assert.AreEqual("DOUBLE", ts1.HighLevelType);
+            Assert.AreEqual(new List<string>(){"event_type1"}, ts1.EventTypeKeys);
             
             Timeseries ts2 = model.Timeseries[1];
-            Assert.Multiple(() => {
-                Assert.AreEqual("ts_text_attribute", ts2.Key);
-                Assert.AreEqual("dp ts_text_attribute", ts2.DisplayName);
-                Assert.AreEqual("desc ts_text_attribute", ts2.Description);
-                Assert.AreEqual("TEXT", ts2.HighLevelType);
-                Assert.AreEqual(new List<string>(){"event_type1", "event_type2"}, ts2.EventTypeKeys);
-            });
+            Assert.AreEqual("ts_text_attribute", ts2.Key);
+            Assert.AreEqual("dp ts_text_attribute", ts2.DisplayName);
+            Assert.AreEqual("desc ts_text_attribute", ts2.Description);
+            Assert.AreEqual("TEXT", ts2.HighLevelType);
+            Assert.AreEqual(new List<string>(){"event_type1", "event_type2"}, ts2.EventTypeKeys);
             
             OwnerAttribute owner = model.OwnerAttributes[0];
-            Assert.Multiple(() => {
-                Assert.AreEqual("owner_text_attribute", owner.Key);
-                Assert.AreEqual("dp owner_text_attribute", owner.DisplayName);
-                Assert.AreEqual("desc owner_text_attribute", owner.Description);
-                Assert.AreEqual("TEXT", owner.HighLevelType);
-                Assert.AreEqual("none", owner.ContainerType);
-            });
+            Assert.AreEqual("owner_text_attribute", owner.Key);
+            Assert.AreEqual("dp owner_text_attribute", owner.DisplayName);
+            Assert.AreEqual("desc owner_text_attribute", owner.Description);
+            Assert.AreEqual("TEXT", owner.HighLevelType);
+            Assert.AreEqual("none", owner.ContainerType);
             
             Sessionizer sess = model.Sessionizers[0];
-            Assert.Multiple(() => {
-                Assert.AreEqual("sessionizer", sess.Key);
-                Assert.AreEqual("dp sessionizer", sess.DisplayName);
-                Assert.AreEqual("desc sessionizer", sess.Description);
-                Assert.AreEqual("event_type1", sess.StartEventTypeKey);
-                Assert.AreEqual("event_type2", sess.EndEventTypeKey);
-            });
+            Assert.AreEqual("sessionizer", sess.Key);
+            Assert.AreEqual("dp sessionizer", sess.DisplayName);
+            Assert.AreEqual("desc sessionizer", sess.Description);
+            Assert.AreEqual("event_type1", sess.StartEventTypeKey);
+            Assert.AreEqual("event_type2", sess.EndEventTypeKey);
 
             ObjectAttribute orphanObj = model.Orphans.ObjectAttributes[0];
-            Assert.Multiple(() => {
-                Assert.AreEqual("orphan_object", orphanObj.Key);
-                Assert.AreEqual("dp orphan_object", orphanObj.DisplayName);
-                Assert.AreEqual("desc orphan_object", orphanObj.Description);
-                Assert.AreEqual("EMAIL", orphanObj.HighLevelType);
-                Assert.AreEqual("none", orphanObj.ContainerType);
-                Assert.AreEqual(new List<string>(), orphanObj.ObjectTypeKeys);
-            });
+            Assert.AreEqual("orphan_object", orphanObj.Key);
+            Assert.AreEqual("dp orphan_object", orphanObj.DisplayName);
+            Assert.AreEqual("desc orphan_object", orphanObj.Description);
+            Assert.AreEqual("EMAIL", orphanObj.HighLevelType);
+            Assert.AreEqual("none", orphanObj.ContainerType);
+            Assert.AreEqual(new List<string>(), orphanObj.ObjectTypeKeys);
             
             
             Timeseries orphanTs = model.Orphans.Timeseries[0];
-            Assert.Multiple(() => {
-                Assert.AreEqual("orphan_ts", orphanTs.Key);
-                Assert.AreEqual("dp orphan_ts", orphanTs.DisplayName);
-                Assert.AreEqual("desc orphan_ts", orphanTs.Description);
-                Assert.AreEqual("ACCELERATION", orphanTs.HighLevelType);
-                Assert.AreEqual(new List<string>(), orphanTs.EventTypeKeys);
-            });
+            Assert.AreEqual("orphan_ts", orphanTs.Key);
+            Assert.AreEqual("dp orphan_ts", orphanTs.DisplayName);
+            Assert.AreEqual("desc orphan_ts", orphanTs.Description);
+            Assert.AreEqual("ACCELERATION", orphanTs.HighLevelType);
+            Assert.AreEqual(new List<string>(), orphanTs.EventTypeKeys);
         }
         
         [Test()]
@@ -256,15 +231,12 @@ namespace Con.Mnubo.Dotnetsdktest.Test.Impl
                 }
             ";
             Model model = ModelDeserializer.DeserializeModel(json);
-            Assert.Multiple(() =>
-            {
-                Assert.AreEqual(1, model.EventTypes.Count, "event types count");
-                Assert.AreEqual(0, model.Timeseries.Count, "timeseries count");
-                Assert.AreEqual(0, model.ObjectTypes.Count, "object types count");
-                Assert.AreEqual(0, model.ObjectAttributes.Count, "object attributes count");
-                Assert.AreEqual(0, model.OwnerAttributes.Count, "owner attributes count");
-                Assert.AreEqual(0, model.Sessionizers.Count, "sessionizers count");
-            });
+            Assert.AreEqual(1, model.EventTypes.Count, "event types count");
+            Assert.AreEqual(0, model.Timeseries.Count, "timeseries count");
+            Assert.AreEqual(0, model.ObjectTypes.Count, "object types count");
+            Assert.AreEqual(0, model.ObjectAttributes.Count, "object attributes count");
+            Assert.AreEqual(0, model.OwnerAttributes.Count, "owner attributes count");
+            Assert.AreEqual(0, model.Sessionizers.Count, "sessionizers count");
         }
     }
 }

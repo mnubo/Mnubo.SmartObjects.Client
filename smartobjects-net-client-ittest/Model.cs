@@ -34,15 +34,12 @@ namespace Mnubo.SmartObjects.Client.ITTest
         public void TestExport()
         {
             Model model = client.Model.Export();
-            Assert.Multiple(() =>
-            {
-                Assert.AreEqual(2, model.EventTypes.Count, "event types count");
-                Assert.AreEqual(2, model.Timeseries.Count, "timeseries count");
-                Assert.AreEqual(1, model.ObjectTypes.Count, "object types count");
-                Assert.AreEqual(1, model.ObjectAttributes.Count, "object attributes count");
-                Assert.AreEqual(1, model.OwnerAttributes.Count, "owner attributes count");
-                Assert.AreEqual(1, model.Sessionizers.Count, "sessionizers count");
-            });
+            Assert.AreEqual(2, model.EventTypes.Count, "event types count");
+            Assert.AreEqual(2, model.Timeseries.Count, "timeseries count");
+            Assert.AreEqual(1, model.ObjectTypes.Count, "object types count");
+            Assert.AreEqual(1, model.ObjectAttributes.Count, "object attributes count");
+            Assert.AreEqual(1, model.OwnerAttributes.Count, "owner attributes count");
+            Assert.AreEqual(1, model.Sessionizers.Count, "sessionizers count");
 
         }
     }
