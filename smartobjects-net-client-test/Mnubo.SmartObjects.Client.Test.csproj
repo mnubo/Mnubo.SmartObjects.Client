@@ -53,6 +53,7 @@
     <Compile Include="Impl\EventClientTest.cs" />
     <Compile Include="Impl\OwnerClientTest.cs" />
     <Compile Include="Impl\SmartObjectClientTest.cs" />
+    <Compile Include="Impl\ModelDeserializerTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
