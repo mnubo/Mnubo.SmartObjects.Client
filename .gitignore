@@ -9,3 +9,4 @@ packagesBuild/
 *.TMP
 *.nupkg
 testrunner/
+TestResult.xml
