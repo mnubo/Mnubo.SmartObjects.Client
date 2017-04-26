@@ -2,8 +2,6 @@ using System.Collections.Generic;
 
 namespace Mnubo.SmartObjects.Client.Models.DataModel
 {
-    /// <summary>
-    /// </summary>
     public sealed class EventType
     {
         public string Key { get; }

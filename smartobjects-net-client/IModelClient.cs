@@ -9,7 +9,7 @@ namespace Mnubo.SmartObjects.Client
     public interface IModelClient
     {
         /// <summary>
-        /// Export model of the current zone
+        /// Export the model of the current zone
         /// </summary>
         /// <returns>Model</returns>
         Model Export();

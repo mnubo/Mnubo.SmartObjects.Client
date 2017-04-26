@@ -4,8 +4,6 @@ using System.Collections.Immutable;
 
 namespace Mnubo.SmartObjects.Client.Models.DataModel
 {
-    /// <summary>
-    /// </summary>
     public sealed class OwnerAttribute
     {
         public string Key  { get; }
