@@ -11,105 +11,137 @@ namespace Mnubo.SmartObjects.Client
     public interface IOwnerClient
     {
         /// <summary>
-        /// Allows create a new owner in sync mode.
+        /// Create a new owner 
         /// </summary>
         /// <param name="owner">owner to be created</param>
         void Create(Owner owner);
 
         /// <summary>
-        /// Allows an existing owner to claim one existing object in sync mode.
+        /// Claim an object to an owner
         /// </summary>
         /// <param name="username">owner who claims the object.</param>
         /// <param name="deviceId">object claimed.</param>
-        void Claim(string username, string deviceId);
+        /// <param name="body">body to include with the claim.</param>
+        void Claim(string username, string deviceId, Dictionary<string, object> body = null);
 
         /// <summary>
-        /// Allows an existing owner to unclaim one of his objects in sync mode.
+        /// Unclaim an object to an owner 
         /// </summary>
         /// <param name="username">owner how claim the object.</param>
         /// <param name="deviceId">object to unclaim.</param>
-        void Unclaim(string username, string deviceId);
+        /// <param name="body">body to include with the unclaim.</param>
+        void Unclaim(string username, string deviceId, Dictionary<string, object> body = null);
 
         /// <summary>
-        /// Allows update an existing owner in sync mode.
+        /// Batch claim objects to owners
+        /// </summary>
+        /// <param name="claime">list of ClaimOrUnclaim.</param>
+        /// <returns>A list of Result</returns>
+        IEnumerable<Result> BatchClaim(IEnumerable<ClaimOrUnclaim> claims);
+
+        /// <summary>
+        /// Batch unclaim objects to owners
+        /// </summary>
+        /// <param name="claime">list of ClaimOrUnclaim.</param>
+        /// <returns>A list of Result</returns>
+        IEnumerable<Result> BatchUnclaim(IEnumerable<ClaimOrUnclaim> unclaims);
+
+        /// <summary>
+        /// Update an existing owner 
         /// </summary>
         /// <param name="owner">new values of the owner to be updated.</param>
         /// <param name="username">Owner to be updated.</param>
         void Update(Owner owner, string username);
 
         /// <summary>
-        /// Allow delete an existing Owner in sync mode.
+        /// Delete an existing Owner
         /// </summary>
         /// <param name="username">Owner to delete.</param>
         void Delete(String username);
 
         /// <summary>
-        /// Allow update the password of an existing Owner in sync mode.
+        /// Update the password of an existing Owner 
         /// </summary>
         /// <param name="username">username to update the password.</param>
         /// <param name="password">new password.</param>
         void UpdatePassword(string username, string password);
 
         /// <summary>
-        /// Allow create, or update in case of the owner(s) already exist, a batch of owners in sync mode.
+        /// Create, or update in case of the owner(s) already exist, a batch of owners
         /// </summary>
         /// <param name="owners">list of onwers to add or update.</param>
         /// <returns>the list of result.</returns>
         IEnumerable<Result> CreateUpdate(IEnumerable<Owner> owners);
 
         /// <summary>
-        /// Allow validate if an owner exists.
+        /// Validate if an owner exists.
         /// </summary>
         /// <param name="username">Owner's username to validate.</param>
         /// <returns>true if the owner exists or false if not.</returns>
         bool OwnerExists(string username);
 
         /// <summary>
-        /// Allow validate if a list of owners exist.
+        /// Validate if a list of owners exist.
         /// </summary>
         /// <param name="usernames">list of usernames to validate. ["userA", "userB" ]</param>
         /// <returns>the dictionary of usernames with an existing boolean, true if it exists or false if not. {"userA":true},{"userB":false}</returns>
         IDictionary<string, bool> OwnersExist(IList<string> usernames);
 
         /// <summary>
-        /// Allows create a new owner in async mode.
+        /// Create a new owner in async mode.
         /// </summary>
         /// <param name="owner">owner to be created.</param>
         /// <returns>A async task.</returns>
         Task CreateAsync(Owner owner);
 
         /// <summary>
-        /// Allows an existing owner to claim one existing object in async mode.
+        /// Claim an object to an owner in async mode.
         /// </summary>
         /// <param name="username">owner who claims the object</param>
         /// <param name="deviceId">object claimed</param>
+        /// <param name="body">body to include with the claim.</param>
         /// <returns>A async task.</returns>
-        Task ClaimAsync(string username, string deviceId);
+        Task ClaimAsync(string username, string deviceId, Dictionary<string, object> body = null);
 
         /// <summary>
-        /// Allows an existing owner to unclaim one of his objects in async mode.
+        /// Unclaim an object to an owner in async mode.
         /// </summary>
         /// <param name="username">owner how claim the object.</param>
         /// <param name="deviceId">object to unclaim.</param>
-        Task UnclaimAsync(string username, string deviceId);
+        Task UnclaimAsync(string username, string deviceId, Dictionary<string, object> body = null);
 
         /// <summary>
-        /// Allows update an existing owner in async mode.
+        /// Batch claim objects to owners in async mode.
+        /// </summary>
+        /// <param name="claime">list of ClaimOrUnclaim.</param>
+        /// <returns>A async task with a list of Result.</returns>
+        Task<IEnumerable<Result>> BatchClaimAsync(IEnumerable<ClaimOrUnclaim> claims);
+
+        /// <summary>
+        /// Batch unclaim objects to owners in async mode.
+        /// </summary>
+        /// <param name="claime">list of ClaimOrUnclaim.</param>
+        /// <returns>A async task with a list of Result.</returns>
+        Task<IEnumerable<Result>> BatchUnclaimAsync(IEnumerable<ClaimOrUnclaim> unclaims);
+
+        /// <summary>
+        /// Update an existing owner in async mode.
         /// </summary>
         /// <param name="owner">new values of the owner to be updated</param>
         /// <param name="username">Owner to be updated</param>
+        /// <param name="body">body to include with the unclaim.</param>
         /// <returns>A async task.</returns>
         Task UpdateAsync(Owner owner, string username);
 
         /// <summary>
-        /// Allow delete an existing Owner in async mode.
+        /// Delete an existing Owner in async mode.
         /// </summary>
         /// <param name="username">Owner to delete</param>
         /// <returns>A async task.</returns>
         Task DeleteAsync(string username);
 
         /// <summary>
-        /// Allow update the password of an existing Owner in async mode.
+        /// Update the password of an existing Owner in async mode.
         /// </summary>
         /// <param name="username">username to update the password.</param>
         /// <param name="password">new password.</param>
@@ -117,7 +149,7 @@ namespace Mnubo.SmartObjects.Client
         Task UpdatePasswordAsync(string username, string password);
 
         /// <summary>
-        /// Allow create, or update in case of the owner(s) already exist, a batch of owners in async mode.
+        /// Create, or update in case of the owner(s) already exist, a batch of owners in async mode.
         /// </summary>
         /// <param name="owners">list of onwers to add or update.</param>
         /// <returns>the list of result.</returns>
@@ -125,14 +157,14 @@ namespace Mnubo.SmartObjects.Client
         Task<IEnumerable<Result>> CreateUpdateAsync(IEnumerable<Owner> owners);
 
         /// <summary>
-        /// Allow validate if an owner exists in async mode.
+        /// Validate if an owner exists in async mode.
         /// </summary>
         /// <param name="username">Owner's username to validate.</param>
         /// <returns>true if the owner exists or false if not.</returns>
         Task<bool> OwnerExistsAsync(string username);
 
         /// <summary>
-        /// Allow validate if a list of owners exist in async mode.
+        /// Validate if a list of owners exist in async mode.
         /// </summary>
         /// <param name="usernames">list of usernames to validate. ["userA", "userB" ]</param>
         /// <returns>the dictionary of usernames with an existing boolean, true if it exists or false if not. {"userA":true},{"userB":false}</returns>

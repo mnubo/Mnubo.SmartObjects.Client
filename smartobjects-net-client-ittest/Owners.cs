@@ -114,6 +114,143 @@ namespace Mnubo.SmartObjects.Client.ITTest
 
         }
 
+
+        [Test()]
+        public void TestClaimUnclaimWithBody()
+        {
+            String uuid = Guid.NewGuid().ToString();
+            String value1 = "value-" + uuid;
+            Owner owner = new Owner.Builder() {
+                Username = "username-" + uuid,
+                Password = "password-" + uuid,
+                Attributes = new Dictionary<string,object>() {
+                    {"owner_text_attribute", value1}
+                }
+            };
+            Dictionary<string,object> body = new Dictionary<string,object>() {
+                {"x_timestamp", "2017-04-24T16:13:11+00:00"}
+            };
+
+            SmartObject smartObject = new SmartObject.Builder() {
+                DeviceId = "deviceId-" + uuid,
+                ObjectType = "object_type1",
+                Attributes = new Dictionary<string,object>() {
+                    {"object_text_attribute", value1}
+                }
+            };
+
+            client.Owners.Create(owner);
+            client.Objects.Create(smartObject);
+
+            try {
+                client.Owners.Claim(uuid, smartObject.DeviceId, body);
+                Assert.Fail("Claim on a non existent owner should fail");
+            } catch {
+                //expected
+            }
+
+            try {
+                client.Owners.Claim(owner.Username, uuid, body);
+                Assert.Fail("Claim on a non existent owner should fail");
+            } catch {
+                //expected
+            }
+
+            ITTestHelper.EventuallyAssert(() => {
+                ResultSet resultOwn = client.Restitution.Search(ITTestHelper.searchOwnerQuery(owner.Username));
+                Assert.AreEqual(1, resultOwn.Rows.Count);
+
+                ResultSet resultObj = client.Restitution.Search(ITTestHelper.searchObjectQuery(smartObject.DeviceId));
+                Assert.AreEqual(1, resultObj.Rows.Count);
+            });
+
+            client.Owners.Claim(owner.Username, smartObject.DeviceId, body);
+
+            ITTestHelper.EventuallyAssert(() => {
+                ResultSet resultOwn = client.Restitution.Search(ITTestHelper.searchObjectByOwnerQuery(owner.Username));
+                Assert.AreEqual(1, resultOwn.Rows.Count);
+            });
+
+            try {
+                client.Owners.Unclaim(uuid, smartObject.DeviceId, body);
+                Assert.Fail("Unclaim on an non-existing owner should fail");
+            } catch {
+                //expected
+            }
+            try {
+                client.Owners.Unclaim(owner.Username, uuid, body);
+                Assert.Fail("Unclaim on an non-existing object should fail");
+            } catch {
+                //expected
+            }
+
+            client.Owners.Unclaim(owner.Username, smartObject.DeviceId, body);
+            ITTestHelper.EventuallyAssert(() => {
+                ResultSet resultOwn = client.Restitution.Search(ITTestHelper.searchObjectByOwnerQuery(owner.Username));
+                Assert.AreEqual(0, resultOwn.Rows.Count);
+            });
+
+            try {
+                client.Owners.Unclaim(owner.Username, smartObject.DeviceId);
+                Assert.Fail("Unclaim on an already unclaimed object should fail");
+            } catch {
+                //expected
+            }
+
+        }
+
+        [Test()]
+        public void TestBatchClaimUnclaim()
+        {
+            String uuid = Guid.NewGuid().ToString();
+            String value1 = "value-" + uuid;
+            Owner owner = new Owner.Builder() {
+                Username = "username-" + uuid,
+                Password = "password-" + uuid,
+                Attributes = new Dictionary<string,object>() {
+                    {"owner_text_attribute", value1}
+                }
+            };
+
+            SmartObject smartObject = new SmartObject.Builder() {
+                DeviceId = "deviceId-" + uuid,
+                ObjectType = "object_type1",
+                Attributes = new Dictionary<string,object>() {
+                    {"object_text_attribute", value1}
+                }
+            };
+
+
+            Dictionary<string,object> body = new Dictionary<string,object>() {
+                {"x_timestamp", "2017-04-24T16:13:11+00:00"}
+            };
+            IEnumerable<ClaimOrUnclaim>  valid = new List<ClaimOrUnclaim>() {
+                new ClaimOrUnclaim(owner.Username, smartObject.DeviceId, body)
+            };
+            IEnumerable<ClaimOrUnclaim>  unknownUsername = new List<ClaimOrUnclaim>() {
+                new ClaimOrUnclaim(uuid, smartObject.DeviceId, body)
+            };
+            IEnumerable<ClaimOrUnclaim>  unknownDeviceId = new List<ClaimOrUnclaim>() {
+                new ClaimOrUnclaim(owner.Username, uuid, body)
+            };
+
+            client.Owners.Create(owner);
+            client.Objects.Create(smartObject);
+
+            ITTestHelper.AllFailed(client.Owners.BatchClaim(unknownUsername));
+            ITTestHelper.AllFailed(client.Owners.BatchClaim(unknownDeviceId));
+
+            ITTestHelper.AllSuccess(client.Owners.BatchClaim(valid));
+
+            ITTestHelper.AllFailed(client.Owners.BatchUnclaim(unknownUsername));
+            ITTestHelper.AllFailed(client.Owners.BatchUnclaim(unknownDeviceId));
+
+            ITTestHelper.AllSuccess(client.Owners.BatchUnclaim(valid));
+
+            //Already unclaimed
+            ITTestHelper.AllFailed(client.Owners.BatchUnclaim(valid));
+        }
+
         [Test()]
         public void TestCreateAndUpdate()
         {
