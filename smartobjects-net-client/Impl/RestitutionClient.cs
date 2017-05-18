@@ -6,7 +6,11 @@ using System.Net.Http;
 using Newtonsoft.Json;
 
 namespace Mnubo.SmartObjects.Client.Impl
+
 {
+    /// <summary>
+    /// Implements <see cref="IRestitutionClient"/>
+    /// </summary>
     public class RestitutionClient : IRestitutionClient
     {
         private readonly HttpClient client;
@@ -17,11 +21,18 @@ namespace Mnubo.SmartObjects.Client.Impl
         }
 
         #region Sync
+        
+        /// <summary>
+        /// Implements <see cref="IRestitutionClient.GetDataSets"/>
+        /// </summary>
         public IEnumerable<DataSet> GetDataSets()
         {
             return ClientUtils.WaitTask<IEnumerable<DataSet>>(GetDataSetsAsync());
         }
-
+        
+        /// <summary>
+        /// Implements <see cref="IRestitutionClient.Search"/>
+        /// </summary>
         public ResultSet Search(string query)
         {
             return ClientUtils.WaitTask<ResultSet>(SearchAsync(query));
@@ -29,6 +40,11 @@ namespace Mnubo.SmartObjects.Client.Impl
         #endregion
 
         #region Async
+
+        
+        /// <summary>
+        /// Implements <see cref="IRestitutionClient.GetDataSetsAsync"/>
+        /// </summary>
         public async Task<IEnumerable<DataSet>> GetDataSetsAsync()
         {
             var asynResult = await client.sendAsyncRequestWithResult(
@@ -38,6 +54,9 @@ namespace Mnubo.SmartObjects.Client.Impl
             return JsonConvert.DeserializeObject<IEnumerable<DataSet>>(asynResult);
         }
 
+        /// <summary>
+        /// Implements <see cref="IRestitutionClient.SearchAsync"/>
+        /// </summary>
         public async Task<ResultSet> SearchAsync(string query)
         {
             if (string.IsNullOrEmpty(query))

@@ -17,7 +17,7 @@ namespace Mnubo.SmartObjects.Client.Impl
         /// <summary>
         /// Serialize a list of ClaimOrUnclaim to a Json string
         /// </summary>
-        /// <param name="owners">List of owner</param>
+        /// <param name="values">List of claims or unclaims</param>
         /// <returns>json string</returns>
         public static string SerializeClaimOrUnclaims(IEnumerable<ClaimOrUnclaim> values)
         {

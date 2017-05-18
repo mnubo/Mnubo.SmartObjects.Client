@@ -8,12 +8,16 @@ namespace Mnubo.SmartObjects.Client.Impl
 {
     using TimeseriesFields = Tuple<string, string, string, string>;
     using ObjectAttributeFields = Tuple<string, string, string, string, string>;
+
+    /// <summary>
+    /// Deserializer to read JSON as a Model
+    /// </summary>
     public class ModelDeserializer
     {
         /// <summary>
-        /// deserialize a json string to a Model instance
+        /// Deserialize a json string to a Model instance
         /// </summary>
-        /// <param name="obj">json string</param>
+        /// <param name="payload">json string</param>
         /// <returns>Model instance</returns>
         public static Model DeserializeModel(string payload)
         {

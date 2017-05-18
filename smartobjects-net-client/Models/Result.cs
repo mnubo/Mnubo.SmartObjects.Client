@@ -1,46 +1,47 @@
 ﻿namespace Mnubo.SmartObjects.Client.Models
 {
     /// <summary>
-    /// Give information about the request sent, this is a particular answer for batch processing.
+    /// One result of from a result set from a call to <see cref="IObjectClient.CreateUpdate"/> call
+    /// or <see cref="IOwnerClient.CreateUpdate"/>
     /// </summary>
     public class Result
     {
         /// <summary>
-        /// Result of the request.
+        /// Result of the request
         /// </summary>
         public enum ResultStates
         {
             /// <summary>
-            /// every was well with the request.
+            /// The request was a success
             /// </summary>
             Success,
             /// <summary>
-            /// Something was wrong with the request.
+            /// Something went wrong with the request
             /// </summary>
             Error
         };
 
         /// <summary>
-        /// return the id of the resource, device id in object's cases and "username" in owner's cases.
+        /// The unique identifier of the resource: username for owner and device id for object
         /// </summary>
         public string ResourceId { get; }
 
         /// <summary>
-        /// return the result of the request, this can be 'success' or 'error'.
+        /// Status of the result
         /// </summary>
         public ResultStates ResultState { get; }
 
         /// <summary>
-        /// return a message in the request, just if this apply.
+        /// Status as a human readable message
         /// </summary>
         public string Message { get; }
 
         /// <summary>
         /// Allow create a new result set
         /// </summary>
-        /// <param name="id">Id of the request.</param>
-        /// <param name="result">result of the request, take values of 'success' or 'error'.</param>
-        /// <param name="message">message of the request.</param>
+        /// <param name="resourceId">See <see cref="ResourceId" /></param>
+        /// <param name="result">See <see cref="ResultState" /></param>
+        /// <param name="message">See <see cref="Message" /></param>
         public Result(string resourceId, ResultStates result, string message)
         {
             ResourceId = resourceId;

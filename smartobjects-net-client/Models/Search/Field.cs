@@ -2,6 +2,9 @@
 
 namespace Mnubo.SmartObjects.Client.Models.Search
 {
+    /// <summary>
+    /// One field of a <see cref="DataSet"/>
+    /// </summary>
     public class Field
     {
         /// <summary>
@@ -9,7 +12,14 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         /// </summary>
         public enum ContainerTypes
         {
+            /// <summary>
+            /// No container
+            /// </summary>
             None,
+            
+            /// <summary>
+            /// A list container
+            /// </summary>
             List
         }
 
@@ -52,12 +62,12 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         /// <summary>
         /// Create a new instance
         /// </summary>
-        /// <param name="containerType">container type</param>
-        /// <param name="description">drescription</param>
-        /// <param name="displayName">display name</param>
-        /// <param name="highLevelType">High level type</param>
-        /// <param name="key">key</param>
-        /// <param name="isPrimaryKey">is primary key</param>
+        /// <param name="containerType">See <see cref="ContainerType" /></param>
+        /// <param name="description">See <see cref="Description" /></param>
+        /// <param name="displayName">See <see cref="DisplayName" /></param>
+        /// <param name="highLevelType">See <see cref="HighLevelType" /></param>
+        /// <param name="key">See <see cref="Key" /></param>
+        /// <param name="isPrimaryKey">See <see cref="IsPrimaryKey" /></param>
         public Field(ContainerTypes containerType, string description, string displayName, string highLevelType, string key, bool isPrimaryKey)
         {
             ContainerType = containerType;
