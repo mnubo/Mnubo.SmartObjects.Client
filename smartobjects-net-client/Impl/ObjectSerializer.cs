@@ -45,9 +45,11 @@ namespace Mnubo.SmartObjects.Client.Impl
                 objectModelFlat.Add(DeviceIdProperty, smartObject.DeviceId);
             }
 
-            if (smartObject.RegistrationDate.HasValue)
+            if (smartObject.RegistrationDateTime.HasValue)
             {
-                objectModelFlat.Add(RegistrationDateProperty, smartObject.RegistrationDate);
+                objectModelFlat.Add(RegistrationDateProperty, smartObject.RegistrationDateTime.Value.UtcDateTime);
+            } else if (smartObject.RegistrationDate.HasValue) {
+                objectModelFlat.Add(RegistrationDateProperty, smartObject.RegistrationDate.Value);
             }
 
             if (!string.IsNullOrEmpty(smartObject.ObjectType))
@@ -114,7 +116,7 @@ namespace Mnubo.SmartObjects.Client.Impl
                             {
                                 throw new InvalidOperationException("Field 'x_registration_date' does not match TYPE 'DATETIME'");
                             }
-                            builder.RegistrationDate = (DateTime)token.Value;
+                            builder.RegistrationDateTime = new DateTimeOffset((DateTime)token.Value);
                             break;
                         }
                     case ObjectTypeProperty:

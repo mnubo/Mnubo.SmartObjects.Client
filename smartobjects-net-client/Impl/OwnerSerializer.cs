@@ -44,9 +44,11 @@ namespace Mnubo.SmartObjects.Client.Impl
                 ownerModelFlat.Add(UsernameProperty, owner.Username);
             }
 
-            if (owner.RegistrationDate.HasValue)
+            if (owner.RegistrationDateTime.HasValue)
             {
-                ownerModelFlat.Add(RegistrationDateProperty, owner.RegistrationDate);
+                ownerModelFlat.Add(RegistrationDateProperty, owner.RegistrationDateTime.Value.UtcDateTime);
+            } else if (owner.RegistrationDate.HasValue) {
+                ownerModelFlat.Add(RegistrationDateProperty, owner.RegistrationDate.Value);
             }
 
             if (!string.IsNullOrEmpty(owner.Password))
@@ -105,7 +107,7 @@ namespace Mnubo.SmartObjects.Client.Impl
                             {
                                 throw new InvalidOperationException("Field 'x_registration_date' does not match TYPE 'DATETIME'");
                             }
-                            builder.RegistrationDate = ((DateTime)token.Value);
+                            builder.RegistrationDateTime = new DateTimeOffset((DateTime)token.Value);
                             break;
                         }
                     case PasswordProperty:

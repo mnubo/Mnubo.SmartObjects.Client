@@ -14,7 +14,7 @@ namespace Con.Mnubo.Dotnetsdktest.Test.Impl
         [Test()]
         public void SmartObjectSerializeTest()
         {
-            DateTime now = TestUtils.GetNowIgnoringMilis();
+            DateTimeOffset now = new DateTimeOffset(2017, 06, 12, 18, 05, 05, TimeSpan.FromHours(5d));
 
             Dictionary<string, object> attributes = new Dictionary<string, object>();
             attributes.Add("string", "stringValue");
@@ -25,7 +25,7 @@ namespace Con.Mnubo.Dotnetsdktest.Test.Impl
             {
                 DeviceId = "test",
                 ObjectType = "type",
-                RegistrationDate = now,
+                RegistrationDateTime = now,
                 Attributes = new SortedDictionary<string, object>()
                 {
                     { "string", "stringValue" },
@@ -38,7 +38,42 @@ namespace Con.Mnubo.Dotnetsdktest.Test.Impl
 			TestUtils.AssertJsonEquals(json, new List<string>
 			{
 				"\"x_device_id\":\"test\"",
-				$"\"x_registration_date\":\"{now.ToString(EventSerializerTest.DatetimeFormat)}\"",
+				"\"x_registration_date\":\"2017-06-12T13:05:05Z\"",
+				"\"x_object_type\":\"type\"",
+				"\"float\":10.5",
+				"\"double\":10.0",
+				"\"string\":\"stringValue\""
+			});
+        }
+
+        [Test()]
+        public void SmartObjectSerializeTestWithDeprecatedDate()
+        {
+            DateTimeOffset now = new DateTimeOffset(2017, 06, 12, 18, 05, 05, TimeSpan.FromHours(5d));
+
+            Dictionary<string, object> attributes = new Dictionary<string, object>();
+            attributes.Add("string", "stringValue");
+            attributes.Add("double", 10d);
+            attributes.Add("float", 10.5f);
+
+            SmartObject myObject = new SmartObject.Builder()
+            {
+                DeviceId = "test",
+                ObjectType = "type",
+                RegistrationDate = now.UtcDateTime,
+                Attributes = new SortedDictionary<string, object>()
+                {
+                    { "string", "stringValue" },
+                    { "double", 10d },
+                    { "float", 10.5f }
+                }
+            };
+
+            string json = ObjectSerializer.SerializeObject(myObject);
+			TestUtils.AssertJsonEquals(json, new List<string>
+			{
+				"\"x_device_id\":\"test\"",
+				"\"x_registration_date\":\"2017-06-12T13:05:05Z\"",
 				"\"x_object_type\":\"type\"",
 				"\"float\":10.5",
 				"\"double\":10.0",
@@ -118,6 +153,8 @@ namespace Con.Mnubo.Dotnetsdktest.Test.Impl
             Assert.AreEqual(SmartObject.ObjectType, "type");
             Assert.AreEqual(SmartObject.Username, "owner");
             Assert.AreEqual(SmartObject.RegistrationDate.Value.ToString(EventSerializerTest.DatetimeFormat),
+                now.ToString(EventSerializerTest.DatetimeFormat));
+            Assert.AreEqual(SmartObject.RegistrationDateTime.Value.ToString(EventSerializerTest.DatetimeFormat),
                 now.ToString(EventSerializerTest.DatetimeFormat));
             CollectionAssert.AreEqual(SmartObject.Attributes, attributes.ToImmutable());
         }
