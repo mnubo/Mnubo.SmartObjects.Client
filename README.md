@@ -33,6 +33,21 @@ Installation & Configuration
 
 Include the mnubo client in your .NET application using Nuget (Coming Soon).
 
+Development
+===========
+
+## Linux
+
+```bash
+# you need to install mono & nuget
+# to install packages
+nuget restore smartobjects-net-client.sln
+# to run tests
+nuget install NUnit.Runners -Version 3.5.0 -OutputDirectory testrunner
+xbuild /p:Configuration=Release smartobjects-net-client.sln
+mono ./testrunner/NUnit.ConsoleRunner.*/tools/nunit3-console.exe ./smartobjects-net-client-test/bin/Release/Mnubo.SmartObjects.Client.Test.dll
+```
+
 
 Download source code
 ---------------------
