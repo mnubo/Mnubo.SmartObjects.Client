@@ -11,7 +11,8 @@
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
         <description>mnubo SmartObjects .Net SDK client</description>
         <releaseNotes>
-- Fix: DateTime for registration_date in `SmartObject` and `Owner` were replaced by `DateTimeOffset`
+- Better testing
+- Deprecated DateTime on RegistrationDate (SmartObject and Owner) and in favor of DateTimeOffset which has support for timezone
 	</releaseNotes>
         <copyright>Copyright 2017</copyright>
         <dependencies>

@@ -1,3 +1,10 @@
+<a name='1.2.0'></a>
+
+# [1.2.0](https://github.com/mnubo/smartobjects-net-client/compare/1.1.14...1.2.0) (2017-06-22)
+
+
+- Better testing
+- Deprecated DateTime on RegistrationDate (SmartObject and Owner) and in favor of DateTimeOffset which has support for timezone
 <a name='1.1.14'></a>
 
 # [1.1.14](https://github.com/mnubo/smartobjects-net-client/compare/1.1.13...1.1.14) (2017-05-03)
