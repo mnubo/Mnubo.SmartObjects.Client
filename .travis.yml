@@ -1,5 +1,6 @@
 language: csharp
 solution: smartobjects-net-client.sln
+dist: trusty
 mono:
 - latest
 - 4.4.2
