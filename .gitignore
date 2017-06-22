@@ -10,3 +10,4 @@ packagesBuild/
 *.nupkg
 testrunner/
 TestResult.xml
+.vscode
