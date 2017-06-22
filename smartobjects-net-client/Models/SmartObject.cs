@@ -25,17 +25,23 @@ namespace Mnubo.SmartObjects.Client.Models
         public string ObjectType { get; }
 
         /// <summary>
-        /// Get a nulable registration date.
+        /// Get a nullable registration date.
         /// </summary>
+        [System.Obsolete("RegistrationDate is deprecated. Use RegistrationDateTime which supports timezone")]
         public DateTime? RegistrationDate { get; }
 
         /// <summary>
-        /// Get the username.
+        /// Get a nullable registration date
+        /// </summary>
+        public DateTimeOffset? RegistrationDateTime { get; }
+
+        /// <summary>
+        /// Get the username
         /// </summary>
         public string Username { get; }
 
         /// <summary>
-        /// Get the attributes.
+        /// Get the attributes
         /// </summary>
         public IImmutableDictionary<string, object> Attributes { get; }
 
@@ -43,7 +49,7 @@ namespace Mnubo.SmartObjects.Client.Models
             string deviceId,
             Guid? objectId,
             string objectType,
-            DateTime? registrationDate,
+            DateTimeOffset? registrationDateTime,
             string username,
             IDictionary<string, object> attributes)
         {
@@ -52,10 +58,8 @@ namespace Mnubo.SmartObjects.Client.Models
             ObjectType = objectType;
             Username = username;
 
-            if (registrationDate.HasValue)
-            {
-                RegistrationDate = registrationDate;
-            }
+            RegistrationDate = registrationDateTime?.UtcDateTime;
+            RegistrationDateTime = registrationDateTime;
 
             var attributesBuilder = ImmutableDictionary.CreateBuilder<string, object>();
 
@@ -67,12 +71,12 @@ namespace Mnubo.SmartObjects.Client.Models
         }
 
         /// <summary>
-        /// SmartObject builder class. Use this class to build a new SmartObject intance.
+        /// SmartObject builder class. Use this class to build a new SmartObject intance
         /// </summary>
         public sealed class Builder
         {
             /// <summary>
-            /// build a new immutable mnubo's Owner instance from the builder.
+            /// Build a new immutable mnubo's Owner instance from the builder
             /// </summary>
             /// <param name="builder">Mnubo's cient Config builder</param>
             public static implicit operator SmartObject(Builder builder)
@@ -96,9 +100,15 @@ namespace Mnubo.SmartObjects.Client.Models
             public string ObjectType { get; set; }
 
             /// <summary>
-            /// nullable registration date.
+            /// Get a nullable registration date
             /// </summary>
+            [System.Obsolete("RegistrationDate is deprecated. Use RegistrationDateTime which supports timezone")]
             public DateTime? RegistrationDate { get; set; }
+
+            /// <summary>
+            /// Get a nullable registration date
+            /// </summary>
+            public DateTimeOffset? RegistrationDateTime { get; set; }
 
             /// <summary>
             /// the owner.
@@ -116,6 +126,7 @@ namespace Mnubo.SmartObjects.Client.Models
                 ObjectId = null;
                 ObjectType = null;
                 RegistrationDate = null;
+                RegistrationDateTime = null;
                 Username = null;
                 Attributes = new Dictionary<string, object>();
             }
@@ -126,7 +137,11 @@ namespace Mnubo.SmartObjects.Client.Models
             /// <returns>Return a SmartObject built</returns>
             public SmartObject Build()
                 {
-                    return new SmartObject(DeviceId, ObjectId, ObjectType, RegistrationDate, Username, Attributes);
+                    DateTimeOffset? registrationDateTime =
+                        (!RegistrationDateTime.HasValue && RegistrationDate.HasValue) ?
+                        new DateTimeOffset(RegistrationDate.Value) : RegistrationDateTime;
+
+                    return new SmartObject(DeviceId, ObjectId, ObjectType, registrationDateTime, Username, Attributes);
                 }
             }
     }

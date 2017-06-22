@@ -2,6 +2,10 @@
 
 namespace Mnubo.SmartObjects.Client.Models.Search
 {
+    
+    /// <summary>
+    /// One column in a result from a <see cref="IRestitutionClient.Search(string)"/> call
+    /// </summary>
     public class ColumnDefinition
     {
         /// <summary>
@@ -19,8 +23,8 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         /// <summary>
         /// Create a new instance.
         /// </summary>
-        /// <param name="label">Label associate to the column</param>
-        /// <param name="highLevelType">High level type associate to the column</param>
+        /// <param name="label">See <see cref="Label" /></param>
+        /// <param name="highLevelType">See <see cref="HighLevelType" /></param>
         public ColumnDefinition(string label, string highLevelType)
         {
             Label = label;

@@ -22,7 +22,14 @@ namespace Mnubo.SmartObjects.Client.Models
         /// <summary>
         /// Get a nullable registration date.
         /// </summary>
+        [System.Obsolete("RegistrationDate is deprecated. Use RegistrationDateTime which supports timezone")]
         public DateTime? RegistrationDate { get; }
+
+        /// <summary>
+        /// Get a nullable registration date
+        /// </summary>
+        public DateTimeOffset? RegistrationDateTime { get; }
+
 
         /// <summary>
         /// Get the attributes.
@@ -32,16 +39,14 @@ namespace Mnubo.SmartObjects.Client.Models
         private Owner(
             string username,
             string password,
-            DateTime? registrationDate,
+            DateTimeOffset? registrationDateTime,
             IDictionary<string, object> attributes)
         {
             Username = username;
             Password = password;
 
-            if (registrationDate.HasValue)
-            {
-                RegistrationDate = registrationDate;
-            }
+            RegistrationDate = registrationDateTime?.UtcDateTime;
+            RegistrationDateTime = registrationDateTime;
 
             var attributesBuilder = ImmutableDictionary.CreateBuilder<string, object>();
 
@@ -77,9 +82,15 @@ namespace Mnubo.SmartObjects.Client.Models
             public string Password { get; set; }
 
             /// <summary>
-            /// nullable registration date.
+            /// Get a nullable registration date
             /// </summary>
+            [System.Obsolete("RegistrationDate is deprecated. Use RegistrationDateTime which supports timezone")]
             public DateTime? RegistrationDate { get; set; }
+
+            /// <summary>
+            /// Get a nullable registration date
+            /// </summary>
+            public DateTimeOffset? RegistrationDateTime { get; set; }
 
             /// <summary>
             /// The attributes.
@@ -91,6 +102,7 @@ namespace Mnubo.SmartObjects.Client.Models
                 Username = null;
                 Password = null;
                 RegistrationDate = null;
+                RegistrationDateTime = null;
                 Attributes = new Dictionary<String, Object>();
             }
 
@@ -100,7 +112,11 @@ namespace Mnubo.SmartObjects.Client.Models
             /// <returns>Return a Owner built</returns>
             public Owner Build()
             {
-                return new Owner(Username, Password, RegistrationDate, Attributes);
+                DateTimeOffset? registrationDateTime =
+                        (!RegistrationDateTime.HasValue && RegistrationDate.HasValue) ?
+                        new DateTimeOffset(RegistrationDate.Value) : RegistrationDateTime;
+
+                return new Owner(Username, Password, registrationDateTime, Attributes);
             }
         }
     }

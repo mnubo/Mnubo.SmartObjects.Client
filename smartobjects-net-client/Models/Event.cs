@@ -4,6 +4,10 @@ using System.Collections.Immutable;
 
 namespace Mnubo.SmartObjects.Client.Models
 {
+    /// <summary>
+    /// Represent a single event to be sent to mnubo. An event can have
+    /// multitple timeseries (measurements) in it.
+    /// </summary>
     public sealed class Event
     {
         /// <summary>
@@ -102,6 +106,10 @@ namespace Mnubo.SmartObjects.Client.Models
             /// </summary>
             public IDictionary<string, object> Timeseries { get; set; }
 
+            /// <summary>
+            /// Represent a single event to be sent to mnubo. An event can have
+            /// multitple timeseries (measurements) in it.
+            /// </summary>
             public Builder()
             {
                 EventId = null;

@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>Mnubo.SmartObjects.Client</id>
-        <version>1.1.14</version>
+        <version>1.2.0</version>
         <authors>David Francoeur,David Masse,Julien Letrouit,Manuel Vonthron,Mauro Arias</authors>
         <owners>mnubo, inc.</owners>
         <licenseUrl>https://opensource.org/licenses/apache-2.0</licenseUrl>
@@ -11,26 +11,26 @@
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
         <description>mnubo SmartObjects .Net SDK client</description>
         <releaseNotes>
-- Added model service to get the data model
-
-The model exposes all of the following:
-
-	- Event types
-	- Timeseries
-	- Object types
-	- Object attributes
-	- Owner attributes
-	- Sessionizers
-- Added batch claim/unclaim
-- Support body on claim/unclaim
+- Fix: DateTime for registration_date in `SmartObject` and `Owner` were replaced by `DateTimeOffset`
 	</releaseNotes>
-        <copyright>Copyright 2016</copyright>
+        <copyright>Copyright 2017</copyright>
         <dependencies>
-            <dependency id="Microsoft.Bcl" version="1.1.10" />
-            <dependency id="Microsoft.Bcl.Build" version="1.0.21" />
-            <dependency id="Microsoft.Net.Http" version="2.2.29" />
-            <dependency id="Newtonsoft.Json" version="9.0.1" />
-            <dependency id="System.Collections.Immutable" version="1.2.0" />
+            <group targetFramework="net451">
+                <dependency id="Microsoft.Bcl" version="1.1.10" />
+                <dependency id="Microsoft.Bcl.Build" version="1.0.21" />
+                <dependency id="Microsoft.Net.Http" version="2.2.29" />
+                <dependency id="Newtonsoft.Json" version="9.0.1" />
+                <dependency id="System.Collections.Immutable" version="1.2.0" />
+            </group>
         </dependencies>
     </metadata>
+    <files>
+        <file src="smartobjects-net-client\bin\Release\*.dll" target="lib/net451" />
+        <file src="smartobjects-net-client\bin\Release\*.exe" exclude="**vshost**" target="lib/net451" />
+        <file src="smartobjects-net-client\bin\Release\*.config" target="lib/net451" />
+        <file src="smartobjects-net-client\bin\Release\*.xml" target="lib/net451" />
+        <file src="smartobjects-net-client\bin\Release\*.pdb" target="lib/net451" />
+
+        <file src="smartobjects-net-client\**\*.cs" exclude="obj\**" target="src" />
+    </files>
 </package>

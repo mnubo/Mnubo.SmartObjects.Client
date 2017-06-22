@@ -2,14 +2,26 @@
 
 namespace Mnubo.SmartObjects.Client.Config
 {
+    /// <summary>
+    /// Client configuration class
+    /// </summary>
     public sealed class ClientConfig
     {
         /// <summary>
-        /// Available enviroments
+        /// Available enviroments:
+        ///
+        /// https://smartobjects.mnubo.com/documentation/api_basics.html
         /// </summary>
         public enum Environments
         {
+            /// <summary>
+            /// Using this environment will target the sandbox
+            /// </summary>
             Sandbox,
+
+            /// <summary>
+            /// Using this environment will target the production
+            /// </summary>
             Production
         }
 
@@ -85,15 +97,44 @@ namespace Mnubo.SmartObjects.Client.Config
         /// Config builder class, allow build a new immutable mnubo's config class.
         /// </summary>
         public sealed class Builder
-        {
+        {   
+            /// <summary>
+            /// Default http request timeout in milliseconds.
+            ///
+            /// Can be overriden like:
+            /// <code>
+            ///  var builder = new ClientConfig.Builder();
+            ///  builder.ClientTimeout = 50000;
+            /// </code>
+            /// </summary>
             public const int DefaultTimeout = 30000;
+
+            /// <summary>
+            /// Default maximum number of bytes to buffer
+            ///
+            /// Can be overriden like:
+            /// <code>
+            ///  var builder = new ClientConfig.Builder();
+            ///  builder.MaxResponseContentBufferSize = 1500000;
+            /// </code>
+            /// </summary>
             public const long DefaultMaxResponseContentBufferSize = 1000000;
+            
+            /// <summary>
+            /// Compression is enabled by default
+            ///
+            /// Can be overriden like:
+            /// <code>
+            ///  var builder = new ClientConfig.Builder();
+            ///  builder.CompressionEnabled = false;
+            /// </code>
+            /// </summary>
             public const bool DefaultCompressionEnabled = true;
 
             /// <summary>
-            /// build a new immutable mnubo's config instance from the builder.
+            /// Implicitly build a new immutable mnubo's config instance from the builder
             /// </summary>
-            /// <param name="builder">Mnubo's cient Config builder</param>
+            /// <param name="builder">mnubo's client Config builder</param>
             public static implicit operator ClientConfig(Builder builder)
             {
                 return builder.Build();
@@ -129,6 +170,20 @@ namespace Mnubo.SmartObjects.Client.Config
             /// </summary>
             public bool CompressionEnabled { get; set; }
 
+
+            /// <summary>
+            /// Build a Builder to help you generate an immutable ClientConfig using the
+            /// the default value for ClientTimeout, MaxResponseContentBufferSize and CompressionEnabled
+            ///
+            /// Usage:
+            /// <code>
+            ///  var builder = new ClientConfig.Builder();
+            ///  builder.Environment = ClientConfig.Environments.Sandbox;
+            ///  builder.ConsumerKey = "KEY";
+            ///  builder.ConsumerSecret = "SECRET";
+            ///  var config = builder.build();
+            /// </code>
+            /// </summary>
             public Builder()
             {
                 ClientTimeout = DefaultTimeout;
@@ -136,6 +191,9 @@ namespace Mnubo.SmartObjects.Client.Config
                 CompressionEnabled = DefaultCompressionEnabled;
             }
 
+            /// <summary>
+            /// Build a new immutable mnubo's config instance from the builder
+            /// </summary>
             public ClientConfig Build()
             {
                 return new ClientConfig(

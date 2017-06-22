@@ -5,44 +5,44 @@ using System;
 namespace Mnubo.SmartObjects.Client.Models
 {
     /// <summary>
-    /// Give information about the request sent, this is a particular answer for an event batch processing.
+    /// One result of a result set from a <see cref="IEventClient.Send"/> call
     /// </summary>
     public class EventResult
     {
 
         /// <summary>
-        /// Result of the request.
+        /// Result of the request
         /// </summary>
         public enum ResultStates
         {
             /// <summary>
-            /// Everything went well with the request.
+            /// Everything went well with the request
             /// </summary>
             success,
             /// <summary>
-            /// The requested event_id already exists.
+            /// The provided event_id already exists
             /// </summary>
             conflict,
             /// <summary>
-            /// Something was wrong with the request.
+            /// Something was wrong with the request
             /// </summary>
             error
         };
 
         /// <summary>
-        /// return the GuID id of the event.
+        /// The GuID id of the event
         /// </summary>
         [JsonProperty("id")]
         public Guid Id { get; }
 
         /// <summary>
-        /// true if the event referring object device ID already exists.
+        /// True if the event referring object device ID already exists
         /// </summary>
         [JsonProperty("objectExists")]
         public bool ObjectExists { get; }
 
         /// <summary>
-        /// return the result of the request, this can be 'success' or 'error'.
+        /// Status of this event result
         /// </summary>
         ///
         [JsonProperty("result")]
@@ -50,17 +50,18 @@ namespace Mnubo.SmartObjects.Client.Models
         public ResultStates Result { get; }
 
         /// <summary>
-        /// return a message in the request, just if this apply.
+        /// Status as a human readable message
         /// </summary>
         [JsonProperty("message")]
         public string Message { get; }
 
         /// <summary>
-        /// Allow create a new result set
+        /// Constructor for a new EventResult
         /// </summary>
-        /// <param name="id">Id of the request.</param>
-        /// <param name="result">result of the request, take values of 'success' or 'error'.</param>
-        /// <param name="message">message of the request.</param>
+        /// <param name="id">See <see cref="Id" /></param>
+        /// <param name="objectExists">See <see cref="ObjectExists" /></param>
+        /// <param name="result">See <see cref="Result" /></param>
+        /// <param name="message">See <see cref="Message" /></param>
         public EventResult(Guid id, bool objectExists, ResultStates result, string message)
         {
             Id = id;
@@ -100,7 +101,6 @@ namespace Mnubo.SmartObjects.Client.Models
 
             return (Id == other.Id) && (ObjectExists == other.ObjectExists) && (Result == other.Result) && (Message == other.Message);
         }
-
 
         /// <summary>
         /// Overriding GetHashCode

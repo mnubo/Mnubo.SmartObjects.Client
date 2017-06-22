@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Mnubo.SmartObjects.Client.Models.Search
 {
+    /// <summary>
+    /// One Dataset in a result from a <see cref="IRestitutionClient.GetDataSets"/> call
+    /// </summary>
     public class DataSet
     {
         /// <summary>
@@ -18,7 +21,7 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         public string DisplayName { get; }
 
         /// <summary>
-        /// fields of the dataset
+        /// Fields of the dataset
         /// </summary>
         [JsonProperty("fields")]
         public HashSet<Field> Fields { get; }
@@ -32,10 +35,10 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         /// <summary>
         /// Create a new instance
         /// </summary>
-        /// <param name="description">description</param>
-        /// <param name="displayName">display name</param>
-        /// <param name="fields">fields</param>
-        /// <param name="key">key</param>
+        /// <param name="description">See <see cref="Description" /></param>
+        /// <param name="displayName">See <see cref="DisplayName" /></param>
+        /// <param name="fields">See <see cref="Fields" /></param>
+        /// <param name="key">See <see cref="Key" /></param>
         public DataSet(string description, string displayName, HashSet<Field> fields, string key)
         {
             Description = description;

@@ -13,7 +13,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         [Test()]
         public void OwnerSerializeTest()
         {
-            DateTime now = TestUtils.GetNowIgnoringMilis();
+            DateTimeOffset now = new DateTimeOffset(2017, 06, 12, 18, 05, 05, TimeSpan.FromHours(5d));
 
             Dictionary<string, object> attributes = new Dictionary<string, object>();
             attributes.Add("string", "stringValue");
@@ -25,7 +25,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             {
                 Username = "username",
                 Password = "password",
-                RegistrationDate = now,
+                RegistrationDateTime = now,
                 Attributes = attributes,
             };
 
@@ -33,7 +33,39 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
 			TestUtils.AssertJsonEquals(json, new List<string>
 			{
 				"\"username\":\"username\"",
-				$"\"x_registration_date\":\"{now.ToString(EventSerializerTest.DatetimeFormat)}\"",
+				"\"x_registration_date\":\"2017-06-12T13:05:05Z\"",
+				"\"x_password\":\"password\"",
+				"\"float\":10.5",
+				"\"boolean\":false",
+				"\"double\":10.0",
+				"\"string\":\"stringValue\""
+			});
+        }
+
+        [Test()]
+        public void OwnerSerializeTestDeprecatedDate()
+        {
+            DateTimeOffset now = new DateTimeOffset(2017, 06, 12, 18, 05, 05, TimeSpan.FromHours(5d));
+
+            Dictionary<string, object> attributes = new Dictionary<string, object>();
+            attributes.Add("string", "stringValue");
+            attributes.Add("double", 10d);
+            attributes.Add("float", 10.5f);
+            attributes.Add("boolean", false);
+
+            Owner owner = new Owner.Builder()
+            {
+                Username = "username",
+                Password = "password",
+                RegistrationDate = now.UtcDateTime,
+                Attributes = attributes,
+            };
+
+            string json = OwnerSerializer.SerializeOwner(owner);
+			TestUtils.AssertJsonEquals(json, new List<string>
+			{
+				"\"username\":\"username\"",
+				"\"x_registration_date\":\"2017-06-12T13:05:05Z\"",
 				"\"x_password\":\"password\"",
 				"\"float\":10.5",
 				"\"boolean\":false",
@@ -93,6 +125,8 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             Assert.AreEqual(owner.Username, "test");
             Assert.AreEqual(owner.Password, "password");
             Assert.AreEqual(owner.RegistrationDate.Value.ToString(EventSerializerTest.DatetimeFormat),
+                now.ToString(EventSerializerTest.DatetimeFormat));
+            Assert.AreEqual(owner.RegistrationDateTime.Value.ToString(EventSerializerTest.DatetimeFormat),
                 now.ToString(EventSerializerTest.DatetimeFormat));
             CollectionAssert.AreEqual(owner.Attributes, attributes.ToImmutable());
         }
