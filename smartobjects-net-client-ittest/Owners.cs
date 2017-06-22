@@ -71,14 +71,6 @@ namespace Mnubo.SmartObjects.Client.ITTest
                 //expected
             }
 
-            ITTestHelper.EventuallyAssert(() => {
-                ResultSet resultOwn = client.Restitution.Search(ITTestHelper.searchOwnerQuery(owner.Username));
-                Assert.AreEqual(1, resultOwn.Rows.Count);
-
-                ResultSet resultObj = client.Restitution.Search(ITTestHelper.searchObjectQuery(smartObject.DeviceId));
-                Assert.AreEqual(1, resultObj.Rows.Count);
-            });
-
             client.Owners.Claim(owner.Username, smartObject.DeviceId);
 
             ITTestHelper.EventuallyAssert(() => {
@@ -100,10 +92,6 @@ namespace Mnubo.SmartObjects.Client.ITTest
             }
 
             client.Owners.Unclaim(owner.Username, smartObject.DeviceId);
-            ITTestHelper.EventuallyAssert(() => {
-                ResultSet resultOwn = client.Restitution.Search(ITTestHelper.searchObjectByOwnerQuery(owner.Username));
-                Assert.AreEqual(0, resultOwn.Rows.Count);
-            });
 
             try {
                 client.Owners.Unclaim(owner.Username, smartObject.DeviceId);
@@ -156,14 +144,6 @@ namespace Mnubo.SmartObjects.Client.ITTest
                 //expected
             }
 
-            ITTestHelper.EventuallyAssert(() => {
-                ResultSet resultOwn = client.Restitution.Search(ITTestHelper.searchOwnerQuery(owner.Username));
-                Assert.AreEqual(1, resultOwn.Rows.Count);
-
-                ResultSet resultObj = client.Restitution.Search(ITTestHelper.searchObjectQuery(smartObject.DeviceId));
-                Assert.AreEqual(1, resultObj.Rows.Count);
-            });
-
             client.Owners.Claim(owner.Username, smartObject.DeviceId, body);
 
             ITTestHelper.EventuallyAssert(() => {
@@ -185,10 +165,6 @@ namespace Mnubo.SmartObjects.Client.ITTest
             }
 
             client.Owners.Unclaim(owner.Username, smartObject.DeviceId, body);
-            ITTestHelper.EventuallyAssert(() => {
-                ResultSet resultOwn = client.Restitution.Search(ITTestHelper.searchObjectByOwnerQuery(owner.Username));
-                Assert.AreEqual(0, resultOwn.Rows.Count);
-            });
 
             try {
                 client.Owners.Unclaim(owner.Username, smartObject.DeviceId);
@@ -274,23 +250,12 @@ namespace Mnubo.SmartObjects.Client.ITTest
                 //expected
             }
 
-            ITTestHelper.EventuallyAssert(() => {
-                ResultSet result = client.Restitution.Search(ITTestHelper.searchOwnerQuery(owner.Username));
-                Assert.AreEqual(1, result.Rows.Count);
-                Assert.AreEqual(value1, result.Rows.ElementAt(0).Values.ElementAt(1));
-            });
-
             Owner updated = new Owner.Builder() {
                 Attributes = new Dictionary<string,object>() {
                     {"owner_text_attribute", "newValue"}
                 }
             };
             client.Owners.Update(updated, owner.Username);
-            ITTestHelper.EventuallyAssert(() => {
-                ResultSet result = client.Restitution.Search(ITTestHelper.searchOwnerQuery(owner.Username));
-                Assert.AreEqual(1, result.Rows.Count);
-                Assert.AreEqual("newValue", result.Rows.ElementAt(0).Values.ElementAt(1));
-            });
         }
         [Test()]
         public void TestDelete()
@@ -301,17 +266,8 @@ namespace Mnubo.SmartObjects.Client.ITTest
                 Password = "password-" + uuid
             };
             client.Owners.Create(ownerToDelete);
-            ITTestHelper.EventuallyAssert(() => {
-                ResultSet result = client.Restitution.Search(ITTestHelper.searchOwnerQuery(ownerToDelete.Username));
-                Assert.AreEqual(1, result.Rows.Count);
-            });
-
             client.Owners.Delete(ownerToDelete.Username);
 
-            ITTestHelper.EventuallyAssert(() => {
-                ResultSet result = client.Restitution.Search(ITTestHelper.searchOwnerQuery(ownerToDelete.Username));
-                Assert.AreEqual(0, result.Rows.Count);
-            });
             try {
                 client.Owners.Delete(ownerToDelete.Username);
                 Assert.Fail("Cannot delete on an owner that does not exists");

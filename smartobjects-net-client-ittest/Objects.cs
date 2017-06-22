@@ -55,23 +55,12 @@ namespace Mnubo.SmartObjects.Client.ITTest
                 //expected
             }
 
-            ITTestHelper.EventuallyAssert(() => {
-                ResultSet result = client.Restitution.Search(ITTestHelper.searchObjectQuery(smartObject.DeviceId));
-                Assert.AreEqual(1, result.Rows.Count);
-                Assert.AreEqual(value1, result.Rows.ElementAt(0).Values.ElementAt(1));
-            });
-
             SmartObject updated = new SmartObject.Builder() {
                 Attributes = new Dictionary<string,object>() {
                     {"object_text_attribute", "newValue"}
                 }
             };
             client.Objects.Update(updated, smartObject.DeviceId);
-            ITTestHelper.EventuallyAssert(() => {
-                ResultSet result = client.Restitution.Search(ITTestHelper.searchObjectQuery(smartObject.DeviceId));
-                Assert.AreEqual(1, result.Rows.Count);
-                Assert.AreEqual("newValue", result.Rows.ElementAt(0).Values.ElementAt(1));
-            });
         }
 
         [Test()]
@@ -83,17 +72,8 @@ namespace Mnubo.SmartObjects.Client.ITTest
                 ObjectType = "object_type1"
             };
             client.Objects.Create(objectToDelete);
-            ITTestHelper.EventuallyAssert(() => {
-                ResultSet result = client.Restitution.Search(ITTestHelper.searchObjectQuery(objectToDelete.DeviceId));
-                Assert.AreEqual(1, result.Rows.Count);
-            });
 
             client.Objects.Delete(objectToDelete.DeviceId);
-
-            ITTestHelper.EventuallyAssert(() => {
-                ResultSet result = client.Restitution.Search(ITTestHelper.searchObjectQuery(objectToDelete.DeviceId));
-                Assert.AreEqual(0, result.Rows.Count);
-            });
             try {
                 client.Objects.Delete(objectToDelete.Username);
                 Assert.Fail("Cannot delete on an smart object that does not exists");

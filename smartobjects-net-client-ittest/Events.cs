@@ -61,16 +61,6 @@ namespace Mnubo.SmartObjects.Client.ITTest
             foreach (EventResult result in results) {
                 Assert.AreEqual(EventResult.ResultStates.success, result.Result);
         	}
-
-            ITTestHelper.EventuallyAssert(() => {
-                ResultSet result1 = client.Restitution.Search(ITTestHelper.searchEventQuery(uuid1.ToString()));
-                Assert.AreEqual(1, result1.Rows.Count);
-                Assert.AreEqual(value1, result1.Rows.ElementAt(0).Values.ElementAt(1));
-
-                ResultSet result2 = client.Restitution.Search(ITTestHelper.searchEventQuery(uuid2.ToString()));
-                Assert.AreEqual(1, result2.Rows.Count);
-                Assert.AreEqual(value2, result2.Rows.ElementAt(0).Values.ElementAt(1));
-            });
         }
     }
 }
