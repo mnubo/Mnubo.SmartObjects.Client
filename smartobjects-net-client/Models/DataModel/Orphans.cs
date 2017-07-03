@@ -2,6 +2,10 @@ using System.Collections.Generic;
 
 namespace Mnubo.SmartObjects.Client.Models.DataModel
 {
+    
+    /// <summary>
+    /// Timeseries and Object Attributes not bound to their respective types
+    /// </summary>
     public sealed class Orphans
     {
         /// <summary>

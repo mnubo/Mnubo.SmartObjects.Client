@@ -9,7 +9,7 @@ namespace Mnubo.SmartObjects.Client.Impl
 
 {
     /// <summary>
-    /// Implements <see cref="IRestitutionClient"/>
+    /// HTTP implementation of <see cref="Mnubo.SmartObjects.Client.IRestitutionClient" />
     /// </summary>
     public class RestitutionClient : IRestitutionClient
     {

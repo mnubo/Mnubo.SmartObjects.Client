@@ -8,6 +8,9 @@ using System.Linq;
 
 namespace Mnubo.SmartObjects.Client.Impl
 {
+    /// <summary>
+    /// HTTP implementation of <see cref="Mnubo.SmartObjects.Client.IOwnerClient" />
+    /// </summary>
     internal class OwnerClient : IOwnerClient
     {
         /// <summary>
@@ -23,55 +26,90 @@ namespace Mnubo.SmartObjects.Client.Impl
         }
 
         #region Sync calls
+        
+        /// <summary>
+        /// Implements <see cref="Mnubo.SmartObjects.Client.IOwnerClient.Claim" />
+        /// </summary>
         public void Claim(string username, string deviceId, Dictionary<string, object> body)
         {
             ClientUtils.WaitTask(ClaimAsync(username, deviceId, body));
         }
 
+        /// <summary>
+        /// Implements <see cref="Mnubo.SmartObjects.Client.IOwnerClient.Unclaim" />
+        /// </summary>
         public void Unclaim(string username, string deviceId, Dictionary<string, object> body)
         {
             ClientUtils.WaitTask(UnclaimAsync(username, deviceId, body));
         }
+
+        /// <summary>
+        /// Implements <see cref="Mnubo.SmartObjects.Client.IOwnerClient.BatchClaim" />
+        /// </summary>
         public IEnumerable<Result> BatchClaim(IEnumerable<ClaimOrUnclaim> claims)
         {
             return ClientUtils.WaitTask(BatchClaimAsync(claims));
         }
 
+        /// <summary>
+        /// Implements <see cref="Mnubo.SmartObjects.Client.IOwnerClient.BatchUnclaim" />
+        /// </summary>
         public IEnumerable<Result> BatchUnclaim(IEnumerable<ClaimOrUnclaim> unclaims)
         {
             return ClientUtils.WaitTask(BatchUnclaimAsync(unclaims));
         }
 
+        /// <summary>
+        /// Implements <see cref="Mnubo.SmartObjects.Client.IOwnerClient.Create" />
+        /// </summary>
         public void Create(Owner owner)
         {
             ClientUtils.WaitTask(CreateAsync(owner));
         }
 
+        /// <summary>
+        /// Implements <see cref="Mnubo.SmartObjects.Client.IOwnerClient.Delete" />
+        /// </summary>
         public void Delete(string username)
         {
             ClientUtils.WaitTask(DeleteAsync(username));
         }
 
+        /// <summary>
+        /// Implements <see cref="Mnubo.SmartObjects.Client.IOwnerClient.Update" />
+        /// </summary>
         public void Update(Owner owner, string username)
         {
             ClientUtils.WaitTask(UpdateAsync(owner, username));
         }
 
+        /// <summary>
+        /// Implements <see cref="Mnubo.SmartObjects.Client.IOwnerClient.UpdatePassword" />
+        /// </summary>
         public void UpdatePassword(string username, string password)
         {
             ClientUtils.WaitTask(UpdatePasswordAsync(username, password));
         }
 
+        /// <summary>
+        /// Implements <see cref="Mnubo.SmartObjects.Client.IOwnerClient.CreateUpdate" />
+        /// </summary>
         public IEnumerable<Result> CreateUpdate(IEnumerable<Owner> owners)
         {
             return ClientUtils.WaitTask<IEnumerable<Result>>(CreateUpdateAsync(owners));
         }
 
+        /// <summary>
+        /// Implements <see cref="Mnubo.SmartObjects.Client.IOwnerClient.OwnerExists" />
+        /// </summary>
         public bool OwnerExists(string username)
         {
             return ClientUtils.WaitTask<bool>(OwnerExistsAsync(username));
         }
 
+        /// <summary>
+        /// Implements <see cref="Mnubo.SmartObjects.Client.IOwnerClient.OwnersExist" />
+        /// </summary>
         public IDictionary<string, bool> OwnersExist(IList<string> usernames)
         {
             return ClientUtils.WaitTask<IDictionary<string, bool>>(OwnersExistAsync(usernames));
@@ -79,6 +117,10 @@ namespace Mnubo.SmartObjects.Client.Impl
         #endregion
 
         #region Async calls
+        
+        /// <summary>
+        /// Implements <see cref="Mnubo.SmartObjects.Client.IOwnerClient.CreateAsync" />
+        /// </summary>
         public async Task CreateAsync(Owner owner)
         {
             if (owner == null)
@@ -102,6 +144,9 @@ namespace Mnubo.SmartObjects.Client.Impl
                 OwnerSerializer.SerializeOwner(owner));
         }
 
+        /// <summary>
+        /// Implements <see cref="Mnubo.SmartObjects.Client.IOwnerClient.ClaimAsync" />
+        /// </summary>
         public async Task ClaimAsync(string username, string deviceId, Dictionary<string, object> body)
         {
             if (string.IsNullOrEmpty(username))
@@ -134,6 +179,9 @@ namespace Mnubo.SmartObjects.Client.Impl
             }
         }
 
+        /// <summary>
+        /// Implements <see cref="Mnubo.SmartObjects.Client.IOwnerClient.UnclaimAsync" />
+        /// </summary>
         public async Task UnclaimAsync(string username, string deviceId, Dictionary<string, object> body)
         {
             if (string.IsNullOrEmpty(username))
@@ -165,6 +213,10 @@ namespace Mnubo.SmartObjects.Client.Impl
                 );
             }
         }
+
+        /// <summary>
+        /// Implements <see cref="Mnubo.SmartObjects.Client.IOwnerClient.BatchClaimAsync" />
+        /// </summary>
         public async Task<IEnumerable<Result>> BatchClaimAsync(IEnumerable<ClaimOrUnclaim> claims)
         {
             if (claims == null)
@@ -186,6 +238,9 @@ namespace Mnubo.SmartObjects.Client.Impl
             return JsonConvert.DeserializeObject<IEnumerable<Result>>(asynResult);
         }
 
+        /// <summary>
+        /// Implements <see cref="Mnubo.SmartObjects.Client.IOwnerClient.BatchUnclaimAsync" />
+        /// </summary>
         public async Task<IEnumerable<Result>> BatchUnclaimAsync(IEnumerable<ClaimOrUnclaim> unclaims)
         {
             if (unclaims == null)
@@ -207,6 +262,9 @@ namespace Mnubo.SmartObjects.Client.Impl
             return JsonConvert.DeserializeObject<IEnumerable<Result>>(asynResult);
         }
 
+        /// <summary>
+        /// Implements <see cref="Mnubo.SmartObjects.Client.IOwnerClient.UpdateAsync" />
+        /// </summary>
         public async Task UpdateAsync(Owner owner, string username)
         {
             if (owner == null)
@@ -224,6 +282,9 @@ namespace Mnubo.SmartObjects.Client.Impl
                 OwnerSerializer.SerializeOwner(owner));
         }
 
+        /// <summary>
+        /// Implements <see cref="Mnubo.SmartObjects.Client.IOwnerClient.DeleteAsync" />
+        /// </summary>
         public async Task DeleteAsync(string username)
         {
             if (string.IsNullOrEmpty(username))
@@ -235,6 +296,9 @@ namespace Mnubo.SmartObjects.Client.Impl
                 string.Format("owners/{0}", username));
         }
 
+        /// <summary>
+        /// Implements <see cref="Mnubo.SmartObjects.Client.IOwnerClient.UpdatePasswordAsync" />
+        /// </summary>
         public async Task UpdatePasswordAsync(string username, string password)
         {
             if (string.IsNullOrEmpty(username))
@@ -259,6 +323,9 @@ namespace Mnubo.SmartObjects.Client.Impl
                 OwnerSerializer.SerializeOwner(owner));
         }
 
+        /// <summary>
+        /// Implements <see cref="Mnubo.SmartObjects.Client.IOwnerClient.CreateUpdateAsync" />
+        /// </summary>
         public async Task<IEnumerable<Result>> CreateUpdateAsync(IEnumerable<Owner> owners)
         {
             if (owners == null)
@@ -287,6 +354,9 @@ namespace Mnubo.SmartObjects.Client.Impl
             return JsonConvert.DeserializeObject<IEnumerable<Result>>(asynResult);
         }
 
+        /// <summary>
+        /// Implements <see cref="Mnubo.SmartObjects.Client.IOwnerClient.OwnerExistsAsync" />
+        /// </summary>
         public async Task<bool> OwnerExistsAsync(string username)
         {
             if (string.IsNullOrEmpty(username))
@@ -304,6 +374,9 @@ namespace Mnubo.SmartObjects.Client.Impl
             return asynResult != null && asynResult.Count == 1 && asynResult.ContainsKey(username) && asynResult[username];
         }
 
+        /// <summary>
+        /// Implements <see cref="Mnubo.SmartObjects.Client.IOwnerClient.OwnersExistAsync" />
+        /// </summary>
         public async Task<IDictionary<string, bool>> OwnersExistAsync(IList<string> usernames)
         {
             if (usernames == null)

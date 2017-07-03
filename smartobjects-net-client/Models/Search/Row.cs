@@ -4,6 +4,9 @@ using System.Collections.Immutable;
 
 namespace Mnubo.SmartObjects.Client.Models.Search
 {
+    /// <summary>
+    /// One row of a ResultSet <see cref="Mnubo.SmartObjects.Client.Models.Search.ResultSet" />
+    /// </summary>
     public class Row
     {
         /// <summary>
@@ -14,7 +17,7 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         /// <summary>
         /// Create a new instance
         /// </summary>
-        /// <param name="Values">list of values</param>
+        /// <param name="values">list of values</param>
         public Row(IList<object> values)
         {
             if(values == null)

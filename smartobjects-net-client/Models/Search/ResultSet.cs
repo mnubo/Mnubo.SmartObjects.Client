@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 namespace Mnubo.SmartObjects.Client.Models.Search
 {
+    /// <summary>
+    /// Results of a query on mnubo's Restitution
+    /// </summary>
     public class ResultSet
     {
         /// <summary>
@@ -19,7 +22,7 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         public IList<Row> Rows { get; }
 
         /// <summary>
-        /// create a new instance
+        /// Create a new instance
         /// </summary>
         /// <param name="columns">columns</param>
         /// <param name="rows">rows</param>
@@ -38,9 +41,10 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         }
 
         /// <summary>
-        /// Checks if a value is null according to the index of the value
-        /// </summary>the
-        /// <param name="i">index of the value</param>
+        /// Checks if a value is null according to the index of the column
+        /// </summary>
+        /// <param name="rowIndex">row index of the column</param>
+        /// <param name="columnIndex">column index of the column</param>
         /// <returns>True if the value is null</returns>
         public bool IsNull(int rowIndex, int columnIndex)
         {
@@ -49,9 +53,10 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         }
 
         /// <summary>
-        /// Checks if a value is null according to the name of the value
+        /// Checks if a value is null according to the name of the colum
         /// </summary>
-        /// <param name="i">name of the value</param>
+        /// <param name="rowIndex">row index of the column</param>
+        /// <param name="name">column name of the column</param>
         /// <returns>True if the value is null</returns>
         public bool IsNull(int rowIndex, String name)
         {
@@ -60,20 +65,10 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         }
 
         /// <summary>
-        /// Get a string value according to the name of the value
+        /// Get a string value according to the index of the column
         /// </summary>
-        /// <param name="name">name of the value to get</param>
-        /// <returns>String value</returns>
-        public String GetString(int rowIndex, String name)
-        {
-            validRowIndex(rowIndex);
-            return Convert.ToString(Rows[rowIndex].Values[findColumnIndex(name)]);
-        }
-
-        /// <summary>
-        /// Get a string value according to the index of the value
-        /// </summary>
-        /// <param name="i">index of the string value to get</param>
+        /// <param name="rowIndex">row index of the column</param>
+        /// <param name="columnIndex">column index of the column</param>
         /// <returns>string value</returns>
         public String GetString(int rowIndex, int columnIndex)
         {
@@ -82,9 +77,22 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         }
 
         /// <summary>
-        /// Get an integer value according to the name of the value
+        /// Get a string value according to the name of the column
         /// </summary>
-        /// <param name="name">name of the value to get</param>
+        /// <param name="rowIndex">row index of the column</param>
+        /// <param name="name">column name of the column</param>
+        /// <returns>String value</returns>
+        public String GetString(int rowIndex, String name)
+        {
+            validRowIndex(rowIndex);
+            return Convert.ToString(Rows[rowIndex].Values[findColumnIndex(name)]);
+        }
+
+        /// <summary>
+        /// Get an integer value according to the name of the column
+        /// </summary>
+        /// <param name="rowIndex">row index of the column</param>
+        /// <param name="name">column name of the column</param>
         /// <returns>integer value</returns>
         public int GetInt(int rowIndex, String name)
         {
@@ -93,9 +101,10 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         }
 
         /// <summary>
-        /// Get an integer value according to the index of the value
+        /// Get an integer value according to the index of the column
         /// </summary>
-        /// <param name="i">index of the value</param>
+        /// <param name="rowIndex">row index of the column</param>
+        /// <param name="columnIndex">column index of the column</param>
         /// <returns>integer value</returns>
         public int GetInt(int rowIndex, int columnIndex)
         {
@@ -104,9 +113,10 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         }
 
         /// <summary>
-        /// Get a long value according to the name of the value
+        /// Get a long value according to the name of the colum
         /// </summary>
-        /// <param name="name">name of the value to get</param>
+        /// <param name="rowIndex">row index of the column</param>
+        /// <param name="name">column name of the column</param>
         /// <returns>long value</returns>
         public long GetLong(int rowIndex, String name)
         {
@@ -115,9 +125,10 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         }
 
         /// <summary>
-        /// Get a long value according to the index of the value
+        /// Get a long value according to the index of the column
         /// </summary>
-        /// <param name="i">index of the value</param>
+        /// <param name="rowIndex">row index of the column</param>
+        /// <param name="columnIndex">column index of the column</param>
         /// <returns>long value</returns>
         public long GetLong(int rowIndex, int columnIndex)
         {
@@ -126,9 +137,10 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         }
 
         /// <summary>
-        /// Get a double value according to the name of the value
+        /// Get a double value according to the name of the colum
         /// </summary>
-        /// <param name="name">name of the value to get</param>
+        /// <param name="rowIndex">row index of the column</param>
+        /// <param name="name">column name of the column</param>
         /// <returns>Double value</returns>
         public double GetDouble(int rowIndex, String name)
         {
@@ -137,9 +149,10 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         }
 
         /// <summary>
-        /// Get a double value according to the index of the value
+        /// Get a double value according to the index of the column
         /// </summary>
-        /// <param name="i">index of the value</param>
+        /// <param name="rowIndex">row index of the column</param>
+        /// <param name="columnIndex">column index of the column</param>
         /// <returns>double value</returns>
         public double GetDouble(int rowIndex, int columnIndex)
         {
@@ -148,9 +161,10 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         }
 
         /// <summary>
-        /// Get a float value according to the name of the value
+        /// Get a float value according to the name of the colum
         /// </summary>
-        /// <param name="name">name of the value to get</param>
+        /// <param name="rowIndex">row index of the column</param>
+        /// <param name="name">column name of the column</param>
         /// <returns>float value</returns>
         public float GetFloat(int rowIndex, String name)
         {
@@ -159,9 +173,10 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         }
 
         /// <summary>
-        /// Get a float value according to the index of the value
+        /// Get a float value according to the index of the column
         /// </summary>
-        /// <param name="i">index of the value</param>
+        /// <param name="rowIndex">row index of the column</param>
+        /// <param name="columnIndex">column index of the column</param>
         /// <returns>float value</returns>
         public float GetFloat(int rowIndex, int columnIndex)
         {
@@ -170,9 +185,10 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         }
 
         /// <summary>
-        /// Get a boolean value according to the name of the value
+        /// Get a boolean value according to the name of the colum
         /// </summary>
-        /// <param name="name">name of the value to get</param>
+        /// <param name="rowIndex">row index of the column</param>
+        /// <param name="name">column name of the column</param>
         /// <returns>boolean value</returns>
         public bool GetBoolean(int rowIndex, String name)
         {
@@ -181,9 +197,10 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         }
 
         /// <summary>
-        /// Get a boolean value according to the index of the value
+        /// Get a boolean value according to the index of the column
         /// </summary>
-        /// <param name="i">index of the value</param>
+        /// <param name="rowIndex">row index of the column</param>
+        /// <param name="columnIndex">column index of the column</param>
         /// <returns>boolean value</returns>
         public bool GetBoolean(int rowIndex, int columnIndex)
         {
@@ -192,9 +209,10 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         }
 
         /// <summary>
-        /// Get a Datetime value according to the name of the value
+        /// Get a Datetime value according to the name of the colum
         /// </summary>
-        /// <param name="name">name of the value to get</param>
+        /// <param name="rowIndex">row index of the column</param>
+        /// <param name="name">column name of the column</param>
         /// <returns>datetime value</returns>
         public DateTime GetDateTime(int rowIndex, String name)
         {
@@ -203,9 +221,10 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         }
 
         /// <summary>
-        /// Get a Datetime value according to the index of the value
+        /// Get a Datetime value according to the index of the column
         /// </summary>
-        /// <param name="i">index of the value</param>
+        /// <param name="rowIndex">row index of the column</param>
+        /// <param name="columnIndex">column index of the column</param>
         /// <returns>Datetime value</returns>
         public DateTime GetDateTime(int rowIndex, int columnIndex)
         {
@@ -214,9 +233,10 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         }
 
         /// <summary>
-        /// Get a GUID value according to the name of the value
+        /// Get a GUID value according to the name of the colum
         /// </summary>
-        /// <param name="name">name of the value to get</param>
+        /// <param name="rowIndex">row index of the column</param>
+        /// <param name="name">column name of the column</param>
         /// <returns>Guid value</returns>
         public Guid GetGuid(int rowIndex, String name)
         {
@@ -225,9 +245,10 @@ namespace Mnubo.SmartObjects.Client.Models.Search
         }
 
         /// <summary>
-        /// Get a Guid value according to the index of the value
+        /// Get a Guid value according to the index of the column
         /// </summary>
-        /// <param name="i">index of the value</param>
+        /// <param name="rowIndex">row index of the column</param>
+        /// <param name="columnIndex">column index of the column</param>
         /// <returns>Guid value</returns>
         public Guid GetGuid(int rowIndex, int columnIndex)
         {

@@ -63,7 +63,7 @@ namespace Mnubo.SmartObjects.Client.Models
         public sealed class Builder
         {
             /// <summary>
-            /// build a new immutable mnubo's Owner instance from the builder.
+            /// Build a new immutable mnubo's Owner instance from the builder.
             /// </summary>
             /// <param name="builder">Mnubo's cient Config builder</param>
             public static implicit operator Owner(Builder builder)
@@ -72,12 +72,12 @@ namespace Mnubo.SmartObjects.Client.Models
             }
 
             /// <summary>
-            /// The username.
+            /// The username
             /// </summary>
             public string Username { get; set; }
 
             /// <summary>
-            /// The password.
+            /// The password
             /// </summary>
             public string Password { get; set; }
 
@@ -97,6 +97,9 @@ namespace Mnubo.SmartObjects.Client.Models
             /// </summary>
             public IDictionary<string, object> Attributes { get; set; }
 
+            /// <summary>
+            /// Constructor
+            /// </summary>
             public Builder()
             {
                 Username = null;
@@ -107,7 +110,7 @@ namespace Mnubo.SmartObjects.Client.Models
             }
 
             /// <summary>
-            /// Build the Owner instance.
+            /// Build the Owner instance
             /// </summary>
             /// <returns>Return a Owner built</returns>
             public Owner Build()

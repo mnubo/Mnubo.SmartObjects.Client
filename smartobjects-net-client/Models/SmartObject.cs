@@ -71,7 +71,7 @@ namespace Mnubo.SmartObjects.Client.Models
         }
 
         /// <summary>
-        /// SmartObject builder class. Use this class to build a new SmartObject intance
+        /// SmartObject builder class. Use this class to build a new SmartObject instance
         /// </summary>
         public sealed class Builder
         {
@@ -85,17 +85,17 @@ namespace Mnubo.SmartObjects.Client.Models
             }
 
             /// <summary>
-            /// the deviceid.
+            /// The deviceid
             /// </summary>
             public string DeviceId { get; set; }
 
             /// <summary>
-            /// nullable GUID objectId.
+            /// Nullable GUID objectId.
             /// </summary>
             public Guid? ObjectId { get; set; }
 
             /// <summary>
-            /// the type of the object.
+            /// The type of the object
             /// </summary>
             public string ObjectType { get; set; }
 
@@ -111,15 +111,18 @@ namespace Mnubo.SmartObjects.Client.Models
             public DateTimeOffset? RegistrationDateTime { get; set; }
 
             /// <summary>
-            /// the owner.
+            /// The owner's username
             /// </summary>
             public string Username { get; set; }
 
             /// <summary>
-            /// the attributes.
+            /// The attributes
             /// </summary>
             public IDictionary<string, object> Attributes { get; set; }
 
+            /// <summary>
+            /// Constructor for the builder
+            /// </summary>
             public Builder()
             {
                 DeviceId = null;
