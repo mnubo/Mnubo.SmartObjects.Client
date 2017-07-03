@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config\ClientConfig.cs" />
+    <Compile Include="Config\ExponentialBackoffConfig.cs" />
     <Compile Include="Impl\ClientUtils.cs" />
     <Compile Include="Impl\ResultDeserializer.cs" />
     <Compile Include="Impl\RestitutionClient.cs" />
