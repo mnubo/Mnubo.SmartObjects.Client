@@ -21,6 +21,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
             StaticConfiguration.EnableRequestTracing = true;
+            container.Register<ICounter, Counter>().AsSingleton();
         }
     }
 
@@ -85,7 +86,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
 
     public class SucceedAPIsMockModule : Nancy.NancyModule
     {
-        internal static string BasePath = "/succeed/api/v3/objects/";
+        internal static string BasePath = "/succeed/api/v3/";
         internal static string TestJsonString = @"[{""x_event_type"":""wind_direction_changed"",""x_object"":{""x_device_id"":""deviceId""},""wind_direction"":""sdktest854070""} , {""x_event_type"":""wind_direction_changed"",""x_object"":{""x_device_id"":""deviceId""},""wind_direction"":""sdktest90186""}]";
 
         public SucceedAPIsMockModule()
@@ -269,7 +270,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
 
     public class BatchAPIsMockModule : Nancy.NancyModule
     {
-        internal static string BasePath = "/batch/api/v3/objects/";
+        internal static string BasePath = "/batch/api/v3/";
         internal static string ErrorMessage = "event failed";
 
         public BatchAPIsMockModule()
@@ -461,7 +462,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
 
     public class FailedAPIsMockModule : Nancy.NancyModule
     {
-        internal static string BasePath = "/failed/api/v3/objects/";
+        internal static string BasePath = "/failed/api/v3/";
 
         public FailedAPIsMockModule()
         {
@@ -553,6 +554,93 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             response.StatusCode = HttpStatusCode.BadRequest;
             response.ContentType = "text/plain";
             return response;
+        }
+    }
+
+    public class ServiceUnavailableMockModule : Nancy.NancyModule
+    {
+        internal static string BasePath = "/unavailable/";
+
+        public ServiceUnavailableMockModule(ICounter counter)
+        {
+            Post[BasePath + "first"] = x => {
+                counter.Bump(1);
+                if (counter.Count(1) > 1) {
+                    return success("first");
+                } else {
+                    return serviceUnavailable();
+                }
+            };
+
+            Post[BasePath + "second"] = x => {
+                counter.Bump(2);
+                if (counter.Count(2) > 2) {
+                    return success("second");
+                } else {
+                    return serviceUnavailable();
+                }
+            };
+
+            Post[BasePath + "third"] = x => {
+                counter.Bump(3);
+                if (counter.Count(3) > 3) {
+                    return success("third");
+                } else {
+                    return serviceUnavailable();
+                }
+            };
+        }
+
+        public static Response serviceUnavailable()
+        {
+            var response = (Response) "service out";
+            response.StatusCode = HttpStatusCode.ServiceUnavailable;
+            response.ContentType = "text/plain";
+            return response;
+        }
+
+        public static Response success(string body)
+        {
+            var response = (Response) body;
+            response.StatusCode = HttpStatusCode.OK;
+            response.ContentType = "text/plain";
+            return response;
+        }
+    }
+
+    public interface ICounter {
+        int Count(int index);
+        void Bump(int index);
+    }
+
+
+    public class Counter : ICounter {
+        private int _count1 = 0;
+        private int _count2 = 0;
+        private int _count3 = 0;
+
+        public int Count(int index) {
+            switch (index)
+            {
+                case 2: return _count2;
+                case 3: return _count3;
+                default:
+                    return _count1;
+            }
+        }
+        public void Bump(int index) {
+            switch (index)
+            {
+                case 2:
+                    this._count2 = this._count2 + 1;
+                    return;
+                case 3:
+                    this._count3 = this._count3 + 1;
+                    return;
+                default:
+                    this._count1 = this._count1 + 1;
+                    return;
+            }
         }
     }
 }
