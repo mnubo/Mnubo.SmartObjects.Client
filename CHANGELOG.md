@@ -1,3 +1,9 @@
+<a name='1.2.1'></a>
+
+# [1.2.1](https://github.com/mnubo/smartobjects-net-client/compare/1.2.0...1.2.1) (2017-07-05)
+
+
+- Opt in exponential backoff for responses with 503 status code  
 <a name='1.2.0'></a>
 
 # [1.2.0](https://github.com/mnubo/smartobjects-net-client/compare/1.1.14...1.2.0) (2017-06-22)
