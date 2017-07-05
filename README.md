@@ -64,8 +64,11 @@ To get a client instance use the `ClientFactory`  Class.
     ClientConfig config = new ClientConfig.Builder() {
         Environment = Environments.Sandbox,
         ConsumerKey = "theConsumerKey",
-        ConsumerSecret = "theConsumerSecret"
+        ConsumerSecret = "theConsumerSecret",
+        // To enable exponential backoff retries
+        ExponentialBackoffConfig = new ExponentialBackoffConfig.On(5, 500)
     };
+
 
     var client = ClientFactory.Create(config);
 ```

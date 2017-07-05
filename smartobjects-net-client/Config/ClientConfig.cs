@@ -55,6 +55,11 @@ namespace Mnubo.SmartObjects.Client.Config
         /// </summary>
         public bool CompressionEnabled { get; }
 
+        /// <summary>
+        /// Exponential back off configuration
+        /// </summary>
+        public IExponentialBackoffConfig ExponentialBackoffConfig { get; }
+
         private ClientConfig() { }
 
         private ClientConfig(
@@ -63,7 +68,8 @@ namespace Mnubo.SmartObjects.Client.Config
             String consumerSecret,
             int clientTimeout,
             long maxResponseContentBufferSize,
-            bool compressionEnabled)
+            bool compressionEnabled,
+            IExponentialBackoffConfig exponentialBackoffConfig)
         {
             if (String.IsNullOrEmpty(consumerKey))
             {
@@ -91,6 +97,7 @@ namespace Mnubo.SmartObjects.Client.Config
             ClientTimeout = clientTimeout;
             MaxResponseContentBufferSize = maxResponseContentBufferSize;
             CompressionEnabled = compressionEnabled;
+            ExponentialBackoffConfig = exponentialBackoffConfig;
         }
 
         /// <summary>
@@ -132,6 +139,15 @@ namespace Mnubo.SmartObjects.Client.Config
             public const bool DefaultCompressionEnabled = true;
 
             /// <summary>
+            /// Default HTTP Exponential back off configuration
+            /// <code>
+            ///  var builder = new ClientConfig.Builder();
+            ///  builder.ExponentialBackoffConfig = new ExponentialBackoffConfig.On(5, 500);
+            /// </code>
+            /// </summary>
+            public static readonly IExponentialBackoffConfig DefaultExponentialBackoffConfig = new ExponentialBackoffConfig.Off();
+
+            /// <summary>
             /// Implicitly build a new immutable mnubo's config instance from the builder
             /// </summary>
             /// <param name="builder">mnubo's client Config builder</param>
@@ -170,6 +186,11 @@ namespace Mnubo.SmartObjects.Client.Config
             /// </summary>
             public bool CompressionEnabled { get; set; }
 
+            /// <summary>
+            /// HTTP exponential back off configuration
+            /// </summary>
+            public IExponentialBackoffConfig ExponentialBackoffConfig { get; set; }
+
 
             /// <summary>
             /// Build a Builder to help you generate an immutable ClientConfig using the
@@ -189,6 +210,7 @@ namespace Mnubo.SmartObjects.Client.Config
                 ClientTimeout = DefaultTimeout;
                 MaxResponseContentBufferSize = DefaultMaxResponseContentBufferSize;
                 CompressionEnabled = DefaultCompressionEnabled;
+                ExponentialBackoffConfig = DefaultExponentialBackoffConfig;
             }
 
             /// <summary>
@@ -202,7 +224,8 @@ namespace Mnubo.SmartObjects.Client.Config
                     ConsumerSecret,
                     ClientTimeout,
                     MaxResponseContentBufferSize,
-                    CompressionEnabled);
+                    CompressionEnabled,
+                    ExponentialBackoffConfig);
             }
         }
     }

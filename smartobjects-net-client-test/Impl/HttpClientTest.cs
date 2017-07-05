@@ -90,5 +90,50 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
 
             Assert.AreEqual(SucceedAPIsMockModule.TestJsonString, task.Result);
         }
+
+
+        [Test()]
+        public void WithExponentialBackoffOn()
+        {
+            var defaultBackOff = new ClientConfig.Builder()
+            {
+                Environment = ClientConfig.Environments.Sandbox,
+                ConsumerKey = "key",
+                ConsumerSecret = "secret",
+                ExponentialBackoffConfig = new ExponentialBackoffConfig.On(5, 500, (res, t) => {
+                    Console.WriteLine("RETRYING");
+                })
+            };
+            var client = new Client.Impl.HttpClient(defaultBackOff, "http", "localhost", port, ServiceUnavailableMockModule.BasePath);
+
+            var task1 = client.sendAsyncRequestWithResult(HttpMethod.Post, "first", "");
+            task1.Wait();
+            Assert.AreEqual("first", task1.Result);
+
+            var task2 = client.sendAsyncRequestWithResult(HttpMethod.Post, "second", "");
+            task2.Wait();
+            Assert.AreEqual("second", task2.Result);
+
+            var task3 = client.sendAsyncRequestWithResult(HttpMethod.Post, "third", "");
+            task3.Wait();
+            Assert.AreEqual("third", task3.Result);
+        }
+
+        [Test()]
+        public void ByDefaultNoExponentialBackoff()
+        {
+            var defaultBackOff = new ClientConfig.Builder()
+            {
+                Environment = ClientConfig.Environments.Sandbox,
+                ConsumerKey = "key",
+                ConsumerSecret = "secret"
+            };
+            var client = new Client.Impl.HttpClient(defaultBackOff, "http", "localhost", port, ServiceUnavailableMockModule.BasePath);
+
+            Assert.That(() => client.sendAsyncRequestWithResult(HttpMethod.Post, "first", "").Wait(),
+                Throws.TypeOf<AggregateException>()
+                    .With.InnerException.TypeOf<InvalidOperationException>()
+                    .With.InnerException.Message.EqualTo("status code: ServiceUnavailable, message service out"));
+        }
     }
 }

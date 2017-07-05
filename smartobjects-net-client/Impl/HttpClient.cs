@@ -1,12 +1,15 @@
-﻿using System;
+﻿using Polly;
+using Polly.Retry;
+using static Mnubo.SmartObjects.Client.Config.ClientConfig;
 using Mnubo.SmartObjects.Client.Config;
+using Newtonsoft.Json;
+
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Text;
-using static Mnubo.SmartObjects.Client.Config.ClientConfig;
 using System.Net;
-using Newtonsoft.Json;
 using System.IO;
 using System.IO.Compression;
 using System.Net.Http.Headers;
@@ -36,40 +39,27 @@ namespace Mnubo.SmartObjects.Client.Impl
         private readonly System.Net.Http.HttpClientHandler handler;
         private readonly System.Net.Http.HttpClient client;
 
-        internal HttpClient(ClientConfig config)
+        private readonly RetryPolicy<HttpResponseMessage> policy;
+
+        internal HttpClient(ClientConfig config) : this(config, DefaultClientSchema, HttpClient.addressMapping[config.Environment], DefaultHostPort, DefaultBasePath) { }
+
+        internal HttpClient(ClientConfig config, string clientSchema, string hostname, int hostPort, string basePath)
         {
-            // receiving compressed data is always allowed
-            handler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate };
+            this.handler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate };
 
-            client = new System.Net.Http.HttpClient(handler);
-            client.Timeout = TimeSpan.FromMilliseconds(config.ClientTimeout);
-            client.MaxResponseContentBufferSize = config.MaxResponseContentBufferSize;
-            
-            credentialHandler = new CredentialHandler(config, client);
+            this.client = new System.Net.Http.HttpClient(handler);
+            this.client.Timeout = TimeSpan.FromMilliseconds(config.ClientTimeout);
+            this.client.MaxResponseContentBufferSize = config.MaxResponseContentBufferSize;
+            this.credentialHandler = new CredentialHandler(config, client, clientSchema, hostname, hostPort);
 
-            environment = config.Environment;
-            compressionEnabled = config.CompressionEnabled;
-            clientSchema = DefaultClientSchema;
-            hostname = HttpClient.addressMapping[environment];
-            hostPort = DefaultHostPort;
-            basePath = DefaultBasePath;
-        }
-
-        internal HttpClient(ClientConfig config, string clientSchema, string hostname, int hostPort, string basePath )
-        {
-            handler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate };
-
-            client = new System.Net.Http.HttpClient(handler);
-            client.Timeout = TimeSpan.FromMilliseconds(config.ClientTimeout);
-            client.MaxResponseContentBufferSize = config.MaxResponseContentBufferSize;
-            credentialHandler = new CredentialHandler(config, client, clientSchema, hostname, hostPort);
-
-            environment = config.Environment;
-            compressionEnabled = config.CompressionEnabled;
+            this.environment = config.Environment;
+            this.compressionEnabled = config.CompressionEnabled;
             this.clientSchema = clientSchema;
             this.hostname = hostname;
             this.hostPort = hostPort;
             this.basePath = basePath;
+
+            this.policy = config.ExponentialBackoffConfig.Policy();
         }
 
         internal async Task<string> sendAsyncRequestWithResult(HttpMethod method, string path)
@@ -87,10 +77,8 @@ namespace Mnubo.SmartObjects.Client.Impl
             await sendAsyncRequest(method, path, null);
         }
 
-        internal async Task<string> sendAsyncRequestWithResult(HttpMethod method, string path, string body)
-        {
+        private async Task<HttpResponseMessage> sendRequest(HttpMethod method, string path, string body) {
             HttpRequestMessage request = null;
-            HttpResponseMessage response = null;
             try
             {
                 var pathAndQuery = path.Split(new char[] { '?' });
@@ -127,8 +115,26 @@ namespace Mnubo.SmartObjects.Client.Impl
 
                     request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 }
+                return await client.SendAsync(request);
+            }
+            finally
+            {
+                if (request != null) {
+                    request.Dispose();
+                }
+            }
+        }
 
-                response = await client.SendAsync(request);
+        internal async Task<string> sendAsyncRequestWithResult(HttpMethod method, string path, string body)
+        {
+            HttpResponseMessage response = null;
+            try
+            {
+                if (policy != null) {
+                    response = await policy.ExecuteAsync(() => sendRequest(method, path, body));
+                } else {
+                    response = await sendRequest(method, path, body);
+                }
 
                 string message = await response.Content.ReadAsStringAsync();
 
@@ -148,10 +154,6 @@ namespace Mnubo.SmartObjects.Client.Impl
             }
             finally
             {
-                if (request != null)
-                {
-                    request.Dispose();
-                }
                 if (response != null)
                 {
                     response.Dispose();
