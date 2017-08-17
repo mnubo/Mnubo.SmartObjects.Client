@@ -7,7 +7,10 @@ using System.Collections.Generic;
 
 namespace Mnubo.SmartObjects.Client.Impl
 {
-    internal class CredentialHandler
+    internal interface CredentialHandler {
+        string GetAuthenticationToken();
+    }
+    internal class ClientIdAndSecretCredentialHandler : CredentialHandler
     {
         private const string TokenPath = "oauth/token";
         private const string TokenConsumerSeparation = ":";
@@ -23,7 +26,7 @@ namespace Mnubo.SmartObjects.Client.Impl
         private readonly string autorizationBasicToken;
         private Token token;
 
-        internal CredentialHandler(ClientConfig config, System.Net.Http.HttpClient client)
+        internal ClientIdAndSecretCredentialHandler(ClientConfig config, System.Net.Http.HttpClient client)
         {
             this.client = client;
             autorizationBasicToken = Convert.ToBase64String(
@@ -50,7 +53,7 @@ namespace Mnubo.SmartObjects.Client.Impl
             (sender, certificate, chain, errors) => true;
         }
 
-        internal CredentialHandler(ClientConfig config, System.Net.Http.HttpClient client, String scheme, String host, int port)
+        internal ClientIdAndSecretCredentialHandler(ClientConfig config, System.Net.Http.HttpClient client, String scheme, String host, int port)
         {
             this.client = client;
             autorizationBasicToken = Convert.ToBase64String(
@@ -77,7 +80,7 @@ namespace Mnubo.SmartObjects.Client.Impl
             (sender, certificate, chain, errors) => true;
         }
 
-        internal string GetAuthenticationToken()
+        string CredentialHandler.GetAuthenticationToken()
         {
             if (token == null || token.IsExpired())
             {
@@ -148,6 +151,16 @@ namespace Mnubo.SmartObjects.Client.Impl
                 }
                 return status;
             }
+        }
+    }
+    internal class StaticTokenCredentialHandler : CredentialHandler {
+        private String token;
+        internal StaticTokenCredentialHandler(String token) {
+            this.token = token;
+        }
+        string CredentialHandler.GetAuthenticationToken()
+        {
+            return "Bearer " + token;
         }
     }
 }

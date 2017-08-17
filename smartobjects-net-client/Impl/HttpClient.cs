@@ -50,7 +50,11 @@ namespace Mnubo.SmartObjects.Client.Impl
             this.client = new System.Net.Http.HttpClient(handler);
             this.client.Timeout = TimeSpan.FromMilliseconds(config.ClientTimeout);
             this.client.MaxResponseContentBufferSize = config.MaxResponseContentBufferSize;
-            this.credentialHandler = new CredentialHandler(config, client, clientSchema, hostname, hostPort);
+            if (String.IsNullOrEmpty(config.Token)) {
+                this.credentialHandler = new ClientIdAndSecretCredentialHandler(config, client, clientSchema, hostname, hostPort);
+            } else {
+                this.credentialHandler = new StaticTokenCredentialHandler(config.Token);
+            }
 
             this.environment = config.Environment;
             this.compressionEnabled = config.CompressionEnabled;

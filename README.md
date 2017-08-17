@@ -73,6 +73,16 @@ To get a client instance use the `ClientFactory`  Class.
     var client = ClientFactory.Create(config);
 ```
 
+You can also get a client instance if you have an access token. This method is not recommended in production as the token will eventually expire:
+```c#
+    // Use a token instead of a client/secret pair
+    ClientConfig config = new ClientConfig.Builder() {
+        Environment = Environments.Sandbox,
+        Token = "my_token"
+    };
+    var client = ClientFactory.Create(config);
+```
+
 By default, all requests are compressed using `gzip`, this can be disabled by setting the `CompressionEnabled` of the configuration to `false`.
 
 Working with owners
