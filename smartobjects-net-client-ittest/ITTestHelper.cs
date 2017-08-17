@@ -1,4 +1,6 @@
 using Mnubo.SmartObjects.Client.Models;
+using Mnubo.SmartObjects.Client.Impl;
+using Mnubo.SmartObjects.Client.Config;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -9,6 +11,22 @@ namespace Mnubo.SmartObjects.Client.ITTest
 {
     public class ITTestHelper
     {
+
+        public static ISmartObjectsClient newClient()  {
+            if (Environment.GetEnvironmentVariable("CONSUMER_KEY") == null ||
+                Environment.GetEnvironmentVariable("CONSUMER_SECRET") == null) {
+                throw new Exception("Consumer key/secret are unvailable");
+            }
+
+            return ClientFactory.Create(
+                new ClientConfig.Builder()
+                {
+                    Environment = ClientConfig.Environments.Sandbox,
+                    ConsumerKey = Environment.GetEnvironmentVariable("CONSUMER_KEY"),
+                    ConsumerSecret = Environment.GetEnvironmentVariable("CONSUMER_SECRET")
+                }
+            );
+        }
         private const int timeout = 1000 * 240;
         private const int delay = 5000;
 
