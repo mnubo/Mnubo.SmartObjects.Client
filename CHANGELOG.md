@@ -1,3 +1,9 @@
+<a name='1.3.0'></a>
+
+# [1.3.0](https://github.com/mnubo/smartobjects-net-client/compare/1.2.1...1.3.0) (2017-08-18)
+
+
+* Support initialization with a static access token
 <a name='1.2.1'></a>
 
 # [1.2.1](https://github.com/mnubo/smartobjects-net-client/compare/1.2.0...1.2.1) (2017-07-05)
