@@ -54,6 +54,20 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
 
             Assert.AreEqual(SucceedAPIsMockModule.TestJsonString, task.Result);
         }
+        [Test()]
+        public void InitializationWithToken()
+        {
+            var otherConfig  =
+                new ClientConfig.Builder()
+                {
+                    Environment = ClientConfig.Environments.Sandbox,
+                    Token = "token"
+                };
+            var client = new Client.Impl.HttpClient(otherConfig, "http", "localhost", port, SucceedAPIsMockModule.BasePath);
+            var task = client.sendAsyncRequestWithResult(HttpMethod.Post, "tokencheck");
+            task.Wait();
+            Assert.AreEqual("Bearer token", task.Result);
+        }
 
         [Test()]
         public void CompressionEnabledForceTrue()

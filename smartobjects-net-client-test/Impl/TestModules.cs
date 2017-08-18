@@ -265,6 +265,10 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
 
                 return TestJsonString;
             };
+
+            Post[BasePath + "tokencheck"] = x => {
+                return this.Request.Headers.Authorization;
+            };
         }
     }
 

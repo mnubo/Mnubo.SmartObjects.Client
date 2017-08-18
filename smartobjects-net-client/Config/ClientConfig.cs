@@ -41,6 +41,11 @@ namespace Mnubo.SmartObjects.Client.Config
         public String ConsumerSecret { get; }
 
         /// <summary>
+        /// static bearer token fetched from mnubo
+        /// </summary>
+        public String Token { get; }
+
+        /// <summary>
         /// Timeout in miliseconds to use for requests made by this client instance.
         /// </summary>
         public int ClientTimeout { get; }
@@ -66,19 +71,23 @@ namespace Mnubo.SmartObjects.Client.Config
             Environments environment,
             String consumerKey,
             String consumerSecret,
+            String token,
             int clientTimeout,
             long maxResponseContentBufferSize,
             bool compressionEnabled,
             IExponentialBackoffConfig exponentialBackoffConfig)
         {
-            if (String.IsNullOrEmpty(consumerKey))
+            if (String.IsNullOrEmpty(token))
             {
-                throw new ArgumentException("securityConsumerKey property cannot be blank.");
-            }
+                if (String.IsNullOrEmpty(consumerKey))
+                {
+                    throw new ArgumentException("securityConsumerKey property cannot be blank.");
+                }
 
-            if (String.IsNullOrEmpty(consumerSecret))
-            {
-                throw new ArgumentException("securityConsumerSecret property cannot be blank.");
+                if (String.IsNullOrEmpty(consumerSecret))
+                {
+                    throw new ArgumentException("securityConsumerSecret property cannot be blank.");
+                }
             }
 
             if (clientTimeout < 0)
@@ -94,6 +103,7 @@ namespace Mnubo.SmartObjects.Client.Config
             Environment = environment;
             ConsumerKey = consumerKey;
             ConsumerSecret = consumerSecret;
+            Token = token;
             ClientTimeout = clientTimeout;
             MaxResponseContentBufferSize = maxResponseContentBufferSize;
             CompressionEnabled = compressionEnabled;
@@ -172,6 +182,11 @@ namespace Mnubo.SmartObjects.Client.Config
             public String ConsumerSecret { get; set; }
 
             /// <summary>
+            /// A bearer token fetched from mnubo
+            /// </summary>
+            public String Token { get; set; }
+
+            /// <summary>
             /// Timeout in miliseconds to use for requests made by this client instance.
             /// </summary>
             public int ClientTimeout { get; set; }
@@ -222,6 +237,7 @@ namespace Mnubo.SmartObjects.Client.Config
                     Environment,
                     ConsumerKey,
                     ConsumerSecret,
+                    Token,
                     ClientTimeout,
                     MaxResponseContentBufferSize,
                     CompressionEnabled,

@@ -17,19 +17,7 @@ namespace Mnubo.SmartObjects.Client.ITTest
 
         public ObjectsITTests()
         {
-            if (Environment.GetEnvironmentVariable("CONSUMER_KEY") == null ||
-                Environment.GetEnvironmentVariable("CONSUMER_SECRET") == null) {
-                throw new Exception("Consumer key/secret are unvailable");
-            }
-
-            client = ClientFactory.Create(
-                new ClientConfig.Builder()
-                {
-                    Environment = ClientConfig.Environments.Sandbox,
-                    ConsumerKey = Environment.GetEnvironmentVariable("CONSUMER_KEY"),
-                    ConsumerSecret = Environment.GetEnvironmentVariable("CONSUMER_SECRET")
-                }
-            );
+            client = ITTestHelper.newClient();
         }
 
         [Test()]
