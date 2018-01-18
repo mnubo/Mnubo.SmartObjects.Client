@@ -61,11 +61,6 @@ namespace Mnubo.SmartObjects.Client.ITTest
 
             client.Owners.Claim(owner.Username, smartObject.DeviceId);
 
-            ITTestHelper.EventuallyAssert(() => {
-                ResultSet resultOwn = client.Restitution.Search(ITTestHelper.searchObjectByOwnerQuery(owner.Username));
-                Assert.AreEqual(1, resultOwn.Rows.Count);
-            });
-
             try {
                 client.Owners.Unclaim(uuid, smartObject.DeviceId);
                 Assert.Fail("Unclaim on an non-existing owner should fail");
@@ -133,11 +128,6 @@ namespace Mnubo.SmartObjects.Client.ITTest
             }
 
             client.Owners.Claim(owner.Username, smartObject.DeviceId, body);
-
-            ITTestHelper.EventuallyAssert(() => {
-                ResultSet resultOwn = client.Restitution.Search(ITTestHelper.searchObjectByOwnerQuery(owner.Username));
-                Assert.AreEqual(1, resultOwn.Rows.Count);
-            });
 
             try {
                 client.Owners.Unclaim(uuid, smartObject.DeviceId, body);
