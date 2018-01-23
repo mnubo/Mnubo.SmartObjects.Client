@@ -81,6 +81,7 @@
     <Compile Include="Impl\ObjectTypeSerializer.cs" />
     <Compile Include="Impl\OwnerAttributeSerializer.cs" />
     <Compile Include="Impl\TimeseriesSerializer.cs" />
+    <Compile Include="Impl\UpdateEntitySerializer.cs" />
     <Compile Include="Impl\SerializerUtils.cs" />
     <Compile Include="Impl\Serializer.cs" />
     <Compile Include="IRestitutionClient.cs" />

@@ -144,6 +144,7 @@ namespace Mnubo.SmartObjects.Client.Impl
 
                 if (response.StatusCode == HttpStatusCode.OK ||
                     response.StatusCode == HttpStatusCode.Created ||
+                    response.StatusCode == HttpStatusCode.NoContent ||
                     (int)response.StatusCode == 207)
                 {
                     return message;
