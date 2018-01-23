@@ -6,7 +6,7 @@
 Introduction
 ============
 
-This is a .NET implementation of the [API documentation](https://sop.mtl.mnubo.com/apps/doc/?i=t).
+This is a .NET implementation of the [API documentation](https://smartobjects.mnubo.com/documentation/).
 
 
 Architecture
@@ -262,7 +262,7 @@ Working with objects
 --------------------
 
 You can use the `client.Objects` synchronous methods:
- 
+
 ```c#
     SmartObject smartObject1 = new SmartObject.Builder() {
         DeviceId = "theDeviceId1",
@@ -461,16 +461,104 @@ Please take a look in the documentation of Mnubo to get more detail about how to
 Working with the model
 -------------------
 
-You can use the `client.Model` synchronous or asynchronous methods:
+You can use the `client.Model` synchronous or asynchronous methods to read from the data model:
 
 ```c#
-    Model model = client.Model.Export();
+Model model = client.Model.Export();
 
-    //async
-    Task<Model> modelAsync = client.Model.ExportAsync();
+List<EventType> = client.Model.GetEventTypes()
+List<ObjectType> = client.Model.GetObjectTypes()
+List<ObjectAttribute> = client.Model.GetObjectAttributes()
+List<Timeseries> = client.Model.GetTimeseries()
+List<OwnerAttribute> = client.Model.GetOwnerAttributes()
+
+//async
+Task<Model> modelAsync = client.Model.ExportAsync();
+Task<List<EventType>> = client.Model..GetTimeseriesAsync();
+Task<List<ObjectType>> = client.Model.GetObjectAttributesAsync();
+Task<List<ObjectAttribute>> = client.Model.GetOwnerAttributesAsync();
+Task<List<Timeseries>> = client.Model.GetObjectTypesAsync();
+Task<List<OwnerAttribute>> = client.Model.GetEventTypesAsync();
 ```
 
-More information available here: https://smartobjects.mnubo.com/apps/doc/api_search.html?highlight=export#get-api-v3-model-export
+You can also change your model in sandbox with synchronous or asynchronous methods:
+
+```c#
+// Event types
+client.Model.SandboxOps.EventTypesOps.CreateOne(new EventType(
+    key, "", "scheduled", new List<string>()
+));
+client.Model.SandboxOps.EventTypesOps.Update(key, new EventType(
+    key, "new desc", "unscheduled", new List<string>()
+));
+client.Model.SandboxOps.EventTypesOps.Delete(key);
+
+client.Model.SandboxOps.EventTypesOps.CreateOneAsync(new EventType(
+    key, "", "scheduled", new List<string>()
+));
+client.Model.SandboxOps.EventTypesOps.UpdateAsync(key, new EventType(
+    key, "new desc", "unscheduled", new List<string>()
+));
+client.Model.SandboxOps.EventTypesOps.DeleteAsync(key);
+
+// Object Types
+client.Model.SandboxOps.ObjectTypesOps.CreateOne(new ObjectType(
+    key, "", new List<string>()
+));
+client.Model.SandboxOps.ObjectTypesOps.Update(key, new ObjectType(
+    key, "new desc", new List<string>()
+));
+client.Model.SandboxOps.ObjectTypesOps.Delete(key);
+
+client.Model.SandboxOps.ObjectTypesOps.CreateOneAsync(new ObjectType(
+    key, "", new List<string>()
+));
+client.Model.SandboxOps.ObjectTypesOps.UpdateAsync(key, new ObjectType(
+    key, "new desc", new List<string>()
+));
+client.Model.SandboxOps.ObjectTypesOps.DeleteAsync(key);
+
+// Timeseries
+client.Model.SandboxOps.TimeseriesOps.CreateOne(new Timeseries(
+    "timeseries_key", "", "", "TEXT", new List<string>() { key }
+));
+client.Model.SandboxOps.TimeseriesOps.Update("timeseries_key", new UpdateEntity("new display name", "new desc"));
+client.Model.SandboxOps.TimeseriesOps.Deploy("timeseries_key");
+
+client.Model.SandboxOps.TimeseriesOps.CreateOneAsync(new Timeseries(
+    "timeseries_key", "", "", "TEXT", new List<string>() { key }
+));
+client.Model.SandboxOps.TimeseriesOps.UpdateAsync("timeseries_key", new UpdateEntity("new display name", "new desc"));
+client.Model.SandboxOps.TimeseriesOps.DeployAsync("timeseries_key");
+
+// Object Attributes
+client.Model.SandboxOps.ObjectAttributesOps.CreateOne(new ObjectAttribute(
+    "object_key", "", "", "FLOAT", "none", new List<string>() { key }
+));
+client.Model.SandboxOps.ObjectAttributesOps.Update("object_key", new UpdateEntity("new display name", "new desc"));
+client.Model.SandboxOps.ObjectAttributesOps.Deploy("object_key");
+
+client.Model.SandboxOps.ObjectAttributesOps.CreateOneAsync(new ObjectAttribute(
+    "object_key", "", "", "FLOAT", "none", new List<string>() { key }
+));
+client.Model.SandboxOps.ObjectAttributesOps.UpdateAsync("object_key", new UpdateEntity("new display name", "new desc"));
+client.Model.SandboxOps.ObjectAttributesOps.DeployAsync("object_key");
+
+// Owner Attributes
+client.Model.SandboxOps.OwnerAttributesOps.CreateOne(new OwnerAttribute(
+    "owner_key", "", "", "DOUBLE", "none"
+));
+client.Model.SandboxOps.OwnerAttributesOps.Update("owner_key", new UpdateEntity("new display name", "new desc"));
+client.Model.SandboxOps.OwnerAttributesOps.Deploy("owner_key");
+
+client.Model.SandboxOps.OwnerAttributesOps.CreateOneAsync(new OwnerAttribute(
+    "owner_key", "", "", "DOUBLE", "none"
+));
+client.Model.SandboxOps.OwnerAttributesOps.UpdateAsync("owner_key", new UpdateEntity("new display name", "new desc"));
+client.Model.SandboxOps.OwnerAttributesOps.DeployAsync("owner_key");
+```
+
+More information available here: https://smartobjects.mnubo.com/documentation/api_modeler.html
 
 
 References
@@ -478,6 +566,6 @@ References
 
 [nuget](https://www.nuget.org/)
 
-[mnubo documentation](https://sop.mtl.mnubo.com/apps/doc/?i=t)
+[mnubo documentation](https://smartobjects.mnubo.com/documentation/)
 
 [Microsoft .NET](https://www.microsoft.com/net/default.aspx)
