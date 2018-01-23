@@ -13,6 +13,7 @@ using System.Net;
 using System.IO;
 using System.IO.Compression;
 using System.Net.Http.Headers;
+using System.Reflection;
 
 namespace Mnubo.SmartObjects.Client.Impl
 {
@@ -38,13 +39,28 @@ namespace Mnubo.SmartObjects.Client.Impl
         private readonly Environments environment;
         private readonly System.Net.Http.HttpClientHandler handler;
         private readonly System.Net.Http.HttpClient client;
-
         private readonly RetryPolicy<HttpResponseMessage> policy;
+        private readonly string version;
+
+        private static string loadVersion() {
+            try
+                {
+                    var _assembly = Assembly.GetExecutingAssembly();
+                    var _textStreamReader = new StreamReader(_assembly.GetManifestResourceStream("Mnubo.SmartObjects.Client.Version.txt"));
+                    var content = _textStreamReader.ReadToEnd();
+                    return content.Split('=')[1];
+                }
+                catch
+                {
+                    return "unknown";
+                }
+        }
 
         internal HttpClient(ClientConfig config) : this(config, DefaultClientSchema, HttpClient.addressMapping[config.Environment], DefaultHostPort, DefaultBasePath) { }
 
         internal HttpClient(ClientConfig config, string clientSchema, string hostname, int hostPort, string basePath)
         {
+            this.version = ".NET/" + loadVersion();
             this.handler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate };
 
             this.client = new System.Net.Http.HttpClient(handler);
@@ -94,6 +110,7 @@ namespace Mnubo.SmartObjects.Client.Impl
 
                 request = new HttpRequestMessage(method, uriBuilder.Uri);
                 request.Headers.Add("Authorization", credentialHandler.GetAuthenticationToken());
+                request.Headers.Add("X-MNUBO-SDK", this.version);
 
                 if (!string.IsNullOrEmpty(body))
                 {
@@ -101,14 +118,14 @@ namespace Mnubo.SmartObjects.Client.Impl
                     {
                         var data = Encoding.UTF8.GetBytes(body);
                         var stream = new MemoryStream();
-                        using (var gz = new GZipStream(stream, CompressionMode.Compress)) 
+                        using (var gz = new GZipStream(stream, CompressionMode.Compress))
                         {
                             await gz.WriteAsync(data, 0, data.Length);
                         }
 
                         var compressed = stream.ToArray();
                         stream.Dispose();
-                        
+
                         request.Content = new ByteArrayContent(compressed);
                         request.Content.Headers.ContentEncoding.Add("gzip");
                     }
