@@ -1,3 +1,9 @@
+<a name='1.4.1'></a>
+
+# [1.4.1](https://github.com/mnubo/smartobjects-net-client/compare/1.3.0...1.4.1) (2018-01-24)
+
+
+* Support modeler API
 <a name='1.3.0'></a>
 
 # [1.3.0](https://github.com/mnubo/smartobjects-net-client/compare/1.2.1...1.3.0) (2017-08-18)
