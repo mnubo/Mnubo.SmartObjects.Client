@@ -12,12 +12,12 @@ namespace Mnubo.SmartObjects.Client.Test.Config
         {
             ClientConfig config = new ClientConfig.Builder()
             {
-                Environment = ClientConfig.Environments.Sandbox,
+                Hostname = ClientConfig.Environments.Sandbox,
                 ConsumerKey = "CK",
                 ConsumerSecret = "CS"
             };
 
-            Assert.AreEqual(config.Environment, ClientConfig.Environments.Sandbox);
+            Assert.AreEqual(config.Hostname, ClientConfig.Environments.Sandbox);
             Assert.AreEqual(config.ConsumerKey, "CK");
             Assert.AreEqual(config.ConsumerSecret, "CS");
             Assert.AreEqual(config.ClientTimeout, ClientConfig.Builder.DefaultTimeout);
@@ -30,7 +30,7 @@ namespace Mnubo.SmartObjects.Client.Test.Config
         {
             ClientConfig config = new ClientConfig.Builder()
             {
-                Environment = ClientConfig.Environments.Sandbox,
+                Hostname = ClientConfig.Environments.Sandbox,
                 ConsumerKey = "CK",
                 ConsumerSecret = "CS",
                 ClientTimeout = 50000,
@@ -38,7 +38,7 @@ namespace Mnubo.SmartObjects.Client.Test.Config
                 CompressionEnabled = false
             };
 
-            Assert.AreEqual(config.Environment, ClientConfig.Environments.Sandbox);
+            Assert.AreEqual(config.Hostname, ClientConfig.Environments.Sandbox);
             Assert.AreEqual(config.ConsumerKey, "CK");
             Assert.AreEqual(config.ConsumerSecret, "CS");
             Assert.AreEqual(config.ClientTimeout, 50000);
@@ -52,7 +52,7 @@ namespace Mnubo.SmartObjects.Client.Test.Config
         {
             ClientConfig config = new ClientConfig.Builder()
             {
-                Environment = ClientConfig.Environments.Sandbox,
+                Hostname = ClientConfig.Environments.Sandbox,
                 ConsumerKey = "CK",
                 ConsumerSecret = "CS",
                 ClientTimeout = 155,
@@ -60,7 +60,7 @@ namespace Mnubo.SmartObjects.Client.Test.Config
                 CompressionEnabled = true
             };
 
-            Assert.AreEqual(config.Environment, ClientConfig.Environments.Sandbox);
+            Assert.AreEqual(config.Hostname, ClientConfig.Environments.Sandbox);
             Assert.AreEqual(config.ConsumerKey, "CK");
             Assert.AreEqual(config.ConsumerSecret, "CS");
             Assert.AreEqual(config.ClientTimeout, 155);
@@ -75,7 +75,7 @@ namespace Mnubo.SmartObjects.Client.Test.Config
         [TestCase(ClientConfig.Environments.Sandbox, "CK", "CS", -9, 555, "clientTimeout must be a positive number.")]
         [TestCase(ClientConfig.Environments.Sandbox, "CK", "CS", 15, -8, "maxResponseContentBufferSize must be a positive number.")]
         public void ConfigBuilderAdvanceConfigWrongValues(
-            ClientConfig.Environments environment,
+            string environment,
             string securityConsumerKey,
             string securityConsumerSecret,
             int clientTimeout,
@@ -85,7 +85,7 @@ namespace Mnubo.SmartObjects.Client.Test.Config
             ClientConfig config;
             Assert.That(() => config = new ClientConfig.Builder()
             {
-                Environment = environment,
+                Hostname = environment,
                 ConsumerKey = securityConsumerKey,
                 ConsumerSecret = securityConsumerSecret,
                 ClientTimeout = clientTimeout,

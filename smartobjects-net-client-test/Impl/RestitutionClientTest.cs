@@ -32,7 +32,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             config =
                 new ClientConfig.Builder()
                 {
-                    Environment = ClientConfig.Environments.Sandbox,
+                    Hostname = ClientConfig.Environments.Sandbox,
                     ConsumerKey = "key",
                     ConsumerSecret = "secret"
                 };
