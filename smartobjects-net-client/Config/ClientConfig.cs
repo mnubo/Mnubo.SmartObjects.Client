@@ -12,23 +12,23 @@ namespace Mnubo.SmartObjects.Client.Config
         ///
         /// https://smartobjects.mnubo.com/documentation/api_basics.html
         /// </summary>
-        public enum Environments
+        public static class Environments
         {
             /// <summary>
             /// Using this environment will target the sandbox
             /// </summary>
-            Sandbox,
+            public const string Sandbox = "rest.sandbox.mnubo.com";
 
             /// <summary>
             /// Using this environment will target the production
             /// </summary>
-            Production
+            public const string Production = "rest.api.mnubo.com";
         }
 
         /// <summary>
         /// Gets the Hostname server
         /// </summary>
-        public Environments Environment { get; }
+        public string Hostname { get; }
 
         /// <summary>
         /// get unique identity key provided by mnubo.
@@ -68,10 +68,10 @@ namespace Mnubo.SmartObjects.Client.Config
         private ClientConfig() { }
 
         private ClientConfig(
-            Environments environment,
-            String consumerKey,
-            String consumerSecret,
-            String token,
+            string hostname,
+            string consumerKey,
+            string consumerSecret,
+            string token,
             int clientTimeout,
             long maxResponseContentBufferSize,
             bool compressionEnabled,
@@ -100,7 +100,7 @@ namespace Mnubo.SmartObjects.Client.Config
                 throw new ArgumentException("maxResponseContentBufferSize must be a positive number.");
             }
 
-            Environment = environment;
+            Hostname = hostname;
             ConsumerKey = consumerKey;
             ConsumerSecret = consumerSecret;
             Token = token;
@@ -169,22 +169,22 @@ namespace Mnubo.SmartObjects.Client.Config
             /// <summary>
             /// The Hostname server
             /// </summary>
-            public Environments Environment { get; set; }
+            public string Hostname { get; set; }
 
             /// <summary>
             /// The unique identity key provided by mnubo.
             /// </summary>
-            public String ConsumerKey { get; set; }
+            public string ConsumerKey { get; set; }
 
             /// <summary>
             /// The secret key provided by mnubo.
             /// </summary>
-            public String ConsumerSecret { get; set; }
+            public string ConsumerSecret { get; set; }
 
             /// <summary>
             /// A bearer token fetched from mnubo
             /// </summary>
-            public String Token { get; set; }
+            public string Token { get; set; }
 
             /// <summary>
             /// Timeout in miliseconds to use for requests made by this client instance.
@@ -214,7 +214,7 @@ namespace Mnubo.SmartObjects.Client.Config
             /// Usage:
             /// <code>
             ///  var builder = new ClientConfig.Builder();
-            ///  builder.Environment = ClientConfig.Environments.Sandbox;
+            ///  builder.Hostname = ClientConfig.Environments.Sandbox;
             ///  builder.ConsumerKey = "KEY";
             ///  builder.ConsumerSecret = "SECRET";
             ///  var config = builder.build();
@@ -234,7 +234,7 @@ namespace Mnubo.SmartObjects.Client.Config
             public ClientConfig Build()
             {
                 return new ClientConfig(
-                    Environment,
+                    Hostname,
                     ConsumerKey,
                     ConsumerSecret,
                     Token,

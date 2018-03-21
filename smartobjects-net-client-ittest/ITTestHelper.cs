@@ -21,7 +21,7 @@ namespace Mnubo.SmartObjects.Client.ITTest
             return ClientFactory.Create(
                 new ClientConfig.Builder()
                 {
-                    Environment = ClientConfig.Environments.Sandbox,
+                    Hostname = ClientConfig.Environments.Sandbox,
                     ConsumerKey = Environment.GetEnvironmentVariable("CONSUMER_KEY"),
                     ConsumerSecret = Environment.GetEnvironmentVariable("CONSUMER_SECRET")
                 }

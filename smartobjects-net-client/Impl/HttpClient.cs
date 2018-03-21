@@ -19,11 +19,6 @@ namespace Mnubo.SmartObjects.Client.Impl
 {
     internal class HttpClient : IDisposable
     {
-        internal static readonly Dictionary<Environments, string> addressMapping = new Dictionary<Environments, string>()
-        {
-            { Environments.Sandbox, "rest.sandbox.mnubo.com" },
-            { Environments.Production, "rest.api.mnubo.com" }
-        };
         internal const string DefaultClientSchema = "https";
         internal const string DefaultScope = "ALL";
         internal const int DefaultHostPort = 443;
@@ -36,7 +31,6 @@ namespace Mnubo.SmartObjects.Client.Impl
         private readonly string basePath;
         private readonly bool compressionEnabled = ClientConfig.Builder.DefaultCompressionEnabled;
         private readonly CredentialHandler credentialHandler;
-        private readonly Environments environment;
         private readonly System.Net.Http.HttpClientHandler handler;
         private readonly System.Net.Http.HttpClient client;
         private readonly RetryPolicy<HttpResponseMessage> policy;
@@ -56,7 +50,7 @@ namespace Mnubo.SmartObjects.Client.Impl
                 }
         }
 
-        internal HttpClient(ClientConfig config) : this(config, DefaultClientSchema, HttpClient.addressMapping[config.Environment], DefaultHostPort, DefaultBasePath) { }
+        internal HttpClient(ClientConfig config) : this(config, DefaultClientSchema, config.Hostname, DefaultHostPort, DefaultBasePath) { }
 
         internal HttpClient(ClientConfig config, string clientSchema, string hostname, int hostPort, string basePath)
         {
@@ -72,7 +66,6 @@ namespace Mnubo.SmartObjects.Client.Impl
                 this.credentialHandler = new StaticTokenCredentialHandler(config.Token);
             }
 
-            this.environment = config.Environment;
             this.compressionEnabled = config.CompressionEnabled;
             this.clientSchema = clientSchema;
             this.hostname = hostname;

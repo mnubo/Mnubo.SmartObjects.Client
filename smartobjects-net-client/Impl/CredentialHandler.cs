@@ -37,7 +37,7 @@ namespace Mnubo.SmartObjects.Client.Impl
 
             UriBuilder uriBuilder = new UriBuilder(
                 HttpClient.DefaultClientSchema,
-                HttpClient.addressMapping[config.Environment], 
+                config.Hostname,
                 HttpClient.DefaultHostPort, 
                 TokenPath);
             uriBuilder.Query = 

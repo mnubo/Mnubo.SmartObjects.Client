@@ -33,7 +33,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             config =
                 new ClientConfig.Builder()
                 {
-                    Environment = ClientConfig.Environments.Sandbox,
+                    Hostname = ClientConfig.Environments.Sandbox,
                     ConsumerKey = "key",
                     ConsumerSecret = "secret"
                 };
@@ -60,7 +60,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             var otherConfig  =
                 new ClientConfig.Builder()
                 {
-                    Environment = ClientConfig.Environments.Sandbox,
+                    Hostname = ClientConfig.Environments.Sandbox,
                     Token = "token"
                 };
             var client = new Client.Impl.HttpClient(otherConfig, "http", "localhost", port, SucceedAPIsMockModule.BasePath);
@@ -74,7 +74,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         {
             var configWithCompression = new ClientConfig.Builder()
             {
-                Environment = ClientConfig.Environments.Sandbox,
+                Hostname = ClientConfig.Environments.Sandbox,
                 ConsumerKey = "key",
                 ConsumerSecret = "secret",
                 CompressionEnabled = true
@@ -92,7 +92,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         {
             var configNoCompression = new ClientConfig.Builder()
             {
-                Environment = ClientConfig.Environments.Sandbox,
+                Hostname = ClientConfig.Environments.Sandbox,
                 ConsumerKey = "key",
                 ConsumerSecret = "secret",
                 CompressionEnabled = false
@@ -111,7 +111,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         {
             var defaultBackOff = new ClientConfig.Builder()
             {
-                Environment = ClientConfig.Environments.Sandbox,
+                Hostname = ClientConfig.Environments.Sandbox,
                 ConsumerKey = "key",
                 ConsumerSecret = "secret",
                 ExponentialBackoffConfig = new ExponentialBackoffConfig.On(5, 500, (res, t) => {
@@ -138,7 +138,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         {
             var defaultBackOff = new ClientConfig.Builder()
             {
-                Environment = ClientConfig.Environments.Sandbox,
+                Hostname = ClientConfig.Environments.Sandbox,
                 ConsumerKey = "key",
                 ConsumerSecret = "secret"
             };

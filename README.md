@@ -62,7 +62,7 @@ To get a client instance use the `ClientFactory`  Class.
 
 ```c#
     ClientConfig config = new ClientConfig.Builder() {
-        Environment = Environments.Sandbox,
+        Hostname = Environments.Sandbox,
         ConsumerKey = "theConsumerKey",
         ConsumerSecret = "theConsumerSecret",
         // To enable exponential backoff retries
@@ -77,7 +77,7 @@ You can also get a client instance if you have an access token. This method is n
 ```c#
     // Use a token instead of a client/secret pair
     ClientConfig config = new ClientConfig.Builder() {
-        Environment = Environments.Sandbox,
+        Hostname = Environments.Sandbox,
         Token = "my_token"
     };
     var client = ClientFactory.Create(config);
