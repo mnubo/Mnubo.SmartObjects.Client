@@ -1,3 +1,9 @@
+<a name='2.0.0'></a>
+
+# [2.0.0](https://github.com/mnubo/smartobjects-net-client/compare/1.4.1...2.0.0) (2018-03-22)
+
+
+* the hostname is now configurable to any arbitrary value
 <a name='1.4.1'></a>
 
 # [1.4.1](https://github.com/mnubo/smartobjects-net-client/compare/1.3.0...1.4.1) (2018-01-24)
