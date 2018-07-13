@@ -3,6 +3,45 @@
 [![Build status](https://travis-ci.org/mnubo/smartobjects-net-client.svg?branch=master)](https://travis-ci.org/mnubo/smartobjects-net-client)
 [![NuGet](https://img.shields.io/nuget/v/Mnubo.SmartObjects.Client.svg?maxAge=2592000)](https://www.nuget.org/packages/Mnubo.SmartObjects.Client/)
 
+## Quickstart
+
+[comment]: # (Important: leave the HTML in this section)
+[comment]: # (quickstart-setup)
+
+<h3>Getting the client library</h3>
+<p>The client library is available on <a target="_blank" href="https://www.nuget.org/packages/Mnubo.SmartObjects.Client">nuget</a>.</p>
+
+<p>You can get started quickly with Package Manager or the .NET CLI:</p>
+<pre>
+    <code>
+Install-Package Mnubo.SmartObjects.Client -Version 2.0.0 # Package Manager
+dotnet add package Mnubo.SmartObjects.Client --version 2.0.0 # .NET CLI
+    </code>
+</pre>
+
+<p>For more information, visit <a target="_blank" href="https://github.com/mnubo/smartobjects-net-client">GitHub</a>.</p>
+
+<h3>Create a client instance</h3>
+
+<p>The following .NET code can be used to create an instance:</p>
+
+<pre>
+        <code>
+using Mnubo.SmartObjects.Client.Config;
+using Mnubo.SmartObjects.Client.Impl;
+
+ClientConfig config = new ClientConfig.Builder() {
+    Hostname = "<%= hostname %>",
+    ConsumerKey = "<%= clientKey %>",
+    ConsumerSecret = "<%= clientSecret %>"
+};
+
+var client = ClientFactory.Create(config);
+    </code>
+</pre>
+
+[comment]: # (quickstart-setup)
+
 Introduction
 ============
 
