@@ -38,12 +38,12 @@ namespace Mnubo.SmartObjects.Client.Impl
             UriBuilder uriBuilder = new UriBuilder(
                 HttpClient.DefaultClientSchema,
                 config.Hostname,
-                HttpClient.DefaultHostPort, 
+                HttpClient.DefaultHostPort,
                 TokenPath);
-            uriBuilder.Query = 
-                TokenGrandType + "=" + 
-                TokenGrandTypeValue + "&" + 
-                TokenScope + "=" + 
+            uriBuilder.Query =
+                TokenGrandType + "=" +
+                TokenGrandTypeValue + "&" +
+                TokenScope + "=" +
                 HttpClient.DefaultScope;
 
             tokenRequest = new HttpRequestMessage(HttpMethod.Post, uriBuilder.Uri);
@@ -133,10 +133,10 @@ namespace Mnubo.SmartObjects.Client.Impl
                     throw new InvalidOperationException("Error fetching token...");
                 }
 
-                AccessToken = 
+                AccessToken =
                     string.Format(
-                        "{0} {1}", 
-                        attributes[TokenTypeProperty], 
+                        "{0} {1}",
+                        attributes[TokenTypeProperty],
                         attributes[AccessTokenProperty]);
 
                 expireTime = DateTime.Now.AddSeconds(Convert.ToDouble(attributes[ExpiresInProperty]));
