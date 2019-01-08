@@ -42,7 +42,7 @@ namespace Mnubo.SmartObjects.Client.Impl
                     var _assembly = Assembly.GetExecutingAssembly();
                     var _textStreamReader = new StreamReader(_assembly.GetManifestResourceStream("Mnubo.SmartObjects.Client.Version.txt"));
                     var content = _textStreamReader.ReadToEnd();
-                    return content.Split('=')[1].Replace(System.Environment.NewLine, "");
+                    return content.Split('=')[1].Replace(System.Environment.NewLine, "").TrimEnd(Environment.NewLine.ToCharArray());
                 }
                 catch
                 {
