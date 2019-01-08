@@ -14,8 +14,8 @@
 <p>You can get started quickly with Package Manager or the .NET CLI:</p>
 <pre>
     <code>
-Install-Package Mnubo.SmartObjects.Client -Version 2.0.0 # Package Manager
-dotnet add package Mnubo.SmartObjects.Client --version 2.0.0 # .NET CLI
+Install-Package Mnubo.SmartObjects.Client -Version 2.0.1 # Package Manager
+dotnet add package Mnubo.SmartObjects.Client --version 2.0.1 # .NET CLI
     </code>
 </pre>
 
