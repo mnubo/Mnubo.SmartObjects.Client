@@ -1,3 +1,9 @@
+<a name='2.0.1'></a>
+
+# [2.0.1](https://github.com/mnubo/smartobjects-net-client/compare/2.0.0...2.0.1) (2019-01-08)
+
+
+* Removes new line from the version header (previous version did not work on Windows)
 <a name='2.0.0'></a>
 
 # [2.0.0](https://github.com/mnubo/smartobjects-net-client/compare/1.4.1...2.0.0) (2018-03-22)
