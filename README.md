@@ -487,7 +487,7 @@ Or you can use the `client.Restitution` asynchronous methods:
 
 ```c#
     //To get all Datasets associated to the Namespace:
-    Task<List<DataSet>> datasets = client.Restitution.GetDataSetsAsync();
+    Task<IEnumerable<DataSet>> datasets = client.Restitution.GetDataSetsAsync();
 
     //Perform a search with the search API:
     string query = "{\"from\":\"owner\",\"select\":[{\"value\":\"username\"},{\"value\":\"x_registration_date\"}],\"where\":{\"username\":{\"EQ\":\"USERNAME TO SEARCH\"}}}";
