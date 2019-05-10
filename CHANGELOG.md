@@ -1,3 +1,10 @@
+<a name='2.0.2'></a>
+
+# [2.0.2](https://github.com/mnubo/smartobjects-net-client/compare/2.0.1...2.0.2) (2019-05-10)
+
+
+* Activated exponential backoff config now retry on 502 and 503
+* More options to customize Exponential Backoff configuration
 <a name='2.0.1'></a>
 
 # [2.0.1](https://github.com/mnubo/smartobjects-net-client/compare/2.0.0...2.0.1) (2019-01-08)

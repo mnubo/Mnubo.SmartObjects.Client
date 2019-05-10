@@ -2,8 +2,8 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>Mnubo.SmartObjects.Client</id>
-        <version>2.0.1</version>
-        <authors>David Francoeur,David Masse,jenkins,Jenkins user,Jeremy Attali,Julien Letrouit,Manuel Vonthron,Mauro Arias</authors>
+        <version>2.0.2</version>
+        <authors>David Francoeur,David Masse,Goruti,jenkins,Jenkins user,Jeremy Attali,Julien Letrouit,Manuel Vonthron,Mauro Arias</authors>
         <owners>mnubo, inc.</owners>
         <licenseUrl>https://opensource.org/licenses/apache-2.0</licenseUrl>
         <projectUrl>https://github.com/mnubo/smartobjects-net-client</projectUrl>
@@ -11,7 +11,8 @@
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
         <description>mnubo SmartObjects .Net SDK client</description>
         <releaseNotes>
-            * Removes new line from the version header (previous version did not work on Windows)
+            * Activated exponential backoff config now retry on 502 and 503
+* More options to customize Exponential Backoff configuration
 	    </releaseNotes>
         <copyright>Copyright 2017</copyright>
         <dependencies>
