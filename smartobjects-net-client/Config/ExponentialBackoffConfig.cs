@@ -49,7 +49,7 @@ namespace Mnubo.SmartObjects.Client.Config
                     Console.WriteLine("Retrying in " + calculatedWaitDuration.TotalMilliseconds + "ms.");
                 };
             internal static Func<System.Net.Http.HttpResponseMessage, Boolean> DefaultRetryPredicate =
-                r => r.StatusCode == HttpStatusCode.ServiceUnavailable;
+                r => r.StatusCode == HttpStatusCode.ServiceUnavailable || r.StatusCode == HttpStatusCode.BadGateway;
             private Random r = new Random();
 
             private RetryPolicy<HttpResponseMessage> _policy;
