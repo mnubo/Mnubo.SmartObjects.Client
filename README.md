@@ -600,6 +600,18 @@ client.Model.SandboxOps.OwnerAttributesOps.DeployAsync("owner_key");
 More information available here: https://smartobjects.mnubo.com/documentation/api_modeler.html
 
 
+Exponential backoff
+-------------------
+
+As you may have noticed, the example at the top shows how to create a client and use an
+exponential backoff configuration.
+
+By default (if you do not use the example above), the exponential backoff is off. Using the
+configuration builder, you can turn it on and fine tune *what* to do on each retry (useful
+for logging) and *when* to retry.
+
+See the different options available here: [smartobjects-net-client/Config/ExponentialBackoffConfig.cs](./smartobjects-net-client/Config/ExponentialBackoffConfig.cs)
+
 References
 ==========
 
