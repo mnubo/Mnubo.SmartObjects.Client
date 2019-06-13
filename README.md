@@ -612,6 +612,20 @@ for logging) and *when* to retry.
 
 See the different options available here: [smartobjects-net-client/Config/ExponentialBackoffConfig.cs](./smartobjects-net-client/Config/ExponentialBackoffConfig.cs)
 
+Development
+===========
+
+With Visual Studio code, you can use the development container extension. This will open
+the editor in a container that has all the requirement while leaving your workstation
+untouched.
+
+From the editor, you can then, open a terminal and do the following to run the tests:
+```bash
+root@4d7a461e5fbc:/workspaces/smartobjects-net-client# source script/test-setup.sh YOUR_KEY YOUR_SECRET
+root@4d7a461e5fbc:/workspaces/smartobjects-net-client# ./build.sh # compile and run tests
+```
+
+
 References
 ==========
 

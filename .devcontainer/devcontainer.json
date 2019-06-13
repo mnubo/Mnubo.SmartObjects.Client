@@ -1,0 +1,7 @@
+{
+	"name": ".NET SmartObjects client",
+	"dockerFile": "Dockerfile",
+	"extensions": [
+		"ms-vscode.csharp"
+	]
+}
