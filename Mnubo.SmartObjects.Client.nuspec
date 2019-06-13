@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>Mnubo.SmartObjects.Client</id>
-        <version>2.0.2</version>
+        <version>2.1.0</version>
         <authors>David Francoeur,David Masse,Goruti,jenkins,Jenkins user,Jeremy Attali,Julien Letrouit,Manuel Vonthron,Mauro Arias</authors>
         <owners>mnubo, inc.</owners>
         <licenseUrl>https://opensource.org/licenses/apache-2.0</licenseUrl>
@@ -11,8 +11,7 @@
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
         <description>mnubo SmartObjects .Net SDK client</description>
         <releaseNotes>
-            * Activated exponential backoff config now retry on 502 and 503
-* More options to customize Exponential Backoff configuration
+            * Support for new model operations: AddRelation / RemoveRelation 
 	    </releaseNotes>
         <copyright>Copyright 2017</copyright>
         <dependencies>
