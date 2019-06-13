@@ -278,6 +278,34 @@ namespace Mnubo.SmartObjects.Client
 
         /// <see cref="Mnubo.SmartObjects.Client.SandboxTypeOps{A}.Delete" />
         Task DeleteAsync(string key);
+
+        /// <summary>
+        /// Add a relation to the entity identified by `entityKey`.
+        ///
+        /// - Object Types => `entityKey` is an object attribute key
+        /// - Event Types => `entityKey` is a timeseries key
+        ///
+        /// </summary>
+        /// <param name="key">key identifier of the instance of type A</param>
+        /// <param name="entityKey">entityKey identifier of the instance to add a relation to</param>
+        void AddRelation(string key, string entityKey);
+
+        /// <see cref="Mnubo.SmartObjects.Client.SandboxTypeOps{A}.AddRelation" />
+        Task AddRelationAsync(string key, string entityKey);
+
+        /// <summary>
+        /// Remove a relation to the entity identified by `entityKey`.
+        ///
+        /// - Object Types => `entityKey` is an object attribute key
+        /// - Event Types => `entityKey` is a timeseries key
+        ///
+        /// </summary>
+        /// <param name="key">key identifier of the instance of type A</param>
+        /// <param name="entityKey">entityKey identifier of the instance to remove a relation to</param>
+        void RemoveRelation(string key, string entityKey);
+
+        /// <see cref="Mnubo.SmartObjects.Client.SandboxTypeOps{A}.RemoveRelation" />
+        Task RemoveRelationAsync(string key, string entityKey);
     }
 
     /// <summary>

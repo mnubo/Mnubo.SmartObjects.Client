@@ -530,6 +530,10 @@ client.Model.SandboxOps.EventTypesOps.CreateOne(new EventType(
 client.Model.SandboxOps.EventTypesOps.Update(key, new EventType(
     key, "new desc", "unscheduled", new List<string>()
 ));
+client.Model.SandboxOps.EventTypesOps.AddRelation("event_type_key", "timeseries_key");
+client.Model.SandboxOps.EventTypesOps.RemoveRelation("event_type_key", "timeseries_key");
+client.Model.SandboxOps.EventTypesOps.AddRelationAsync("event_type_key", "timeseries_key");
+client.Model.SandboxOps.EventTypesOps.RemoveRelationAsync("event_type_key", "timeseries_key");
 client.Model.SandboxOps.EventTypesOps.Delete(key);
 
 client.Model.SandboxOps.EventTypesOps.CreateOneAsync(new EventType(
@@ -547,6 +551,10 @@ client.Model.SandboxOps.ObjectTypesOps.CreateOne(new ObjectType(
 client.Model.SandboxOps.ObjectTypesOps.Update(key, new ObjectType(
     key, "new desc", new List<string>()
 ));
+client.Model.SandboxOps.ObjectTypesOps.AddRelation("object_type_key", "object_attribute_key");
+client.Model.SandboxOps.ObjectTypesOps.RemoveRelation("object_type_key", "object_attribute_key");
+client.Model.SandboxOps.ObjectTypesOps.AddRelationAsync("object_type_key", "object_attribute_key");
+client.Model.SandboxOps.ObjectTypesOps.RemoveRelationAsync("object_type_key", "object_attribute_key");
 client.Model.SandboxOps.ObjectTypesOps.Delete(key);
 
 client.Model.SandboxOps.ObjectTypesOps.CreateOneAsync(new ObjectType(

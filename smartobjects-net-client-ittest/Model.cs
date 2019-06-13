@@ -56,6 +56,8 @@ namespace Mnubo.SmartObjects.Client.ITTest
             client.Model.SandboxOps.EventTypesOps.Update(key, new EventType(
                 key, "new desc", "unscheduled", new List<string>()
             ));
+            client.Model.SandboxOps.EventTypesOps.AddRelation("event_type1", "ts_text_attribute");
+            client.Model.SandboxOps.EventTypesOps.RemoveRelation("event_type1", "ts_text_attribute");
 
             client.Model.SandboxOps.ObjectTypesOps.CreateOne(new ObjectType(
                 key, "", new List<string>()
@@ -63,6 +65,9 @@ namespace Mnubo.SmartObjects.Client.ITTest
             client.Model.SandboxOps.ObjectTypesOps.Update(key, new ObjectType(
                 key, "new desc", new List<string>()
             ));
+            client.Model.SandboxOps.ObjectTypesOps.AddRelation("cat_detector", "object_text_attribute");
+            client.Model.SandboxOps.ObjectTypesOps.RemoveRelation("cat_detector", "object_text_attribute");
+
 
             string tsKey = key + "-ts";
             client.Model.SandboxOps.TimeseriesOps.CreateOne(new Timeseries(
