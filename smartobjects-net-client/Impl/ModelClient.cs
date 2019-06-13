@@ -119,11 +119,13 @@ namespace Mnubo.SmartObjects.Client.Impl
             public SandboxEntityOps<Timeseries> TimeseriesOps { get; }
             public ResetOps ResetOps { get; }
             internal SandboxOnlyOpsImpl(HttpClient client) {
-                this.EventTypesOps = new SandboxTypeOpsImpl<EventType>(client, "/eventTypes", new EventTypeSerializer());
-                this.ObjectTypesOps = new SandboxTypeOpsImpl<ObjectType>(client, "/objectTypes", new ObjectTypeSerializer());
-                this.ObjectAttributesOps = new SandboxEntityOpsImpl<ObjectAttribute>(client, "/objectAttributes", new ObjectAttributeSerializer());
+                const string objectAttributesPath = "/objectAttributes";
+                const string timeseriesPath = "/timeseries";
+                this.EventTypesOps = new SandboxTypeOpsImpl<EventType>(client, "/eventTypes", timeseriesPath, new EventTypeSerializer());
+                this.ObjectTypesOps = new SandboxTypeOpsImpl<ObjectType>(client, "/objectTypes", objectAttributesPath, new ObjectTypeSerializer());
+                this.ObjectAttributesOps = new SandboxEntityOpsImpl<ObjectAttribute>(client, objectAttributesPath, new ObjectAttributeSerializer());
                 this.OwnerAttributesOps = new SandboxEntityOpsImpl<OwnerAttribute>(client, "/ownerAttributes", new OwnerAttributeSerializer());
-                this.TimeseriesOps = new SandboxEntityOpsImpl<Timeseries>(client, "/timeseries", new TimeseriesSerializer());
+                this.TimeseriesOps = new SandboxEntityOpsImpl<Timeseries>(client, timeseriesPath, new TimeseriesSerializer());
                 this.ResetOps = new ResetOpsImpl(client);
             }
         };
@@ -132,13 +134,29 @@ namespace Mnubo.SmartObjects.Client.Impl
         {
             HttpClient client;
             string path;
+            string entityPath;
             Serializer<A> serializer;
 
-            internal SandboxTypeOpsImpl(HttpClient client, string path, Serializer<A> serializer) {
+            internal SandboxTypeOpsImpl(HttpClient client, string path,  string entityPath, Serializer<A> serializer) {
                 this.client = client;
                 this.path = path;
+                this.entityPath = entityPath;
                 this.serializer = serializer;
             }
+
+            public void AddRelation(string key, string entityKey)
+            {
+                ClientUtils.WaitTask(AddRelationAsync(key, entityKey));
+            }
+
+            public Task AddRelationAsync(string key, string entityKey)
+            {
+                return this.client.sendAsyncRequest(
+                    HttpMethod.Post,
+                    "model" + this.path + "/" + key + this.entityPath + "/" + entityKey
+                );
+            }
+
             public void Create(List<A> value)
             {
                 ClientUtils.WaitTask(CreateAsync(value));
@@ -173,6 +191,19 @@ namespace Mnubo.SmartObjects.Client.Impl
                 return this.client.sendAsyncRequest(
                     HttpMethod.Delete,
                     "model" + this.path + "/" + key
+                );
+            }
+
+            public void RemoveRelation(string key, string entityKey)
+            {
+                ClientUtils.WaitTask(RemoveRelationAsync(key, entityKey));
+            }
+
+            public Task RemoveRelationAsync(string key, string entityKey)
+            {
+                return this.client.sendAsyncRequest(
+                    HttpMethod.Delete,
+                    "model" + this.path + "/" + key + this.entityPath + "/" + entityKey
                 );
             }
 
