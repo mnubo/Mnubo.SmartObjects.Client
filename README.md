@@ -57,8 +57,6 @@ Use classes `Owner`, `SmartObject`, and `Event` to build the entities.
 
 This SDK supports both synchronous and asynchronous (non-blocking) calls. As seen in examples below, for async calls, we pass the entity instance to be updated by the callback function.
 
-Client token authentication is supported. User token authentication is not supported yet.
-
 
 Prerequisites
 =============
@@ -112,7 +110,10 @@ To get a client instance use the `ClientFactory`  Class.
     var client = ClientFactory.Create(config);
 ```
 
-You can also get a client instance if you have an access token. This method is not recommended in production as the token will eventually expire:
+You can generate an App Token from the web application and use it with this SDK.
+
+Note: App Tokens can have restricted access to specific APIs and can be disabled by an administrator at any given time. This means that some API provided in this SDK may not work correctly.
+
 ```c#
     // Use a token instead of a client/secret pair
     ClientConfig config = new ClientConfig.Builder() {
