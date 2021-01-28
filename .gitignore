@@ -11,3 +11,4 @@ packagesBuild/
 testrunner/
 TestResult.xml
 .vscode
+.idea/

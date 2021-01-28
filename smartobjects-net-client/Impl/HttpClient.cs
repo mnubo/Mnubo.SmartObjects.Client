@@ -33,7 +33,7 @@ namespace Mnubo.SmartObjects.Client.Impl
         private readonly CredentialHandler credentialHandler;
         private readonly System.Net.Http.HttpClientHandler handler;
         private readonly System.Net.Http.HttpClient client;
-        private readonly RetryPolicy<HttpResponseMessage> policy;
+        private readonly AsyncRetryPolicy<HttpResponseMessage> policy;
         private readonly string version;
 
         private static string loadVersion() {
