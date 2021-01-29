@@ -14,8 +14,8 @@
 <p>You can get started quickly with Package Manager or the .NET CLI:</p>
 <pre>
     <code>
-Install-Package Mnubo.SmartObjects.Client -Version 2.0.1 # Package Manager
-dotnet add package Mnubo.SmartObjects.Client --version 2.0.1 # .NET CLI
+Install-Package Mnubo.SmartObjects.Client -Version 3.0.0 # Package Manager
+dotnet add package Mnubo.SmartObjects.Client --version 3.0.0 # .NET CLI
     </code>
 </pre>
 
@@ -61,7 +61,7 @@ This SDK supports both synchronous and asynchronous (non-blocking) calls. As see
 Prerequisites
 =============
 
-- SDK requires .NET 4.5.1 or higher.
+- SDK requires .NET 5.0 or higher.
 - SDK has been built using nuget.
 
 

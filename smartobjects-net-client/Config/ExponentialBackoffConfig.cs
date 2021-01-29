@@ -14,7 +14,7 @@ namespace Mnubo.SmartObjects.Client.Config
         /// The policy to be used.
         /// Null if no retries are to be attempted.
         /// </summary>
-        RetryPolicy<HttpResponseMessage> Policy();
+        AsyncRetryPolicy<HttpResponseMessage> Policy();
     }
 
     /// <summary>
@@ -30,7 +30,7 @@ namespace Mnubo.SmartObjects.Client.Config
             /// <summary>
             /// See <see cref="IExponentialBackoffConfig.Policy" />
             /// </summary>
-            public RetryPolicy<HttpResponseMessage> Policy() {
+            public AsyncRetryPolicy<HttpResponseMessage> Policy() {
                 return null;
             }
         }
@@ -52,12 +52,12 @@ namespace Mnubo.SmartObjects.Client.Config
                 r => r.StatusCode == HttpStatusCode.ServiceUnavailable || r.StatusCode == HttpStatusCode.BadGateway;
             private Random r = new Random();
 
-            private RetryPolicy<HttpResponseMessage> _policy;
+            private AsyncRetryPolicy<HttpResponseMessage> _policy;
 
             /// <summary>
             /// See <see cref="IExponentialBackoffConfig.Policy" />
             /// </summary>
-            public RetryPolicy<HttpResponseMessage> Policy() {
+            public AsyncRetryPolicy<HttpResponseMessage> Policy() {
                 return this._policy;
             }
 

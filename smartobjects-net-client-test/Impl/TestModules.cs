@@ -20,7 +20,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
     {
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
-            StaticConfiguration.EnableRequestTracing = true;
+            // StaticConfiguration.EnableRequestTracing = true;
             container.Register<ICounter, Counter>().AsSingleton();
         }
     }
@@ -76,11 +76,11 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
     {
         public AuthenticationMockModule()
         {
-            Post["/oauth/token"] = x => {
+            Post("/oauth/token", x => {
                 var response = (Response)"{\"access_token\":\"thetoken\",\"token_type\":\"Bearer\",\"expires_in\":1000000,\"scope\":\"ALL\"}";
                 response.ContentType = "application/json";
                 return response;
-            };
+            });
         }
     }
 
@@ -91,12 +91,12 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
 
         public SucceedAPIsMockModule()
         {
-            Post[BasePath + "objects"] = x => {
+            Post(BasePath + "objects", x => {
                 TestUtils.AssertObjectEquals(TestUtils.CreateTestObject(), ObjectSerializer.DeserializeObject(NancyUtils.BodyAsString(this.Request)));
                 return 201;
-            };
+            });
 
-            Put[BasePath + "objects"] = x => {
+            Put(BasePath + "objects", x => {
                 List<SmartObject> objects = TestUtils.DeserializeObjects(NancyUtils.BodyAsString(this.Request));
                 TestUtils.AssertObjectsEqual(TestUtils.CreateObjects(objects.Count<SmartObject>()), objects);
 
@@ -107,21 +107,21 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                 }
 
                 return JsonConvert.SerializeObject(results);
-            };
+            });
 
-            Put[BasePath + "objects/{deviceId}"] = x => {
+            Put(BasePath + "objects/{deviceId}", x => {
                 TestUtils.AssertObjectEquals(TestUtils.CreateObjectUpdateAttribute(), ObjectSerializer.DeserializeObject(NancyUtils.BodyAsString(this.Request)));
                 Assert.AreEqual(TestUtils.DeviceId, (string)x.deviceId);
                 return 200;
-            };
+            });
 
-            Delete[BasePath + "objects/{deviceId}"] = x => {
+            Delete(BasePath + "objects/{deviceId}", x => {
 
                 Assert.AreEqual(TestUtils.DeviceId, (string)x.deviceId);
                 return 200;
-            };
+            });
 
-            Get[BasePath + "objects/exists/{deviceId}"] = x => {
+            Get(BasePath + "objects/exists/{deviceId}", x => {
                 var deviceId = (string)x.deviceId;
                 Assert.AreEqual(TestUtils.DeviceId, deviceId);
                 IDictionary<string, bool> result = new Dictionary<string, bool>()
@@ -129,14 +129,14 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                     {deviceId,true}
                 };
                 return JsonConvert.SerializeObject(result);
-            };
+            });
 
-            Post[BasePath + "owners"] = x => {
+            Post(BasePath + "owners", x => {
                 TestUtils.AssertOwnerEquals(TestUtils.CreateTestOwner(), OwnerSerializer.DeserializeOwner(NancyUtils.BodyAsString(this.Request)));
                 return 201;
-            };
+            });
 
-            Put[BasePath + "owners"] = x => {
+            Put(BasePath + "owners", x => {
                 List<Owner> owners =TestUtils.DeserializeOwners(NancyUtils.BodyAsString(this.Request));
                 TestUtils.AssertOwnersEqual(TestUtils.CreateOwners(owners.Count<Owner>()), owners);
 
@@ -147,15 +147,15 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                 }
 
                 return JsonConvert.SerializeObject(results);
-            };
+            });
 
-            Put[BasePath + "owners/{username}"] = x => {
+            Put(BasePath + "owners/{username}", x => {
                 TestUtils.AssertOwnerEquals(TestUtils.CreateOwnerUpdateAttribute(), OwnerSerializer.DeserializeOwner(NancyUtils.BodyAsString(this.Request)));
                 Assert.AreEqual(TestUtils.Username, (string)x.username);
                 return 200;
-            };
-
-            Put[BasePath + "owners/{username}/password"] = x => {
+            });
+        
+            Put(BasePath + "owners/{username}/password", x => {
                 Dictionary<string, string> body = JsonConvert.DeserializeObject<Dictionary<string, string>>(NancyUtils.BodyAsString(this.Request));
                 Assert.IsTrue(body.ContainsKey("x_password"));
                 String password = "";
@@ -163,27 +163,26 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                 Assert.AreEqual(TestUtils.Password, password);
                 Assert.AreEqual(TestUtils.Username, (string)x.username);
                 return 200;
-            };
+            });
 
-            Post[BasePath + "owners/{username}/objects/{deviceId}/claim"] = x => {
+            Post(BasePath + "owners/{username}/objects/{deviceId}/claim", x => {
                 Assert.AreEqual(TestUtils.DeviceId, (string)x.deviceId);
                 Assert.AreEqual(TestUtils.Username, (string)x.username);
                 return 200;
-            };
+            });
 
-            Post[BasePath + "owners/{username}/objects/{deviceId}/unclaim"] = x => {
+            Post(BasePath + "owners/{username}/objects/{deviceId}/unclaim", x => {
                 Assert.AreEqual(TestUtils.DeviceId, (string)x.deviceId);
                 Assert.AreEqual(TestUtils.Username, (string)x.username);
                 return 200;
-            };
+            });
 
-            Delete[BasePath + "owners/{username}"] = x => {
-
+            Delete(BasePath + "owners/{username}", x => {
                 Assert.AreEqual(TestUtils.Username, (string)x.username);
                 return 200;
-            };
+            });
 
-            Get[BasePath + "owners/exists/{username}"] = x => {
+            Get(BasePath + "owners/exists/{username}", x => {
                 string username = (string)x.username;
                 Assert.AreEqual(TestUtils.Username, username);
                 IDictionary<string, bool> result = new Dictionary<string, bool>()
@@ -191,35 +190,35 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                     {username,true}
                 };
                 return JsonConvert.SerializeObject(result);
-            };
+            });
 
-            Post[BasePath + "events"] = x => {
+            Post(BasePath + "events", x => {
                 bool reportResults = (bool)this.Request.Query["report_results"];
 
                 Assert.AreEqual(true, reportResults);
                 List<EventResult> results = TestUtils.EventsToSuccesfullResults(NancyUtils.BodyAsString(this.Request));
                 return JsonConvert.SerializeObject(results);
-            };
+            });
 
-            Get[BasePath + "events/exists/{eventId}"] = x => {
+            Get(BasePath + "events/exists/{eventId}", x => {
                 IDictionary<string, bool> result = new Dictionary<string, bool>()
                 {
                     {(string)x.eventId,true}
                 };
                 return JsonConvert.SerializeObject(result);
-            };
+            });
 
-            Get[BasePath + "search/datasets"] = x => {
+            Get(BasePath + "search/datasets", x => {
                 return JsonConvert.SerializeObject(TestUtils.CreateDatasets());
-            };
+            });
 
-            Post[BasePath + "search/basic"] = x => {
+            Post(BasePath + "search/basic", x => {
                 Assert.AreEqual(TestUtils.CreateQuery(), NancyUtils.BodyAsString(this.Request));
                 return TestUtils.CreateExpectedSearchResult();
-            };
+            });
 
             // test HttpClient itself
-            Post[BasePath + "compressed"] = x => {
+            Post(BasePath + "compressed", x => {
                 if (!NancyUtils.IsGzipCompressed(this.Request))
                 {
                     return FailedAPIsMockModule.badRequest();
@@ -249,9 +248,9 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                     }
                 };
                 return response;
-            };
+            });
 
-            Post[BasePath + "decompressed"] = x => {
+            Post(BasePath + "decompressed", x => {
                 if (NancyUtils.IsGzipCompressed(this.Request))
                 {
                     return FailedAPIsMockModule.badRequest();
@@ -264,11 +263,11 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                 }
 
                 return TestJsonString;
-            };
+            });
 
-            Post[BasePath + "tokencheck"] = x => {
+            Post(BasePath + "tokencheck", x => {
                 return this.Request.Headers.Authorization;
-            };
+            });
         }
     }
 
@@ -280,7 +279,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         public BatchAPIsMockModule()
         {
 
-            Put[BasePath + "owners"] = x => {
+            Put(BasePath + "owners", x => {
                 List<Owner> owners = TestUtils.DeserializeOwners(NancyUtils.BodyAsString(this.Request));
                 CollectionAssert.AreEqual(TestUtils.CreateOwners(owners.Count<Owner>()), owners);
 
@@ -303,9 +302,9 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                 response.StatusCode = HttpStatusCode.MultipleStatus;
                 response.ContentType = "application/json";
                 return response;
-            };
+            });
 
-            Post[BasePath + "owners/exists"] = x => {
+            Post(BasePath + "owners/exists", x => {
                 List<string> usernames = JsonConvert.DeserializeObject<List<string>>(NancyUtils.BodyAsString(this.Request));
 
                 List<Dictionary<string, bool>> results = new List<Dictionary<string, bool>>();
@@ -321,9 +320,9 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                 }
 
                 return JsonConvert.SerializeObject(results);
-            };
+            });
 
-            Get[BasePath + "owners/exists/{username}"] = x => {
+            Get(BasePath + "owners/exists/{username}", x => {
                 var username = (string)x.username;
                 Assert.AreEqual(TestUtils.Username, username);
                 IDictionary<string, bool> result = new Dictionary<string, bool>()
@@ -331,9 +330,9 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                     {username,false}
                 };
                 return JsonConvert.SerializeObject(result);
-            };
+            });
 
-            Put[BasePath + "objects"] = x => {
+            Put(BasePath + "objects", x => {
                 List<SmartObject> objects = TestUtils.DeserializeObjects(NancyUtils.BodyAsString(this.Request));
                 CollectionAssert.AreEqual(TestUtils.CreateObjects(objects.Count<SmartObject>()), objects);
 
@@ -356,9 +355,9 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                 response.StatusCode = HttpStatusCode.MultipleStatus;
                 response.ContentType = "application/json";
                 return response;
-            };
+            });
 
-            Post[BasePath + "objects/exists"] = x => {
+            Post(BasePath + "objects/exists", x => {
                 List<string> deviceIds = JsonConvert.DeserializeObject<List<string>>(NancyUtils.BodyAsString(this.Request));
 
                 List<Dictionary<string, bool>> results = new List<Dictionary<string, bool>>();
@@ -374,9 +373,9 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                 }
 
                 return JsonConvert.SerializeObject(results);
-            };
+            });
 
-            Get[BasePath + "objects/exists/{deviceId}"] = x => {
+            Get(BasePath + "objects/exists/{deviceId}", x => {
                 string deviceId = (string)x.deviceId;
                 Assert.AreEqual(TestUtils.DeviceId, deviceId);
                 IDictionary<string, bool> result = new Dictionary<string, bool>()
@@ -384,9 +383,9 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                     {deviceId,false}
                 };
                 return JsonConvert.SerializeObject(result);
-            };
+            });
 
-            Post[BasePath + "events"] = x =>
+            Post(BasePath + "events", x =>
             {
                 List<EventResult> results = new List<EventResult>();
                 int i = 0;
@@ -434,9 +433,9 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                 response.StatusCode = HttpStatusCode.MultipleStatus;
                 response.ContentType = "application/json";
                 return response;
-            };
+            });
 
-            Post[BasePath + "events/exists"] = x => {
+            Post(BasePath + "events/exists", x => {
                 List<Guid> ids = JsonConvert.DeserializeObject<List<Guid>>(NancyUtils.BodyAsString(this.Request));
 
                 List<Dictionary<Guid, bool>> results = new List<Dictionary<Guid, bool>>();
@@ -452,15 +451,15 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                 }
 
                 return JsonConvert.SerializeObject(results);
-            };
+            });
 
-            Get[BasePath + "events/exists/{eventId}"] = x => {
+            Get(BasePath + "events/exists/{eventId}", x => {
                 IDictionary<string, bool> result = new Dictionary<string, bool>()
                 {
                     {(string)x.eventId,false}
                 };
                 return JsonConvert.SerializeObject(result);
-            };
+            });
         }
     }
 
@@ -470,86 +469,86 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
 
         public FailedAPIsMockModule()
         {
-            Post[BasePath + "owners"] = x => {
+            Post(BasePath + "owners", x => {
                 return badRequest();
-            };
+            });
 
-            Put[BasePath + "owners"] = x => {
+            Put(BasePath + "owners", x => {
                 return badRequest();
-            };
+            });
 
-            Put[BasePath + "owners/{username}"] = x => {
+            Put(BasePath + "owners/{username}", x => {
                 return badRequest();
-            };
+            });
 
-            Put[BasePath + "owners/{username}/password"] = x => {
+            Put(BasePath + "owners/{username}/password", x => {
                 return badRequest();
-            };
+            });
 
-            Post[BasePath + "owners/{username}/objects/{deviceId}/claim"] = x => {
+            Post(BasePath + "owners/{username}/objects/{deviceId}/claim", x => {
                 return badRequest();
-            };
+            });
 
-            Post[BasePath + "owners/{username}/objects/{deviceId}/unclaim"] = x => {
+            Post(BasePath + "owners/{username}/objects/{deviceId}/unclaim", x => {
                 return badRequest();
-            };
+            });
 
-            Delete[BasePath + "owners/{username}"] = x => {
+            Delete(BasePath + "owners/{username}", x => {
                 return badRequest();
-            };
+            });
 
-            Post[BasePath + "owners/exists"] = x => {
+            Post(BasePath + "owners/exists", x => {
                 return badRequest();
-            };
+            });
 
-            Get[BasePath + "owners/exists/{username}"] = x => {
+            Get(BasePath + "owners/exists/{username}", x => {
                 return badRequest();
-            };
+            });
 
-            Post[BasePath + "objects"] = x => {
+            Post(BasePath + "objects", x => {
                 return badRequest();
-            };
+            });
 
-            Put[BasePath + "objects"] = x => {
+            Put(BasePath + "objects", x => {
                 return badRequest();
-            };
+            });
 
-            Put[BasePath + "objects/{deviceId}"] = x => {
+            Put(BasePath + "objects/{deviceId}", x => {
                 return badRequest();
-            };
+            });
 
-            Delete[BasePath + "objects/{deviceId}"] = x => {
+            Delete(BasePath + "objects/{deviceId}", x => {
                 return badRequest();
-            };
+            });
 
-            Post[BasePath + "objects/exists"] = x => {
+            Post(BasePath + "objects/exists", x => {
                 return badRequest();
-            };
+            });
 
-            Get[BasePath + "objects/exists/{deviceId}"] = x => {
+            Get(BasePath + "objects/exists/{deviceId}", x => {
                 return badRequest();
-            };
+            });
 
-            Post[BasePath + "events"] = x =>
+            Post(BasePath + "events", x =>
             {
                 return badRequest();
-            };
+            });
 
-            Post[BasePath + "events/exists"] = x => {
+            Post(BasePath + "events/exists", x => {
                 return badRequest();
-            };
+            });
 
-            Get[BasePath + "events/exists/{id}"] = x => {
+            Get(BasePath + "events/exists/{id}", x => {
                 return badRequest();
-            };
+            });
 
-            Get[BasePath + "search/datasets"] = x => {
+            Get(BasePath + "search/datasets", x => {
                 return badRequest();
-            };
+            });
 
-            Post[BasePath + "search/basic"] = x => {
+            Post(BasePath + "search/basic", x => {
                 return badRequest();
-            };
+            });
         }
 
         public static Response badRequest()
@@ -567,32 +566,32 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
 
         public ServiceUnavailableMockModule(ICounter counter)
         {
-            Post[BasePath + "first"] = x => {
+            Post(BasePath + "first", x => {
                 counter.Bump(1);
                 if (counter.Count(1) > 1) {
                     return success("first");
                 } else {
                     return serviceUnavailable();
                 }
-            };
+            });
 
-            Post[BasePath + "second"] = x => {
+            Post(BasePath + "second", x => {
                 counter.Bump(2);
                 if (counter.Count(2) > 2) {
                     return success("second");
                 } else {
                     return serviceUnavailable();
                 }
-            };
+            });
 
-            Post[BasePath + "third"] = x => {
+            Post(BasePath + "third", x => {
                 counter.Bump(3);
                 if (counter.Count(3) > 3) {
                     return success("third");
                 } else {
                     return serviceUnavailable();
                 }
-            };
+            });
         }
 
         public static Response serviceUnavailable()
