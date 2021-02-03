@@ -1,3 +1,10 @@
+<a name='3.1.0'></a>
+
+# [3.1.0](https://github.com/mnubo/smartobjects-net-client/compare/3.0.0...3.1.0) (2021-02-03)
+
+
+* AIOT-201: Use new aspentech.ai url's in the configuration
+
 <a name='3.0.0'></a>
 
 # [3.0.0](https://github.com/mnubo/smartobjects-net-client/compare/2.1.0...3.0.0) (2021-02-03)
