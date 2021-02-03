@@ -62,35 +62,6 @@ Prerequisites
 =============
 
 - SDK requires .NET 5.0 or higher.
-- SDK has been built using nuget.
-
-
-Installation & Configuration
-============================
-
-Include the mnubo client in your .NET application using Nuget (Coming Soon).
-
-Development
-===========
-
-## Linux
-
-```bash
-# you need to install mono & nuget
-# to install packages
-nuget restore smartobjects-net-client.sln
-# to run tests
-nuget install NUnit.Runners -Version 3.5.0 -OutputDirectory testrunner
-xbuild /p:Configuration=Release smartobjects-net-client.sln
-mono ./testrunner/NUnit.ConsoleRunner.*/tools/nunit3-console.exe ./smartobjects-net-client-test/bin/Release/Mnubo.SmartObjects.Client.Test.dll
-```
-
-
-Download source code
----------------------
-
-Download the source code and include it in your .NET Application project.
-
 
 Usage
 =====
@@ -631,15 +602,11 @@ untouched.
 From the editor, you can then, open a terminal and do the following to run the tests:
 ```bash
 root@4d7a461e5fbc:/workspaces/smartobjects-net-client# source script/test-setup.sh YOUR_KEY YOUR_SECRET
-root@4d7a461e5fbc:/workspaces/smartobjects-net-client# ./build.sh # compile and run tests
+root@4d7a461e5fbc:/workspaces/smartobjects-net-client# dotnet test
 ```
 
 
 References
 ==========
 
-[nuget](https://www.nuget.org/)
-
 [mnubo documentation](https://smartobjects.mnubo.com/documentation/)
-
-[Microsoft .NET](https://www.microsoft.com/net/default.aspx)

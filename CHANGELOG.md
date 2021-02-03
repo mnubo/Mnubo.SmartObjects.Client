@@ -1,3 +1,10 @@
+<a name='3.0.0'></a>
+
+# [3.0.0](https://github.com/mnubo/smartobjects-net-client/compare/2.1.0...3.0.0) (2021-02-03)
+
+
+* Migrate to .NET 5.0
+
 <a name='2.1.0'></a>
 
 # [2.1.0](https://github.com/mnubo/smartobjects-net-client/compare/2.0.2...2.1.0) (2019-06-13)
