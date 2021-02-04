@@ -17,12 +17,12 @@ namespace Mnubo.SmartObjects.Client.Config
             /// <summary>
             /// Using this environment will target the sandbox
             /// </summary>
-            public const string Sandbox = "rest.sandbox.mnubo.com";
+            public const string Sandbox = "aiot-sandbox.aspentech.ai";
 
             /// <summary>
             /// Using this environment will target the production
             /// </summary>
-            public const string Production = "rest.api.mnubo.com";
+            public const string Production = "aiot-prod.aspentech.ai";
         }
 
         /// <summary>
