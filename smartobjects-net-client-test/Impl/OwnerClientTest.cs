@@ -946,21 +946,21 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         //Spawn a client which respond successfully to all events
         internal void withSuccessfulResults(Action<IOwnerClient> test)
         {
-            var httpClient = new HttpClient(config, "http", "localhost", port, SucceedAPIsMockModule.BasePath);
+            var httpClient = new HttpClient(config, "http", "localhost", port, "/succeed");
             test(new OwnerClient(httpClient));
         }
 
         //Spawn a client which fail all request
         internal void withFailedResults(Action<IOwnerClient> test)
         {
-            var httpClient = new HttpClient(config, "http", "localhost", port, FailedAPIsMockModule.BasePath);
+            var httpClient = new HttpClient(config, "http", "localhost", port, "/failed");
             test(new OwnerClient(httpClient));
         }
 
         //Spawn a client which fail respond with a mix of failed and successful events
         internal void withSuccessfulAndFailedResults(Action<IOwnerClient> test)
         {
-            var httpClient = new HttpClient(config, "http", "localhost", port, BatchAPIsMockModule.BasePath);
+            var httpClient = new HttpClient(config, "http", "localhost", port, "/batch");
             test(new OwnerClient(httpClient));
         }
         #endregion

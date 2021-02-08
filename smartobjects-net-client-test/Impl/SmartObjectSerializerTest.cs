@@ -6,7 +6,7 @@ using Mnubo.SmartObjects.Client.Impl;
 using System.Collections.Immutable;
 using Mnubo.SmartObjects.Client.Test.Impl;
 
-namespace Con.Mnubo.Dotnetsdktest.Test.Impl
+namespace Mnubo.SmartObjects.Client.Test.Impl
 {
     [TestFixture()]
     public class SmartObjectSerializerTest

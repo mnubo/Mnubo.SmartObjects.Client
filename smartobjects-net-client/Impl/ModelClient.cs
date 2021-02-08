@@ -34,9 +34,9 @@ namespace Mnubo.SmartObjects.Client.Impl
         /// </summary>
         public async Task<Model> ExportAsync()
         {
-            var asyncResult = await client.sendAsyncRequestWithResult(
+            var asyncResult = await client.SendAsyncRequestWithResult(
                 HttpMethod.Get,
-                "model/export"
+                "/api/v3/model/export"
             );
             return ModelDeserializer.DeserializeModel(asyncResult);
         }
@@ -48,9 +48,9 @@ namespace Mnubo.SmartObjects.Client.Impl
 
         public async Task<List<EventType>> GetEventTypesAsync()
         {
-            var asyncResult = await client.sendAsyncRequestWithResult(
+            var asyncResult = await client.SendAsyncRequestWithResult(
                 HttpMethod.Get,
-                "model/eventTypes"
+                "/api/v3/model/eventTypes"
             );
             return new EventTypeSerializer().Deserialize(asyncResult);
         }
@@ -62,9 +62,9 @@ namespace Mnubo.SmartObjects.Client.Impl
 
         public async Task<List<ObjectAttribute>> GetObjectAttributesAsync()
         {
-            var asyncResult = await client.sendAsyncRequestWithResult(
+            var asyncResult = await client.SendAsyncRequestWithResult(
                 HttpMethod.Get,
-                "model/objectAttributes"
+                "/api/v3/model/objectAttributes"
             );
             return new ObjectAttributeSerializer().Deserialize(asyncResult);
         }
@@ -76,9 +76,9 @@ namespace Mnubo.SmartObjects.Client.Impl
 
         public async Task<List<ObjectType>> GetObjectTypesAsync()
         {
-            var asyncResult = await client.sendAsyncRequestWithResult(
+            var asyncResult = await client.SendAsyncRequestWithResult(
                 HttpMethod.Get,
-                "model/objectTypes"
+                "/api/v3/model/objectTypes"
             );
             return new ObjectTypeSerializer().Deserialize(asyncResult);
         }
@@ -90,9 +90,9 @@ namespace Mnubo.SmartObjects.Client.Impl
 
         public async Task<List<OwnerAttribute>> GetOwnerAttributesAsync()
         {
-            var asyncResult = await client.sendAsyncRequestWithResult(
+            var asyncResult = await client.SendAsyncRequestWithResult(
                 HttpMethod.Get,
-                "model/ownerAttributes"
+                "/api/v3/model/ownerAttributes"
             );
             return new OwnerAttributeSerializer().Deserialize(asyncResult);
         }
@@ -104,9 +104,9 @@ namespace Mnubo.SmartObjects.Client.Impl
 
         public async Task<List<Timeseries>> GetTimeseriesAsync()
         {
-            var asyncResult = await client.sendAsyncRequestWithResult(
+            var asyncResult = await client.SendAsyncRequestWithResult(
                 HttpMethod.Get,
-                "model/timeseries"
+                "/api/v3/model/timeseries"
             );
             return new TimeseriesSerializer().Deserialize(asyncResult);
         }
@@ -151,9 +151,9 @@ namespace Mnubo.SmartObjects.Client.Impl
 
             public Task AddRelationAsync(string key, string entityKey)
             {
-                return this.client.sendAsyncRequest(
+                return this.client.SendAsyncRequest(
                     HttpMethod.Post,
-                    "model" + this.path + "/" + key + this.entityPath + "/" + entityKey
+                    "/api/v3/model" + this.path + "/" + key + this.entityPath + "/" + entityKey
                 );
             }
 
@@ -164,9 +164,9 @@ namespace Mnubo.SmartObjects.Client.Impl
 
             public Task CreateAsync(List<A> value)
             {
-                return this.client.sendAsyncRequest(
+                return this.client.SendAsyncRequest(
                     HttpMethod.Post,
-                    "model" + this.path,
+                    "/api/v3/model" + this.path,
                     this.serializer.Serialize(value)
                 );
             }
@@ -188,9 +188,9 @@ namespace Mnubo.SmartObjects.Client.Impl
 
             public Task DeleteAsync(string key)
             {
-                return this.client.sendAsyncRequest(
+                return this.client.SendAsyncRequest(
                     HttpMethod.Delete,
-                    "model" + this.path + "/" + key
+                    "/api/v3/model" + this.path + "/" + key
                 );
             }
 
@@ -201,9 +201,9 @@ namespace Mnubo.SmartObjects.Client.Impl
 
             public Task RemoveRelationAsync(string key, string entityKey)
             {
-                return this.client.sendAsyncRequest(
+                return this.client.SendAsyncRequest(
                     HttpMethod.Delete,
-                    "model" + this.path + "/" + key + this.entityPath + "/" + entityKey
+                    "/api/v3/model" + this.path + "/" + key + this.entityPath + "/" + entityKey
                 );
             }
 
@@ -214,9 +214,9 @@ namespace Mnubo.SmartObjects.Client.Impl
 
             public Task UpdateAsync(string key, A update)
             {
-                return this.client.sendAsyncRequest(
+                return this.client.SendAsyncRequest(
                     HttpMethod.Put,
-                    "model" + this.path + "/" + key,
+                    "/api/v3/model" + this.path + "/" + key,
                     this.serializer.Serialize(update)
                 );
             }
@@ -241,9 +241,9 @@ namespace Mnubo.SmartObjects.Client.Impl
 
             public Task CreateAsync(List<A> value)
             {
-                return this.client.sendAsyncRequest(
+                return this.client.SendAsyncRequest(
                     HttpMethod.Post,
-                    "model" + this.path,
+                    "/api/v3/model" + this.path,
                     this.serializer.Serialize(value)
                 );
             }
@@ -265,9 +265,9 @@ namespace Mnubo.SmartObjects.Client.Impl
 
             public async Task<string> GenerateDeployCodeAsync(string key)
             {
-                var json = await client.sendAsyncRequestWithResult(
+                var json = await client.SendAsyncRequestWithResult(
                     HttpMethod.Post,
-                    "model" + this.path + "/" + key + "/deploy"
+                    "/api/v3/model" + this.path + "/" + key + "/deploy"
                 );
                 var res = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
                 if (!res.ContainsKey("code"))
@@ -282,9 +282,9 @@ namespace Mnubo.SmartObjects.Client.Impl
 
             public async Task ApplyDeployCodeAsync(string key, string code)
             {
-                await client.sendAsyncRequest(
+                await client.SendAsyncRequest(
                     HttpMethod.Post,
-                    "model" + this.path + "/" + key + "/deploy/" + code
+                    "/api/v3/model" + this.path + "/" + key + "/deploy/" + code
                 );
             }
 
@@ -306,9 +306,9 @@ namespace Mnubo.SmartObjects.Client.Impl
 
             public Task UpdateAsync(string key, UpdateEntity update)
             {
-                return this.client.sendAsyncRequest(
+                return this.client.SendAsyncRequest(
                     HttpMethod.Put,
-                    "model" + this.path + "/" + key,
+                    "/api/v3/model" + this.path + "/" + key,
                     this.ueSerializer.Serialize(update)
                 );
             }
@@ -324,9 +324,9 @@ namespace Mnubo.SmartObjects.Client.Impl
             }
 
             public async Task<string> GenerateResetCodeAsync(){
-                var json = await client.sendAsyncRequestWithResult(
+                var json = await client.SendAsyncRequestWithResult(
                     HttpMethod.Post,
-                    "model/reset"
+                    "/api/v3/model/reset"
                 );
                 var res = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
                 if (!res.ContainsKey("code"))
@@ -340,9 +340,9 @@ namespace Mnubo.SmartObjects.Client.Impl
 
             public async Task ApplyResetCodeAsync(string code) {
 
-                await client.sendAsyncRequest(
+                await client.SendAsyncRequest(
                     HttpMethod.Post,
-                    "model/reset/" + code
+                    "/api/v3/model/reset/" + code
                 );
             }
 

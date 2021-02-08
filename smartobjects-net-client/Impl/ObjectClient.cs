@@ -98,9 +98,9 @@ namespace Mnubo.SmartObjects.Client.Impl
                 throw new ArgumentException("x_object_type cannot be blank.");
             }
 
-            await client.sendAsyncRequest(
+            await client.SendAsyncRequest(
                 HttpMethod.Post, 
-                "objects",
+                "/api/v3/objects",
                 ObjectSerializer.SerializeObject(smartObject));
         }
 
@@ -119,9 +119,9 @@ namespace Mnubo.SmartObjects.Client.Impl
                 throw new ArgumentException("x_device_id cannot be blank.");
             }
 
-            await client.sendAsyncRequest(
+            await client.SendAsyncRequest(
                 HttpMethod.Put,
-                string.Format("objects/{0}", deviceId),
+                string.Format("/api/v3/objects/{0}", deviceId),
                 ObjectSerializer.SerializeObject(smartObject));
         }
 
@@ -135,9 +135,9 @@ namespace Mnubo.SmartObjects.Client.Impl
                 throw new ArgumentException("x_device_id cannot be blank.");
             }
 
-            await client.sendAsyncRequest(
+            await client.SendAsyncRequest(
                 HttpMethod.Delete,
-                string.Format("objects/{0}", deviceId));
+                string.Format("/api/v3/objects/{0}", deviceId));
         }
 
         /// <summary>
@@ -162,9 +162,9 @@ namespace Mnubo.SmartObjects.Client.Impl
                 }
             }
 
-            var asynResult = await client.sendAsyncRequestWithResult(
+            var asynResult = await client.SendAsyncRequestWithResult(
                 HttpMethod.Put,
-                "objects",
+                "/api/v3/objects",
                 ObjectSerializer.SerializeObjects(objects));
 
             return JsonConvert.DeserializeObject<IEnumerable<Result>>(asynResult);
@@ -180,9 +180,9 @@ namespace Mnubo.SmartObjects.Client.Impl
                 throw new ArgumentException("deviceId cannot be blank.");
             }
 
-            var asynResultAsStr = await client.sendAsyncRequestWithResult(
+            var asynResultAsStr = await client.SendAsyncRequestWithResult(
                 HttpMethod.Get,
-                string.Format("objects/exists/{0}", deviceId),
+                string.Format("/api/v3/objects/exists/{0}", deviceId),
                 null);
 
             var asynResult = JsonConvert.DeserializeObject<IDictionary<string, bool>>(asynResultAsStr);
@@ -200,9 +200,9 @@ namespace Mnubo.SmartObjects.Client.Impl
                 throw new ArgumentException("List of deviceIds cannot be null.");
             }
 
-            var asynResultAsStr = await client.sendAsyncRequestWithResult(
+            var asynResultAsStr = await client.SendAsyncRequestWithResult(
                 HttpMethod.Post,
-                "objects/exists",
+                "/api/v3/objects/exists",
                 JsonConvert.SerializeObject(deviceIds));
 
             return ExistResultsDeserializer.DeserializeExistResults(asynResultAsStr);

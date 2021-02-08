@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mnubo.SmartObjects.Client.Tests.Common", "Mnubo.SmartObjects.Client.Tests.Common\Mnubo.SmartObjects.Client.Tests.Common.csproj", "{E417B542-6FA8-4B4F-94BD-F8CC27761AA8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{13302EE4-2478-4616-94C8-1D6F1A05DBBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13302EE4-2478-4616-94C8-1D6F1A05DBBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13302EE4-2478-4616-94C8-1D6F1A05DBBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E417B542-6FA8-4B4F-94BD-F8CC27761AA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E417B542-6FA8-4B4F-94BD-F8CC27761AA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E417B542-6FA8-4B4F-94BD-F8CC27761AA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E417B542-6FA8-4B4F-94BD-F8CC27761AA8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

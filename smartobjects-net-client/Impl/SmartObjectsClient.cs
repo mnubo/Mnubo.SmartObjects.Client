@@ -1,30 +1,39 @@
 ﻿using Mnubo.SmartObjects.Client.Config;
+using Mnubo.SmartObjects.Client.Datalake;
 
 namespace Mnubo.SmartObjects.Client.Impl
 {
     internal class SmartObjectsClient : ISmartObjectsClient
     {
-        private HttpClient client;
+        private readonly HttpClient _client;
+        
         public IObjectClient Objects { get; }
+        
         public IOwnerClient Owners { get; }
+        
         public IEventClient Events { get; }
+        
         public IRestitutionClient Restitution { get; }
+        
         public IModelClient Model { get; }
+        
+        public IDatalakeClient Datalake { get; }
 
         internal SmartObjectsClient(ClientConfig config)
         {
-            client = new HttpClient(config);
+            this._client = new HttpClient(config);
 
-            Objects = new ObjectClient(client);
-            Owners = new OwnerClient(client);
-            Events = new EventClient(client);
-            Restitution = new RestitutionClient(client);
-            Model = new ModelClient(client);
+            Objects = new ObjectClient(this._client);
+            Owners = new OwnerClient(this._client);
+            Events = new EventClient(this._client);
+            Restitution = new RestitutionClient(this._client);
+            Model = new ModelClient(this._client);
+            Datalake = new DatalakeClient(this._client, new DatasetValidator());
         }
 
         public void Dispose()
         {
-            client.Dispose();
+            _client.Dispose();
         }
     }
 }

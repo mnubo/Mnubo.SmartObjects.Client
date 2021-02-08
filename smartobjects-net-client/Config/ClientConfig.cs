@@ -33,17 +33,17 @@ namespace Mnubo.SmartObjects.Client.Config
         /// <summary>
         /// get unique identity key provided by mnubo.
         /// </summary>
-        public String ConsumerKey { get; }
+        public string ConsumerKey { get; }
 
         /// <summary>
         /// get secret key provided by mnubo.
         /// </summary>
-        public String ConsumerSecret { get; }
+        public string ConsumerSecret { get; }
 
         /// <summary>
         /// static bearer token fetched from mnubo
         /// </summary>
-        public String Token { get; }
+        public string Token { get; }
 
         /// <summary>
         /// Timeout in miliseconds to use for requests made by this client instance.
@@ -77,14 +77,14 @@ namespace Mnubo.SmartObjects.Client.Config
             bool compressionEnabled,
             IExponentialBackoffConfig exponentialBackoffConfig)
         {
-            if (String.IsNullOrEmpty(token))
+            if (string.IsNullOrEmpty(token))
             {
-                if (String.IsNullOrEmpty(consumerKey))
+                if (string.IsNullOrEmpty(consumerKey))
                 {
                     throw new ArgumentException("securityConsumerKey property cannot be blank.");
                 }
 
-                if (String.IsNullOrEmpty(consumerSecret))
+                if (string.IsNullOrEmpty(consumerSecret))
                 {
                     throw new ArgumentException("securityConsumerSecret property cannot be blank.");
                 }

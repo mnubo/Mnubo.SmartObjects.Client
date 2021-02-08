@@ -22,6 +22,7 @@
     <Reference Include="System.IO.Compression" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Macross.Json.Extensions" Version="1.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />

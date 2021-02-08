@@ -46,9 +46,9 @@ namespace Mnubo.SmartObjects.Client.Impl
             {
                 throw new ArgumentException("Event list cannot be empty or null.");
             }
-            var asyncResult = await client.sendAsyncRequestWithResult(
+            var asyncResult = await client.SendAsyncRequestWithResult(
                     HttpMethod.Post,
-                    "events?report_results=true",
+                    "/api/v3/events?report_results=true",
                     EventSerializer.SerializeEvents(events));
 
             return JsonConvert.DeserializeObject<IEnumerable<EventResult>>(asyncResult);        
@@ -66,9 +66,9 @@ namespace Mnubo.SmartObjects.Client.Impl
                 throw new ArgumentException("eventId cannot be blank.");
             }
 
-            var asynResultAsStr = await client.sendAsyncRequestWithResult(
+            var asynResultAsStr = await client.SendAsyncRequestWithResult(
                 HttpMethod.Get,
-                string.Format("events/exists/{0}", eventId),
+                string.Format("/api/v3/events/exists/{0}", eventId),
                 null);
 
             var asynResult = JsonConvert.DeserializeObject<IDictionary<string, bool>>(asynResultAsStr);
@@ -83,9 +83,9 @@ namespace Mnubo.SmartObjects.Client.Impl
                 throw new ArgumentException("List of eventIds cannot be null.");
             }
 
-            var asynResultAsStr = await client.sendAsyncRequestWithResult(
+            var asynResultAsStr = await client.SendAsyncRequestWithResult(
                 HttpMethod.Post,
-                "events/exists",
+                "/api/v3/events/exists",
                 JsonConvert.SerializeObject(eventIds));
 
             return ExistResultsDeserializer.DeserializeExistResults(asynResultAsStr);

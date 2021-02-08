@@ -1,13 +1,9 @@
-﻿using Polly;
-using Polly.Retry;
-using static Mnubo.SmartObjects.Client.Config.ClientConfig;
+﻿using Polly.Retry;
 using Mnubo.SmartObjects.Client.Config;
-using Newtonsoft.Json;
 
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using System.Text;
 using System.Net;
 using System.IO;
@@ -17,13 +13,26 @@ using System.Reflection;
 
 namespace Mnubo.SmartObjects.Client.Impl
 {
-    internal class HttpClient : IDisposable
+    internal interface IHttpClient
+    {
+        Task<string> SendAsyncRequestWithResult(HttpMethod method, string path);
+        
+        Task SendAsyncRequest(HttpMethod method, string path, string body);
+        
+        Task SendAsyncRequest(HttpMethod method, string path);
+        
+        Task<HttpResponseMessage> SendRequest(HttpMethod method, string path, string body);
+        
+        Task<string> SendAsyncRequestWithResult(HttpMethod method, string path, string body);
+    }
+
+    internal class HttpClient : IDisposable, IHttpClient
     {
         internal const string DefaultClientSchema = "https";
         internal const string DefaultScope = "ALL";
         internal const int DefaultHostPort = 443;
 
-        private const string DefaultBasePath = "/api/v3/";
+        private const string DefaultBasePath = "";
 
         private readonly string clientSchema;
         private readonly string hostname;
@@ -31,36 +40,36 @@ namespace Mnubo.SmartObjects.Client.Impl
         private readonly string basePath;
         private readonly bool compressionEnabled = ClientConfig.Builder.DefaultCompressionEnabled;
         private readonly CredentialHandler credentialHandler;
-        private readonly System.Net.Http.HttpClientHandler handler;
+        private readonly HttpClientHandler handler;
         private readonly System.Net.Http.HttpClient client;
         private readonly AsyncRetryPolicy<HttpResponseMessage> policy;
         private readonly string version;
 
-        private static string loadVersion() {
+        private static string LoadVersion() {
             try
-                {
-                    var _assembly = Assembly.GetExecutingAssembly();
-                    var _textStreamReader = new StreamReader(_assembly.GetManifestResourceStream("Mnubo.SmartObjects.Client.Version.txt"));
-                    var content = _textStreamReader.ReadToEnd();
-                    return content.Split('=')[1].Replace(System.Environment.NewLine, "").TrimEnd(Environment.NewLine.ToCharArray());
-                }
-                catch
-                {
-                    return "unknown";
-                }
+            {
+                var assembly = Assembly.GetExecutingAssembly();
+                var textStreamReader = new StreamReader(assembly.GetManifestResourceStream("Mnubo.SmartObjects.Client.Version.txt"));
+                var content = textStreamReader.ReadToEnd();
+                return content.Split('=')[1].Replace(System.Environment.NewLine, "").TrimEnd(Environment.NewLine.ToCharArray());
+            }
+            catch
+            {
+                return "unknown";
+            }
         }
-
+        
         internal HttpClient(ClientConfig config) : this(config, DefaultClientSchema, config.Hostname, DefaultHostPort, DefaultBasePath) { }
 
         internal HttpClient(ClientConfig config, string clientSchema, string hostname, int hostPort, string basePath)
         {
-            this.version = ".NET/" + loadVersion();
+            this.version = ".NET/" + LoadVersion();
             this.handler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate };
 
             this.client = new System.Net.Http.HttpClient(handler);
             this.client.Timeout = TimeSpan.FromMilliseconds(config.ClientTimeout);
             this.client.MaxResponseContentBufferSize = config.MaxResponseContentBufferSize;
-            if (String.IsNullOrEmpty(config.Token)) {
+            if (string.IsNullOrEmpty(config.Token)) {
                 this.credentialHandler = new ClientIdAndSecretCredentialHandler(config, client, clientSchema, hostname, hostPort);
             } else {
                 this.credentialHandler = new StaticTokenCredentialHandler(config.Token);
@@ -75,27 +84,27 @@ namespace Mnubo.SmartObjects.Client.Impl
             this.policy = config.ExponentialBackoffConfig.Policy();
         }
 
-        internal async Task<string> sendAsyncRequestWithResult(HttpMethod method, string path)
+        public async Task<string> SendAsyncRequestWithResult(HttpMethod method, string path)
         {
-            return await sendAsyncRequestWithResult(method, path, null);
+            return await SendAsyncRequestWithResult(method, path, null);
         }
 
-        internal async Task sendAsyncRequest(HttpMethod method, string path, string body)
+        public async Task SendAsyncRequest(HttpMethod method, string path, string body)
         {
-            await sendAsyncRequestWithResult(method, path, body);
+            await SendAsyncRequestWithResult(method, path, body);
         }
 
-        internal async Task sendAsyncRequest(HttpMethod method, string path)
+        public async Task SendAsyncRequest(HttpMethod method, string path)
         {
-            await sendAsyncRequest(method, path, null);
+            await SendAsyncRequest(method, path, null);
         }
 
-        private async Task<HttpResponseMessage> sendRequest(HttpMethod method, string path, string body) {
+        public async Task<HttpResponseMessage> SendRequest(HttpMethod method, string path, string body) {
             HttpRequestMessage request = null;
             try
             {
                 var pathAndQuery = path.Split(new char[] { '?' });
-                UriBuilder uriBuilder = new UriBuilder(clientSchema, hostname, hostPort, basePath + pathAndQuery[0]);
+                var uriBuilder = new UriBuilder(clientSchema, hostname, hostPort, basePath + pathAndQuery[0]);
                 if(pathAndQuery.Length > 1)
                 {
                     uriBuilder.Query = pathAndQuery[1];
@@ -133,24 +142,22 @@ namespace Mnubo.SmartObjects.Client.Impl
             }
             finally
             {
-                if (request != null) {
-                    request.Dispose();
-                }
+                request?.Dispose();
             }
         }
 
-        internal async Task<string> sendAsyncRequestWithResult(HttpMethod method, string path, string body)
+        public async Task<string> SendAsyncRequestWithResult(HttpMethod method, string path, string body)
         {
             HttpResponseMessage response = null;
             try
             {
                 if (policy != null) {
-                    response = await policy.ExecuteAsync(() => sendRequest(method, path, body));
+                    response = await policy.ExecuteAsync(() => SendRequest(method, path, body));
                 } else {
-                    response = await sendRequest(method, path, body);
+                    response = await SendRequest(method, path, body);
                 }
 
-                string message = await response.Content.ReadAsStringAsync();
+                var message = await response.Content.ReadAsStringAsync();
 
                 if (response.StatusCode == HttpStatusCode.OK ||
                     response.StatusCode == HttpStatusCode.Created ||
@@ -165,14 +172,11 @@ namespace Mnubo.SmartObjects.Client.Impl
                 }
 
                 throw new InvalidOperationException(
-                    string.Format("status code: {0}, message {1}", response.StatusCode, message));
+                    $"status code: {response.StatusCode}, message {message}");
             }
             finally
             {
-                if (response != null)
-                {
-                    response.Dispose();
-                }
+                response?.Dispose();
             }
         }
 

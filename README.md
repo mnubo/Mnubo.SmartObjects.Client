@@ -579,6 +579,48 @@ client.Model.SandboxOps.OwnerAttributesOps.DeployAsync("owner_key");
 
 More information available here: https://smartobjects.mnubo.com/documentation/api_modeler.html
 
+Working UDD's
+-------------------
+UDD's are available throught the `Datalake` client.
+
+Creating a dataset:
+```c#
+var yourUdd = new CreateDatasetRequest
+{
+    DatasetKey = "Your dataset key",
+    Description = "Dataset description",
+    DisplayName = "Dataset display name",
+    Fields = new List<DatasetField>
+    {
+        new()
+        {
+            Key = "yourFieldKey",
+            Aliases = new List<string>
+            {
+                "yourFieldAlias"
+            },
+            DisplayName = "The field display name",
+            Description = "Description",
+            Type = new FieldType
+            {
+                HighLevelType = FieldHighLevelType.Text
+            }
+        }
+    }
+};
+await client.Datalake.CreateDatasetAsync(yourUdd);
+```
+Ingesting data:
+```c#
+var rows = new List<IDictionary<string, object>> 
+{
+    new Dictionary<string, object> 
+    {
+        { "myField": "myValue" }
+    }
+}
+await client.Datalake.SendAsync(yourDatasetKey, rows);
+```
 
 Exponential backoff
 -------------------

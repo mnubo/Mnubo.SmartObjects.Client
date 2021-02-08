@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Mnubo.SmartObjects.Client.ITTest
 {
@@ -41,24 +42,7 @@ namespace Mnubo.SmartObjects.Client.ITTest
 
         public static readonly Func<String, String> searchObjectByOwnerQuery = username =>
             @"{""from"":""object"",""select"":[{""value"":""x_device_id""},{""value"":""object_text_attribute""}],""where"":{""x_owner.username"":{""eq"":""" + username + @"""}}}";
-
-        public static void EventuallyAssert(Action assert)
-        {
-            int stopper = Environment.TickCount + timeout;
-            AssertionException lastAssertionException = null;
-            while (Environment.TickCount < stopper) {
-                try {
-                    assert();
-                    return;
-                } catch (AssertionException e) {
-                    lastAssertionException = e;
-                }
-                Thread.Sleep(delay);
-            }
-            if (lastAssertionException != null) {
-                throw lastAssertionException;
-            }
-        }
+        
         public static void AllFailed(IEnumerable<Result> results)
         {
             if (results != null) {
