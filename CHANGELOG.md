@@ -1,3 +1,9 @@
+<a name='4.0.1'></a>
+
+# [4.0.1](https://github.com/mnubo/smartobjects-net-client/compare/4.0.0...4.0.1) (2021-02-09)
+
+* Remove unsupported field aliases
+
 <a name='4.0.0'></a>
 
 # [4.0.0](https://github.com/mnubo/smartobjects-net-client/compare/3.2.0...4.0.0) (2021-02-09)
