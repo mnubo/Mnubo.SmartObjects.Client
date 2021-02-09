@@ -14,8 +14,16 @@
 <p>You can get started quickly with Package Manager or the .NET CLI:</p>
 <pre>
     <code>
-Install-Package Mnubo.SmartObjects.Client -Version 3.1.0 # Package Manager
-dotnet add package Mnubo.SmartObjects.Client --version 3.1.0 # .NET CLI
+Install-Package Mnubo.SmartObjects.Client -Version 3.2.0 # Package Manager
+dotnet add package Mnubo.SmartObjects.Client --version 3.2.0 # .NET CLI
+    </code>
+</pre>
+
+IMPORTANT: Following the 4.0.0 release, the package name has changed to AspenTech.SmartObjects.Client and can be found at:
+<pre>
+    <code>
+Install-Package AspenTech.SmartObjects.Client -Version 4.0.0 # Package Manager
+dotnet add package AspenTech.SmartObjects.Client --version 4.0.0 # .NET CLI
     </code>
 </pre>
 
@@ -27,8 +35,8 @@ dotnet add package Mnubo.SmartObjects.Client --version 3.1.0 # .NET CLI
 
 <pre>
         <code>
-using Mnubo.SmartObjects.Client.Config;
-using Mnubo.SmartObjects.Client.Impl;
+using AspenTech.SmartObjects.Client.Config;
+using AspenTech.SmartObjects.Client.Impl;
 
 ClientConfig config = new ClientConfig.Builder() {
     Hostname = "<%= hostname %>",

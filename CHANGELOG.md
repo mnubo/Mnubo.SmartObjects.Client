@@ -1,3 +1,9 @@
+<a name='4.0.0'></a>
+
+# [4.0.0](https://github.com/mnubo/smartobjects-net-client/compare/3.2.0...4.0.0) (2021-02-09)
+
+* Rename to AspenTech.SmartObjects.Client
+
 <a name='3.2.0'></a>
 
 # [3.2.0](https://github.com/mnubo/smartobjects-net-client/compare/3.1.0...3.2.0) (2021-02-09)

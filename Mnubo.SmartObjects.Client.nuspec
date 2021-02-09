@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
-        <id>Mnubo.SmartObjects.Client</id>
-        <version>3.2.0</version>
+        <id>AspenTech.SmartObjects.Client</id>
+        <version>4.0.0</version>
         <authors>David Francoeur,David Masse,Goruti,Jeremy Attali,Julien Letrouit,Manuel Vonthron,Mauro Arias,Jonathan Hallee</authors>
         <owners>mnubo, inc.</owners>
         <licenseUrl>https://opensource.org/licenses/apache-2.0</licenseUrl>
         <projectUrl>https://github.com/mnubo/smartobjects-net-client</projectUrl>
         <iconUrl>https://raw.githubusercontent.com/mnubo/smartobjects-net-client/master/mnubo.png</iconUrl>
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
-        <description>mnubo SmartObjects .Net SDK client</description>
+        <description>AspenTech SmartObjects .Net SDK client</description>
         <releaseNotes>
-            * Integrate UDD Modeler and Ingestion API's under the Datalake client
+            * Rename to AspenTech.SmartObjects.Client
 	    </releaseNotes>
         <copyright>Copyright 2021</copyright>
         <dependencies>
@@ -23,13 +23,4 @@
             </group>
         </dependencies>
     </metadata>
-    <files>
-        <file src="smartobjects-net-client\bin\Release\*.dll" target="lib/net5.0" />
-        <file src="smartobjects-net-client\bin\Release\*.exe" exclude="**vshost**" target="lib/net5.0" />
-        <file src="smartobjects-net-client\bin\Release\*.config" target="lib/net5.0" />
-        <file src="smartobjects-net-client\bin\Release\*.xml" target="lib/net5.0" />
-        <file src="smartobjects-net-client\bin\Release\*.pdb" target="lib/net5.0" />
-
-        <file src="smartobjects-net-client\**\*.cs" exclude="obj\**" target="src" />
-    </files>
 </package>
