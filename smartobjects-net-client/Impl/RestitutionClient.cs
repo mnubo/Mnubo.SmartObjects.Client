@@ -47,9 +47,9 @@ namespace Mnubo.SmartObjects.Client.Impl
         /// </summary>
         public async Task<IEnumerable<DataSet>> GetDataSetsAsync()
         {
-            var asynResult = await client.sendAsyncRequestWithResult(
+            var asynResult = await client.SendAsyncRequestWithResult(
                 HttpMethod.Get,
-                "search/datasets");
+                "/api/v3/search/datasets");
 
             return JsonConvert.DeserializeObject<IEnumerable<DataSet>>(asynResult);
         }
@@ -64,9 +64,9 @@ namespace Mnubo.SmartObjects.Client.Impl
                 throw new ArgumentException("Query cannot be empty or null.");
             }
 
-            var asynResult = await client.sendAsyncRequestWithResult(
+            var asynResult = await client.SendAsyncRequestWithResult(
                 HttpMethod.Post,
-                "search/basic",
+                "/api/v3/search/basic",
                 query);
 
             return ResultSetDeserializer.DeserializeResultSet(asynResult);

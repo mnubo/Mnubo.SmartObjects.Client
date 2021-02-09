@@ -138,9 +138,9 @@ namespace Mnubo.SmartObjects.Client.Impl
                 throw new ArgumentException("password cannot be blank.");
             }
 
-            await client.sendAsyncRequest(
+            await client.SendAsyncRequest(
                 HttpMethod.Post,
-                "owners",
+                "/api/v3/owners",
                 OwnerSerializer.SerializeOwner(owner));
         }
 
@@ -160,14 +160,14 @@ namespace Mnubo.SmartObjects.Client.Impl
             }
 
             if (body == null || body.Count == 0) {
-                await client.sendAsyncRequest(
+                await client.SendAsyncRequest(
                     HttpMethod.Post,
-                    string.Format("owners/{0}/objects/{1}/claim", username, deviceId)
+                    string.Format("/api/v3/owners/{0}/objects/{1}/claim", username, deviceId)
                 );
             } else {
-                await client.sendAsyncRequest(
+                await client.SendAsyncRequest(
                     HttpMethod.Post,
-                    string.Format("owners/{0}/objects/{1}/claim", username, deviceId),
+                    string.Format("/api/v3/owners/{0}/objects/{1}/claim", username, deviceId),
                     JsonConvert.SerializeObject(
                         body,
                         new JsonSerializerSettings
@@ -195,14 +195,14 @@ namespace Mnubo.SmartObjects.Client.Impl
             }
 
             if (body == null || body.Count == 0) {
-                await client.sendAsyncRequest(
+                await client.SendAsyncRequest(
                     HttpMethod.Post,
-                    string.Format("owners/{0}/objects/{1}/unclaim", username, deviceId)
+                    string.Format("/api/v3/owners/{0}/objects/{1}/unclaim", username, deviceId)
                 );
             } else {
-                await client.sendAsyncRequest(
+                await client.SendAsyncRequest(
                     HttpMethod.Post,
-                    string.Format("owners/{0}/objects/{1}/unclaim", username, deviceId),
+                    string.Format("/api/v3/owners/{0}/objects/{1}/unclaim", username, deviceId),
                     JsonConvert.SerializeObject(
                         body,
                         new JsonSerializerSettings
@@ -229,9 +229,9 @@ namespace Mnubo.SmartObjects.Client.Impl
                 throw new ArgumentException(string.Format("Claims list cannot be greater than {0}.", BatchMaxSize));
             }
 
-            var asynResult = await client.sendAsyncRequestWithResult(
+            var asynResult = await client.SendAsyncRequestWithResult(
                 HttpMethod.Post,
-                "owners/claim",
+                "/api/v3/owners/claim",
                 ClaimOrUnclaimSerializer.SerializeClaimOrUnclaims(claims)
             );
 
@@ -253,9 +253,9 @@ namespace Mnubo.SmartObjects.Client.Impl
                 throw new ArgumentException(string.Format("Claims list cannot be greater than {0}.", BatchMaxSize));
             }
 
-            var asynResult = await client.sendAsyncRequestWithResult(
+            var asynResult = await client.SendAsyncRequestWithResult(
                 HttpMethod.Post,
-                "owners/unclaim",
+                "/api/v3/owners/unclaim",
                 ClaimOrUnclaimSerializer.SerializeClaimOrUnclaims(unclaims)
             );
 
@@ -277,8 +277,8 @@ namespace Mnubo.SmartObjects.Client.Impl
                 throw new ArgumentException("username cannot be blank.");
             }
 
-            await client.sendAsyncRequest(HttpMethod.Put,
-                string.Format("owners/{0}", username),
+            await client.SendAsyncRequest(HttpMethod.Put,
+                string.Format("/api/v3/owners/{0}", username),
                 OwnerSerializer.SerializeOwner(owner));
         }
 
@@ -292,8 +292,8 @@ namespace Mnubo.SmartObjects.Client.Impl
                 throw new ArgumentException("username cannot be blank.");
             }
 
-            await client.sendAsyncRequest(HttpMethod.Delete,
-                string.Format("owners/{0}", username));
+            await client.SendAsyncRequest(HttpMethod.Delete,
+                string.Format("/api/v3/owners/{0}", username));
         }
 
         /// <summary>
@@ -318,8 +318,8 @@ namespace Mnubo.SmartObjects.Client.Impl
                 Password = password
             };
 
-            await client.sendAsyncRequest(HttpMethod.Put,
-                string.Format("owners/{0}/password", username),
+            await client.SendAsyncRequest(HttpMethod.Put,
+                string.Format("/api/v3/owners/{0}/password", username),
                 OwnerSerializer.SerializeOwner(owner));
         }
 
@@ -346,9 +346,9 @@ namespace Mnubo.SmartObjects.Client.Impl
                 }
             }
 
-            var asynResult = await client.sendAsyncRequestWithResult(
+            var asynResult = await client.SendAsyncRequestWithResult(
                 HttpMethod.Put,
-                "owners",
+                "/api/v3/owners",
                 OwnerSerializer.SerializeOwners(owners));
 
             return JsonConvert.DeserializeObject<IEnumerable<Result>>(asynResult);
@@ -364,9 +364,9 @@ namespace Mnubo.SmartObjects.Client.Impl
                 throw new ArgumentException("username cannot be blank.");
             }
 
-            var asynResultAsStr = await client.sendAsyncRequestWithResult(
+            var asynResultAsStr = await client.SendAsyncRequestWithResult(
                 HttpMethod.Get,
-                string.Format("owners/exists/{0}", username),
+                string.Format("/api/v3/owners/exists/{0}", username),
                 null);
 
             var asynResult = JsonConvert.DeserializeObject<IDictionary<string, bool>>(asynResultAsStr);
@@ -384,9 +384,9 @@ namespace Mnubo.SmartObjects.Client.Impl
                 throw new ArgumentException("List of usernames cannot be null.");
             }
 
-            var asynResultAsStr = await client.sendAsyncRequestWithResult(
+            var asynResultAsStr = await client.SendAsyncRequestWithResult(
                 HttpMethod.Post,
-                "owners/exists",
+                "/api/v3/owners/exists",
                 JsonConvert.SerializeObject(usernames));
 
             return ExistResultsDeserializer.DeserializeExistResults(asynResultAsStr);

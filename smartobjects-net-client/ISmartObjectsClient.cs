@@ -1,10 +1,8 @@
 ﻿using System;
+using Mnubo.SmartObjects.Client.Datalake;
 
 namespace Mnubo.SmartObjects.Client
 {
-    /// <summary>
-    /// Interface for work with all mnubo's client SmartObjects
-    /// </summary>
     public interface ISmartObjectsClient : IDisposable
     {
         /// <summary>
@@ -25,11 +23,13 @@ namespace Mnubo.SmartObjects.Client
         /// <summary>
         /// Returns Search API Client, giving access to post search requests
         /// </summary>
-        IRestitutionClient Restitution { get;  }
+        IRestitutionClient Restitution { get; }
 
         /// <summary>
         /// Returns Model API Client, giving access to the model
         /// </summary>
-        IModelClient Model { get;  }
+        IModelClient Model { get; }
+
+        IDatalakeClient Datalake { get; }
     }
 }

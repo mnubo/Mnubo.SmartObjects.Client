@@ -107,7 +107,7 @@ namespace Mnubo.SmartObjects.Client.Impl
 
                 token = new Token(JsonConvert.DeserializeObject<Dictionary<string,object>>(tokenAsStringTask.Result));
             }
-            catch (Exception)
+            catch (Exception exception) when (!(exception is InvalidOperationException))
             {
                 throw new InvalidOperationException("Error fetching token...");
             }

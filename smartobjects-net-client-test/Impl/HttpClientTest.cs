@@ -49,7 +49,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         public void CompressionEnabledDefault()
         {
             var client = new Client.Impl.HttpClient(config, "http", "localhost", port, SucceedAPIsMockModule.BasePath);
-            var task = client.sendAsyncRequestWithResult(HttpMethod.Post, "compressed", SucceedAPIsMockModule.TestJsonString);
+            var task = client.SendAsyncRequestWithResult(HttpMethod.Post, "compressed", SucceedAPIsMockModule.TestJsonString);
             task.Wait();
 
             Assert.AreEqual(SucceedAPIsMockModule.TestJsonString, task.Result);
@@ -64,7 +64,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
                     Token = "token"
                 };
             var client = new Client.Impl.HttpClient(otherConfig, "http", "localhost", port, SucceedAPIsMockModule.BasePath);
-            var task = client.sendAsyncRequestWithResult(HttpMethod.Post, "tokencheck");
+            var task = client.SendAsyncRequestWithResult(HttpMethod.Post, "tokencheck");
             task.Wait();
             Assert.AreEqual("Bearer token", task.Result);
         }
@@ -81,7 +81,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             };
 
             var client = new Client.Impl.HttpClient(configWithCompression, "http", "localhost", port, SucceedAPIsMockModule.BasePath);
-            var task = client.sendAsyncRequestWithResult(HttpMethod.Post, "compressed", SucceedAPIsMockModule.TestJsonString);
+            var task = client.SendAsyncRequestWithResult(HttpMethod.Post, "compressed", SucceedAPIsMockModule.TestJsonString);
             task.Wait();
 
             Assert.AreEqual(SucceedAPIsMockModule.TestJsonString, task.Result);
@@ -99,7 +99,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             };
 
             var client = new Client.Impl.HttpClient(configNoCompression, "http", "localhost", port, SucceedAPIsMockModule.BasePath);
-            var task = client.sendAsyncRequestWithResult(HttpMethod.Post, "decompressed", SucceedAPIsMockModule.TestJsonString);
+            var task = client.SendAsyncRequestWithResult(HttpMethod.Post, "decompressed", SucceedAPIsMockModule.TestJsonString);
             task.Wait();
 
             Assert.AreEqual(SucceedAPIsMockModule.TestJsonString, task.Result);
@@ -120,15 +120,15 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             };
             var client = new Client.Impl.HttpClient(defaultBackOff, "http", "localhost", port, ServiceUnavailableMockModule.BasePath);
 
-            var task1 = client.sendAsyncRequestWithResult(HttpMethod.Post, "first", "");
+            var task1 = client.SendAsyncRequestWithResult(HttpMethod.Post, "first", "");
             task1.Wait();
             Assert.AreEqual("first", task1.Result);
 
-            var task2 = client.sendAsyncRequestWithResult(HttpMethod.Post, "second", "");
+            var task2 = client.SendAsyncRequestWithResult(HttpMethod.Post, "second", "");
             task2.Wait();
             Assert.AreEqual("second", task2.Result);
 
-            var task3 = client.sendAsyncRequestWithResult(HttpMethod.Post, "third", "");
+            var task3 = client.SendAsyncRequestWithResult(HttpMethod.Post, "third", "");
             task3.Wait();
             Assert.AreEqual("third", task3.Result);
         }
@@ -144,7 +144,7 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
             };
             var client = new Client.Impl.HttpClient(defaultBackOff, "http", "localhost", port, ServiceUnavailableMockModule.BasePath);
 
-            Assert.That(() => client.sendAsyncRequestWithResult(HttpMethod.Post, "first", "").Wait(),
+            Assert.That(() => client.SendAsyncRequestWithResult(HttpMethod.Post, "first", "").Wait(),
                 Throws.TypeOf<AggregateException>()
                     .With.InnerException.TypeOf<InvalidOperationException>()
                     .With.InnerException.Message.EqualTo("status code: ServiceUnavailable, message service out"));

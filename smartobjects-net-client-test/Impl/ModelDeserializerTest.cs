@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
 using Mnubo.SmartObjects.Client.Models.DataModel;
 using Mnubo.SmartObjects.Client.Impl;
 
-namespace Con.Mnubo.Dotnetsdktest.Test.Impl
+namespace Mnubo.SmartObjects.Client.Test.Impl
 {
     [TestFixture()]
     public class ModelDeserializerTest
@@ -125,7 +124,7 @@ namespace Con.Mnubo.Dotnetsdktest.Test.Impl
                 }
                 }
             ";
-            Model model = ModelDeserializer.DeserializeModel(json);
+            var model = ModelDeserializer.DeserializeModel(json);
             Assert.AreEqual(2, model.EventTypes.Count, "event types count");
             Assert.AreEqual(2, model.Timeseries.Count, "timeseries count");
             Assert.AreEqual(1, model.ObjectTypes.Count, "object types count");
@@ -230,7 +229,7 @@ namespace Con.Mnubo.Dotnetsdktest.Test.Impl
                 ""orphans"": {}
                 }
             ";
-            Model model = ModelDeserializer.DeserializeModel(json);
+            var model = ModelDeserializer.DeserializeModel(json);
             Assert.AreEqual(1, model.EventTypes.Count, "event types count");
             Assert.AreEqual(0, model.Timeseries.Count, "timeseries count");
             Assert.AreEqual(0, model.ObjectTypes.Count, "object types count");

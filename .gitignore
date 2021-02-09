@@ -12,3 +12,4 @@ testrunner/
 TestResult.xml
 .vscode
 .idea/
+*.DotSettings.user

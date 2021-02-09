@@ -727,21 +727,21 @@ namespace Mnubo.SmartObjects.Client.Test.Impl
         //Spawn a client which respond successfully to all events
         internal void withSuccessfulResults(Action<IObjectClient> test)
         {
-            var httpClient = new HttpClient(config, "http", "localhost", port, SucceedAPIsMockModule.BasePath);
+            var httpClient = new HttpClient(config, "http", "localhost", port, "/succeed");
             test(new ObjectClient(httpClient));
         }
 
         //Spawn a client which fail all request
         internal void withFailedResults(Action<IObjectClient> test)
         {
-            var httpClient = new HttpClient(config, "http", "localhost", port, FailedAPIsMockModule.BasePath);
+            var httpClient = new HttpClient(config, "http", "localhost", port, "/failed");
             test(new ObjectClient(httpClient));
         }
 
         //Spawn a client which fail respond with a mix of failed and successful events
         internal void withSuccessfulAndFailedResults(Action<IObjectClient> test)
         {
-            var httpClient = new HttpClient(config, "http", "localhost", port, BatchAPIsMockModule.BasePath);
+            var httpClient = new HttpClient(config, "http", "localhost", port, "/batch");
             test(new ObjectClient(httpClient));
         }
         #endregion
