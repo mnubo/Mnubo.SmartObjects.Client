@@ -19,6 +19,14 @@ dotnet add package Mnubo.SmartObjects.Client --version 3.2.0 # .NET CLI
     </code>
 </pre>
 
+IMPORTANT: Following the 4.0.0 release, the package name has changed to AspenTech.SmartObjects.Client and can be found at:
+<pre>
+    <code>
+Install-Package AspenTech.SmartObjects.Client -Version 4.0.0 # Package Manager
+dotnet add package AspenTech.SmartObjects.Client --version 4.0.0 # .NET CLI
+    </code>
+</pre>
+
 <p>For more information, visit <a target="_blank" href="https://github.com/mnubo/smartobjects-net-client">GitHub</a>.</p>
 
 <h3>Create a client instance</h3>
