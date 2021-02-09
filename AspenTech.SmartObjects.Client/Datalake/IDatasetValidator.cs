@@ -74,19 +74,6 @@ namespace AspenTech.SmartObjects.Client.Datalake
             {
                 throw new ArgumentException("description cannot be longer than 1024 characters", field.Description);
             }
-
-            if (field.Aliases.Count() > 10)
-            {
-                throw new ArgumentException("aliases count cannot be longer than 10", nameof(field.Aliases));
-            }
-
-            foreach (var alias in field.Aliases)
-            {
-                if (alias.Length > 255)
-                {
-                    throw new ArgumentException("alias cannot be longer than 255 characters", nameof(alias.Length));
-                }
-            }
         }
         
         public void ValidateCreateDataset(CreateDatasetRequest createDatasetRequest)

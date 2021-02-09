@@ -238,15 +238,8 @@ namespace AspenTech.SmartObjects.Client.Datalake
 
     public class DatasetField
     {
-        public DatasetField()
-        {
-            this.Aliases = new List<string>();
-        }
-        
         public string Key { get; set; }
-        
-        public IEnumerable<string> Aliases { get; set; }
-        
+
         public string DisplayName { get; set; }
         
         public string Description { get; set; }
