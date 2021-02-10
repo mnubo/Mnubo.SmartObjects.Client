@@ -61,7 +61,6 @@ namespace AspenTech.SmartObjects.Client.ITTest.Datalake
             await this._client
                 .WhenTryingToAddFieldToDataset(createDataset.DatasetKey, new DatasetField
                 {
-                    Aliases = new List<string> { "yolo" },
                     Description = "new field",
                     DisplayName = "new display name",
                     Key = "potato",

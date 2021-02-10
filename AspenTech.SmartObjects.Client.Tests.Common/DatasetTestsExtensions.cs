@@ -32,11 +32,6 @@ namespace AspenTech.SmartObjects.Client.Tests.Common
                     new()
                     {
                         Key = "rainbowdash",
-                        Aliases = new List<string>
-                        {
-                            "apple",
-                            "jack"
-                        },
                         DisplayName = "The rainbow dash field",
                         Description = "Yolo description",
                         Type = new FieldType
@@ -60,11 +55,6 @@ namespace AspenTech.SmartObjects.Client.Tests.Common
                     new()
                     {
                         Key = "rainbowdash",
-                        Aliases = new List<string>
-                        {
-                            "apple",
-                            "jack"
-                        },
                         DisplayName = "The rainbow dash field",
                         Description = "Yolo description",
                         Type = new FieldType
