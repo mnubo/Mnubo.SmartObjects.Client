@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Microsoft.VisualBasic;
 
 namespace AspenTech.SmartObjects.Client.Datalake
 {
@@ -20,6 +21,11 @@ namespace AspenTech.SmartObjects.Client.Datalake
 
     internal class DatasetValidator : IDatasetValidator
     {
+        private readonly IEnumerable<string> _unAllowedPrefixes = new List<string>
+        {
+            "x_", "p_", "sa_", "da_", "ada_", "owner", "object", "event", "session", "parametrizeddatasets", "scoring", "_suggested", "analyzed"
+        };
+        
         public void ValidateDatasetKey(string datasetKey)
         {
             if (string.IsNullOrEmpty(datasetKey))
@@ -35,6 +41,11 @@ namespace AspenTech.SmartObjects.Client.Datalake
             if (!Regex.IsMatch(datasetKey, "^[a-zA-Z0-9_-]+$"))
             {
                 throw new ArgumentException(@"datasetKey can only contain a-z, A-Z, 0-9, _ and -", datasetKey);
+            }
+
+            if (this._unAllowedPrefixes.Any(x => datasetKey.StartsWith(x, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                throw new ArgumentException("datasetKey cannot start with a reserved value", datasetKey);
             }
         }
 
