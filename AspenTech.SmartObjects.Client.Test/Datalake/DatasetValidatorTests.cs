@@ -50,6 +50,29 @@ namespace AspenTech.SmartObjects.Client.Test.Datalake
                 .WithMessage("datasetKey can only contain a-z, A-Z, 0-9, _ and -*");
         }
 
+        [TestCase("x_")]
+        [TestCase("p_")]
+        [TestCase("sa_")]
+        [TestCase("da_")]
+        [TestCase("ada_")]
+        [TestCase("owner")]
+        [TestCase("object")]
+        [TestCase("event")]
+        [TestCase("session")]
+        [TestCase("parametrizeddatasets")]
+        [TestCase("scoring")]
+        [TestCase("_suggested")]
+        [TestCase("analyzed")]
+        public void GivenADatasetKeyStartingWithReservedValue_WhenIValidateIt_ThenIGetArgumentException(string datasetKey)
+        {
+            Action validateAction = () => this._validator.ValidateDatasetKey(datasetKey);
+
+            validateAction
+                .Should()
+                .Throw<ArgumentException>()
+                .WithMessage("datasetKey cannot start with a reserved value*");
+        }
+
         [Test]
         public void GivenDatasetKeyThatIsValid_WhenIValidateIt_ThenItDoesNotThrow()
         {

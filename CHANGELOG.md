@@ -1,3 +1,9 @@
+<a name='4.0.2'></a>
+
+# [4.0.2](https://github.com/mnubo/smartobjects-net-client/compare/4.0.1...4.0.2) (2021-02-11)
+
+* Datalake: Add missing startsWith validations on the datasetKey
+
 <a name='4.0.1'></a>
 
 # [4.0.1](https://github.com/mnubo/smartobjects-net-client/compare/4.0.0...4.0.1) (2021-02-09)
