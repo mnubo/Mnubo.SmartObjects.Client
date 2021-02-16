@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>AspenTech.SmartObjects.Client</id>
-        <version>4.0.2</version>
+        <version>4.0.3</version>
         <authors>David Francoeur,David Masse,Goruti,Jeremy Attali,Julien Letrouit,Manuel Vonthron,Mauro Arias,Jonathan Hallee</authors>
         <owners>mnubo, inc.</owners>
         <licenseUrl>https://opensource.org/licenses/apache-2.0</licenseUrl>
@@ -11,7 +11,7 @@
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
         <description>AspenTech SmartObjects .Net SDK client</description>
         <releaseNotes>
-            * Datalake: Add missing startsWith validations on the datasetKey
+            * Datalake: Do not allow - in field keys
 	    </releaseNotes>
         <copyright>Copyright 2021</copyright>
         <dependencies>

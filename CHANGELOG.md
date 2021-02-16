@@ -1,3 +1,9 @@
+<a name='4.0.3'></a>
+
+# [4.0.3](https://github.com/mnubo/smartobjects-net-client/compare/4.0.2...4.0.3) (2021-02-16)
+
+* Datalake: Do not allow - in field keys
+
 <a name='4.0.2'></a>
 
 # [4.0.2](https://github.com/mnubo/smartobjects-net-client/compare/4.0.1...4.0.2) (2021-02-11)
