@@ -61,9 +61,9 @@ namespace AspenTech.SmartObjects.Client.Datalake
                 throw new ArgumentException("fieldKey cannot be longer than 64 characters", fieldKey);
             }
             
-            if (!Regex.IsMatch(fieldKey, @"^[a-zA-Z0-9_-]+$"))
+            if (!Regex.IsMatch(fieldKey, @"^[a-zA-Z0-9_]+$"))
             {
-                throw new ArgumentException(@"fieldKey can only contain a-z, A-Z, 0-9, _ and -", fieldKey);
+                throw new ArgumentException(@"fieldKey can only contain a-z, A-Z, 0-9 and _", fieldKey);
             }
 
             if (fieldKey.StartsWith("x_"))

@@ -109,12 +109,12 @@ namespace AspenTech.SmartObjects.Client.Test.Datalake
         [Test]
         public void GivenFieldKeyNotMatchingTheRegex_WhenIValidateIt_ThenIGetArgumentException()
         {
-            Action validateAction = () => this._validator.ValidateFieldKey("something not matching a-zA-Z0-9-_, @#$%^");
+            Action validateAction = () => this._validator.ValidateFieldKey("something not matching a-zA-Z0-9_, @#$%^-");
 
             validateAction
                 .Should()
                 .Throw<ArgumentException>()
-                .WithMessage("fieldKey can only contain a-z, A-Z, 0-9, _ and -*");
+                .WithMessage("fieldKey can only contain a-z, A-Z, 0-9 and _*");
         }
 
         [Test]
