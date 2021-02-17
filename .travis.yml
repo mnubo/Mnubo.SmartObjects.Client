@@ -25,6 +25,5 @@ deploy:
   provider: script
   on:
     branch: master
-  script:
-    - dotnet pack smartobjects-net-client/AspenTech.SmartObjects.Client.csproj -p:NuspecFile=../AspenTech.SmartObjects.Client.nuspec -c Release
-    - dotnet nuget push smartobjects-net-client/bin/Release/*.nupkg --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
+  script: bash scripts/deploy.sh
+    
