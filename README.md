@@ -1,6 +1,6 @@
 # Mnubo's SmartObjects platform .NET client
 
-[![Build status](https://travis-ci.org/mnubo/smartobjects-net-client.svg?branch=master)](https://travis-ci.org/mnubo/smartobjects-net-client)
+[![Build status](https://travis-ci.com/mnubo/smartobjects-net-client.svg?branch=master)](https://travis-ci.com/mnubo/smartobjects-net-client)
 [![NuGet](https://img.shields.io/nuget/v/Mnubo.SmartObjects.Client.svg?maxAge=2592000)](https://www.nuget.org/packages/Mnubo.SmartObjects.Client/)
 
 ## Quickstart

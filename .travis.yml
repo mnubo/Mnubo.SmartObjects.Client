@@ -25,5 +25,5 @@ deploy:
   provider: script
   on:
     branch: master
-  script: bash scripts/deploy.sh
+  script: bash scripts/deploy.sh $NUGET_API_KEY
     
