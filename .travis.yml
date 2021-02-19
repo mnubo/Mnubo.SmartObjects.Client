@@ -10,6 +10,8 @@ env:
 stages:
   - name: build
   - name: test
+  - name: deploy
+    if: branch = master
     
 jobs:
   include:
@@ -20,10 +22,12 @@ jobs:
     - stage: test
       script: 
         - dotnet test
-          
-deploy:
-  provider: script
-  on:
-    branch: master
-  script: bash scripts/deploy.sh $NUGET_API_KEY
+    - stage: deploy
+      script: skip
+      deploy:
+        provider: script
+        on:
+          branch: master
+        script: bash scripts/deploy.sh $NUGET_API_KEY
+                
     
